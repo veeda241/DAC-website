@@ -173,6 +173,15 @@ export const MOCK_TEAM: TeamMember[] = [
     year: 'second year',
     skills: ['Full Stack Development', 'Design Thinking', 'Programming', 'Creativity', 'Data Science']
   },
+  { 
+    id: 'm20', 
+    name: 'Manoharesh S', 
+    role: 'Technical co-lead', 
+    bio: 'AI & DS undergraduate skilled in Python, data handling, and foundational machine learning. Interested in AI agents, LLMs, reinforcement learning, and automation workflows. Focused on building impactful projects that bridge theory with real-world industry needs.', 
+    imageUrl: 'https://placehold.co/150/000000/FFFFFF/png?text=Manoharesh',
+    year: 'second year, ADS',
+    skills: ['Matplotlib', 'Seaborn', 'Plotly', 'Looker Studio', 'Streamlit', 'Gradio', 'NumPy', 'OS', 'Requests', 'BeautifulSoup', 'Scikit-learn']
+  },
 ];
 
 export const MOCK_PHOTOS: Photo[] = [

@@ -133,7 +133,7 @@ export const MOCK_TEAM: TeamMember[] = [
     name: 'Sri Sudharsanan K', 
     role: 'Dataset Manager', 
     bio: 'I’m a grounded, curious learner who enjoys exploring creative tech ideas and meaningful conversations while staying calm and sharp in how I think. I love taking on challenges in AI and data, balancing structured technical work with open-ended exploration to build practical, scalable solutions that matter. As a quick learner and collaborative teammate, I focus on understanding things deeply and creating projects with real purpose.', 
-    imageUrl: './WhatsApp Image 2025-11-30 at 12.16.19_c6973493.jpg',
+    imageUrl: 'https://image2url.com/images/1764601555812-fad66720-46b0-4a6e-ac2d-f0cfa8fbdce0.jpg',
     year: 'second year, ADS',
     skills: ['AI & NLP', 'Data Analysis', 'Python', 'Problem Solving', 'Creativity & Ideation', 'Team Collaboration', 'Fast Learning']
   },

@@ -21,7 +21,7 @@ export const MOCK_MENTORS: TeamMember[] = [
     name: 'Dr. L. Sherly Annabel',
     role: 'Head Of the Department',
     bio: 'PhD in Machine Learning with over 10 years of experience in AI research. Leading the department with a vision for innovation and academic excellence.',
-    imageUrl: './WhatsApp Image 2025-09-16 at 14.11.03_d9342d70.jpg',
+    imageUrl: 'https://image2url.com/images/1764601251827-e397793a-15f6-4604-b670-5575bc8d390a.jpg',
     year: 'Department Head',
     skills: ['Machine Learning', 'AI Research', 'Academic Leadership', 'Deep Learning']
   },

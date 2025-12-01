@@ -70,7 +70,7 @@ export const MOCK_TEAM: TeamMember[] = [
     name: 'NOWRIN BEGUM', 
     role: 'Technical Lead', 
     bio: 'an enthusiastic learner in Data Science and AI. I work on exploring datasets to uncover patterns, trends, and meaningful insights. My learning domain includes data analytics, machine learning, AI applications, and real-world problem solving.I am building strong skills in Python, R, SQL, Excel, KNIME, Power BI, Tableau, Gen AI, and data visualization.I look forward to collaborating, contributing, and growing within our Data Analytics Club.', 
-    imageUrl: './WhatsApp Image 2025-11-30 at 20.04.55_a64f3723.jpg',
+    imageUrl: 'https://image2url.com/images/1764602216823-6172b215-5c1d-4a35-90ab-9a4a08f0c8f6.jpg',
     year: 'pre final year, ADS',
     skills: ['Python', 'R', 'SQL', 'Excel', 'KNIME', 'Power BI', 'Tableau', 'Gen AI', 'data visualization']
   },

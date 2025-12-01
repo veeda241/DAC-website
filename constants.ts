@@ -106,7 +106,7 @@ export const MOCK_TEAM: TeamMember[] = [
     name: 'Srivardhni Palaniappan', 
     role: 'Script Writer', 
     bio: 'An AI & Data Science student who is passionate in Python, cybersecurity, and 3D modelling. Active campus host and podcast interviewer, engaged in tech communities, CTFs, and FOSS meetups. Driven by curiosity across gaming, literature, and creative digital design. With drive and adaptability, I continue to grow, contribute, and make an impact across every space I step into.', 
-    imageUrl: './WhatsApp Image 2025-11-30 at 20.31.13_f5f3ea7d.jpg',
+    imageUrl: 'https://image2url.com/images/1764601968880-9d30bd27-d73c-43de-974a-919f3229a976.jpg',
     year: 'second year, ADS',
     skills: ['Python Programming', 'Cybersecurity Fundamentals', '3D Modelling (Blender)', 'Creative Design (Logos, Visuals)', 'Communication & Hosting']
   },

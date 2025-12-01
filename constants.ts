@@ -39,7 +39,7 @@ export const MOCK_MENTORS: TeamMember[] = [
     name: 'Mr. Eneeyan Nanmaran',
     role: 'Industrial Expert',
     bio: 'Corporate Trainer & Expert in BI/Data Analytics. Skilled in SQL, Python, ML, & Power BI. Successfully cracked 23+ offers in the analytics domain.',
-    imageUrl: './Eneyaan.png', 
+    imageUrl: 'https://image2url.com/images/1764602983572-2437f12d-59cd-4cb4-9793-130fe47e8168.png', 
     year: 'Corporate Trainer',
     skills: ['SQL', 'Python', 'Power BI', 'Machine Learning', 'Career Coaching']
   }

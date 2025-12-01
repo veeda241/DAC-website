@@ -142,7 +142,7 @@ export const MOCK_TEAM: TeamMember[] = [
     name: 'SHYLESH S', 
     role: 'Script Writer', 
     bio: 'An AI & Data Science enthusiast with a strong drive to explore emerging technology, creativity, and impactful innovation. Dedicated to transforming ideas into real solutions through continuous learning, hands-on building, and purposeful exploration. With curiosity, discipline, and determination, I aim to grow, innovate, and contribute meaningfully to the world through my work.', 
-    imageUrl: './shyleshinbluecoat.jpg',
+    imageUrl: 'https://image2url.com/images/1764600769057-f5f0ded2-e469-43eb-a9c2-8310783902d2.jpg',
     year: 'second year, ADS',
     skills: ['Artificial Intelligence & Machine Learning', 'Programming (Python, Java, etc.)', 'Data Science & Automation', 'UI/UX Fundamentals', 'Problem-Solving & Critical Thinking', 'Leadership', 'Communication', 'Creativity']
   },

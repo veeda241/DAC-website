@@ -178,7 +178,7 @@ export const MOCK_TEAM: TeamMember[] = [
     name: 'Manoharesh S', 
     role: 'Technical co-lead', 
     bio: 'AI & DS undergraduate skilled in Python, data handling, and foundational machine learning. Interested in AI agents, LLMs, reinforcement learning, and automation workflows. Focused on building impactful projects that bridge theory with real-world industry needs.', 
-    imageUrl: 'https://placehold.co/150/000000/FFFFFF/png?text=Manoharesh',
+    imageUrl: 'https://image2url.com/images/1764603119665-b581cb28-cc6a-4678-8eb6-08feaedc5eb3.jpg',
     year: 'second year, ADS',
     skills: ['Matplotlib', 'Seaborn', 'Plotly', 'Looker Studio', 'Streamlit', 'Gradio', 'NumPy', 'OS', 'Requests', 'BeautifulSoup', 'Scikit-learn']
   },

@@ -169,7 +169,7 @@ export const MOCK_TEAM: TeamMember[] = [
     name: 'Naveen Kumar A', 
     role: 'Co-Design Lead', 
     bio: 'Passionate about AI, Machine Learning, IoT, and Full Stack Development, I enjoy building practical and impactful tech solutions. I love exploring new technologies, solving real-world problems, and creating intelligent systems through hands-on projects.\nskills Full Stack Development • Design Thinking • Programming • Creativity • Data Science', 
-    imageUrl: 'https://image2url.com/images/1764600689321-471ddb61-00a-4b12-92d7-b9a555c44e9e.jpg',
+    imageUrl: 'https://image2url.com/images/1764601150429-5afc9289-cbcb-469c-90e3-9381fe32884c.jpg',
     year: 'second year',
     skills: ['Full Stack Development', 'Design Thinking', 'Programming', 'Creativity', 'Data Science']
   },

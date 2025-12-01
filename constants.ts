@@ -79,7 +79,7 @@ export const MOCK_TEAM: TeamMember[] = [
     name: 'Dinesh kalangiyam p', 
     role: 'social media', 
     bio: 'passionate explorer who thrives on uncovering new tech, sparking creativity, and diving into ideas that matter. I’m driven to turn visions into tangible solutions through innovation and relentless learning. With curiosity and grit, I aim to evolve, create, and leave a mark through my journey', 
-    imageUrl: './WhatsApp Image 2025-11-30 at 20.33.27_ca809943.jpg',
+    imageUrl: 'https://image2url.com/images/1764601702833-886e6edb-7a40-4f77-8c6f-5126263ab780.jpg',
     year: 'second year, ADS',
     skills: ['Tech Exploration', 'Creative Problem-Solving', 'Collaborative Communication', 'Rapid Learning', 'Critical Thinking', 'Idea Prototyping']
   },

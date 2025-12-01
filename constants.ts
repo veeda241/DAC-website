@@ -88,7 +88,7 @@ export const MOCK_TEAM: TeamMember[] = [
     name: 'Gavin N Benedict', 
     role: 'social media', 
     bio: 'I am an AI and Data Science student driven by a passion for data‑driven storytelling. Within the Data Science Club’s Social Media Department, I manage content creation, videography, photography, and editing. I enjoy blending creativity with analytics to craft narratives that inspire and engage our community. From documenting events to designing digital campaigns, I aim to make complex ideas accessible and visually appealing.', 
-    imageUrl: './WhatsApp Image 2025-11-30 at 21.15.55_d739fa9b.jpg',
+    imageUrl: 'https://image2url.com/images/1764602022945-94e2d729-d4d6-41d4-a6c7-9819f1743957.jpg',
     year: 'second year, ADS',
     skills: ['Data‑Driven Storytelling', 'Content Creation', 'Videography', 'Photography', 'Video Editing', 'Photo Editing', 'Social Media Management', 'Creative Branding', 'Analytics Integration', 'Community Engagement']
   },

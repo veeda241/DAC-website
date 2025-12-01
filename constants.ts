@@ -115,7 +115,7 @@ export const MOCK_TEAM: TeamMember[] = [
     name: 'Krissal K V', 
     role: 'Dataset Manager', 
     bio: 'I’m deeply passionate about data science and analytics, driven by a strong desire to learn, innovate, and create solutions that deliver real value. I thrive on exploring new ideas, transforming insights into meaningful outcomes, and continuously elevating my skills to achieve excellence in everything I pursue.', 
-    imageUrl: './WhatsApp Image 2025-11-30 at 19.02.16_226eb778.jpg',
+    imageUrl: 'https://image2url.com/images/1764601668519-7bb72c21-1bc3-4cc4-b7f0-1328fc2c87bd.jpg',
     year: 'second year, ADS',
     skills: ['Programming', 'Problem-Solving', 'Communication', 'Creativity', 'Leadership', 'Critical Thinking']
   },

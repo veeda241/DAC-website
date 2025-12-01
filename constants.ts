@@ -97,7 +97,7 @@ export const MOCK_TEAM: TeamMember[] = [
     name: 'Bhavadarshini R G', 
     role: 'outreach coordinator', 
     bio: 'A confident learner who takes chances, leads when needed, and tackles challenges with clarity. I balance multiple priorities ,from technical work to teamwork — while staying focused on what’s right.With focus and determination, I balance technical thinking with people-first leadership,I strive to grow constantly, contribute meaningfully, and bring honesty and effort into everything I do.', 
-    imageUrl: './WhatsApp Image 2025-11-30 at 19.17.14_cce190e1.jpg',
+    imageUrl: 'https://image2url.com/images/1764602188058-4094ea2b-4bbc-4055-82c1-63154b310543.jpg',
     year: 'pre final year, ADS',
     skills: ['Leadership', 'Communication', 'Problem-Solving', 'Adaptability', 'Creativity', 'Critical Thinking']
   },

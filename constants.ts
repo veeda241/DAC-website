@@ -51,7 +51,7 @@ export const MOCK_TEAM: TeamMember[] = [
     name: 'Syed Aejaz Ahmed A', 
     role: 'President', 
     bio: 'An aspiring Data Scientist with expertise in Machine Learning, Data Analytics, Deep Learning, and Generative Transformers. Passionate about solving complex challenges through data-driven solutions, I specialize in Explainable AI with Deep Learning, Generative AI, and building intelligent systems that bridge the gap between cutting-edge technology and real-world applications.', 
-    imageUrl: './WhatsApp Image 2025-11-30 at 18.55.16_79a39fa1.jpg',
+    imageUrl: 'https://image2url.com/images/1764602252167-552a0c5e-f2d1-4844-90a5-1fe2df21461f.jpg',
     year: 'Pre final year, ADS',
     skills: ['Leadership', 'Python', 'Machine Learning', 'Public Speaking', 'Retrieval-Augmented Generation (RAG)', 'AI Agents & LLM Evaluation', 'ETL & Data Pipelines', 'Machine Learning Interpretability', 'Explainable AI with CAM and CRP']
   },

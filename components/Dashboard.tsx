@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { ClubEvent, Task, TaskStatus, User, UserRole, ActivityLog, Notification, ClubReport, Photo } from '../types';
 import { generateEventDescription, generateTaskAnalysis } from '../services/geminiService';
@@ -18,7 +17,9 @@ interface DashboardProps {
   setReports: React.Dispatch<React.SetStateAction<ClubReport[]>>;
   setPhotos: React.Dispatch<React.SetStateAction<Photo[]>>;
   onUpdateUser: (user: User) => void;
-  onDeleteUser?: (userId: string) => void; 
+  onDeleteUser?: (userId: string) => void;
+  onDeleteEvent: (eventId: string) => void; 
+  onDeleteTask: (taskId: string) => void; 
   activityLog: ActivityLog[];
   addActivity: (action: string, details?: string) => void;
   notifications: Notification[];
@@ -27,8 +28,7 @@ interface DashboardProps {
 }
 
 const Dashboard: React.FC<DashboardProps> = ({ 
-  user, users, events, tasks, reports, photos, setEvents, setTasks, setReports, setPhotos, onUpdateUser, onDeleteUser, onLogout, 
-  activityLog, addActivity, notifications, removeNotification
+  user, users, events, tasks, reports, photos, setEvents, setTasks, setReports, setPhotos, onUpdateUser, onDeleteUser, onDeleteEvent, onDeleteTask, activityLog, addActivity, notifications, removeNotification, onLogout, 
 }) => {
   const [activeTab, setActiveTab] = useState<'overview' | 'events' | 'tasks' | 'settings' | 'team' | 'reports' | 'gallery'>('overview');
   
@@ -512,7 +512,7 @@ const Dashboard: React.FC<DashboardProps> = ({
                 {filteredEvents.map(event => (
                   <div key={event.id} className="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden flex flex-col group hover:border-indigo-500/30 transition-all duration-300">
                     <div className="h-48 overflow-hidden relative">
-                      <img src={event.imageUrl} alt={event.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                      <img src={event.imageUrl} alt={event.title} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
                       <div className="absolute inset-0 bg-gradient-to-t from-slate-900 via-transparent to-transparent"></div>
                       <div className="absolute bottom-4 left-4">
                         <h3 className="text-xl font-bold text-white shadow-sm">{event.title}</h3>
@@ -521,6 +521,21 @@ const Dashboard: React.FC<DashboardProps> = ({
                     </div>
                     <div className="p-5 flex-1 flex flex-col">
                       <p className="text-slate-400 text-sm mb-4 flex-1 leading-relaxed">{event.description}</p>
+                      {canManageContent && (
+                        <div className="flex justify-end">
+                          <button 
+                            onClick={() => {
+                              if(confirm('Are you sure you want to delete this event?')) {
+                                onDeleteEvent(event.id);
+                              }
+                            }}
+                            className="p-2 text-slate-400 hover:text-red-400 hover:bg-red-500/10 rounded-lg transition-colors"
+                            title="Delete Event"
+                          >
+                            <Trash2 className="w-4 h-4" />
+                          </button>
+                        </div>
+                      )}
                     </div>
                   </div>
                 ))}
@@ -566,6 +581,8 @@ const Dashboard: React.FC<DashboardProps> = ({
                           getEventName={getEventName} 
                           onStatusChange={handleTaskStatusChange} 
                           currentUserId={user.id}
+                          canManageContent={canManageContent}
+                          onDeleteTask={onDeleteTask}
                         />
                       ))}
                     </div>
@@ -954,7 +971,9 @@ const TaskCard: React.FC<{
   getEventName: (id: string) => string;
   onStatusChange: (id: string, status: TaskStatus) => void;
   currentUserId: string;
-}> = ({ task, getAssigneeName, getEventName, onStatusChange, currentUserId }) => {
+  canManageContent: boolean; // Add this prop
+  onDeleteTask: (taskId: string) => void; // Add this prop
+}> = ({ task, getAssigneeName, getEventName, onStatusChange, currentUserId, canManageContent, onDeleteTask }) => {
   const isAssignedToMe = task.assigneeId === currentUserId;
 
   return (
@@ -964,6 +983,19 @@ const TaskCard: React.FC<{
            {getEventName(task.eventId)}
          </span>
          {isAssignedToMe && <span className="text-[10px] text-indigo-400 font-bold bg-indigo-900/30 px-2 py-1 rounded">YOU</span>}
+         {canManageContent && ( // Conditionally render delete button
+             <button 
+                onClick={() => {
+                   if(confirm('Are you sure you want to delete this task?')) {
+                      onDeleteTask(task.id);
+                   }
+                }}
+                className="p-1 text-slate-500 hover:text-red-400 hover:bg-red-500/10 rounded-lg transition-colors"
+                title="Delete Task"
+             >
+                <Trash2 className="w-4 h-4" />
+             </button>
+         )}
       </div>
       
       <h4 className="font-semibold text-white mb-3 leading-tight">{task.title}</h4>

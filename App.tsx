@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import LandingPage from './components/LandingPage';
 import Dashboard from './components/Dashboard';
@@ -100,6 +99,16 @@ const App: React.FC = () => {
     setNotifications(prev => prev.filter(n => n.id !== id));
   };
 
+  const handleDeleteEvent = (eventId: string) => {
+    setEvents(prev => prev.filter(e => e.id !== eventId));
+    addActivity('Deleted Event', `Event with ID ${eventId} removed.`);
+  };
+
+  const handleDeleteTask = (taskId: string) => {
+    setTasks(prev => prev.filter(t => t.id !== taskId));
+    addActivity('Deleted Task', `Task with ID ${taskId} removed.`);
+  };
+
   return (
     <>
       {!currentUser ? (
@@ -133,6 +142,8 @@ const App: React.FC = () => {
           setPhotos={setPhotos}
           onUpdateUser={handleUpdateUser}
           onDeleteUser={handleDeleteUser}
+          onDeleteEvent={handleDeleteEvent}
+          onDeleteTask={handleDeleteTask}
           onLogout={handleLogout}
           activityLog={activityLog}
           addActivity={addActivity}

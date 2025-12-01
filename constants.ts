@@ -123,7 +123,7 @@ export const MOCK_TEAM: TeamMember[] = [
     id: 'm14', 
     name: 'Angel Sini S A', 
     role: 'Design Lead', 
-    imageUrl: './Snapchat-477616967.jpg',
+    imageUrl: 'https://image2url.com/images/1764601208784-d228336e-fe41-4f20-aa35-e10a17ddb90b.jpg',
     bio: 'Dynamic and motivated learner who enjoys exploring technology, creativity, and meaningful ideas. Recognized for excellent communication skills, quick learning ability, and adaptability in fast-changing environments. Seeking opportunities in applying technical knowledge to impactful projects and gain hands-on experience in a collaborative and growth-oriented environment', 
     year: 'pre final year, ADS',
     skills: ['Programming', 'Problem-Solving', 'Communication', 'Team work', 'Creativity', 'Leadership']

@@ -160,7 +160,7 @@ export const MOCK_TEAM: TeamMember[] = [
     name: 'Marcben James Samuel S', 
     role: 'Vice President', 
     bio: 'A driven learner who enjoys exploring technology, building ideas, and creating meaningful projects.\nI’m passionate about turning concepts into practical solutions through curiosity and consistent growth.\nWith focus and creativity, I aim to improve, innovate, and make a positive impact through my work.', 
-    imageUrl: './Marcben James Samuel S.jpg',
+    imageUrl: 'https://image2url.com/images/1764600491711-3ee3148f-9816-401b-9a86-bcb0c5c373a1.jpg',
     year: 'second year',
     skills: ['AI & Programming', 'Problem-Solving', 'Creativity', 'Quick Learning', 'Communication', 'Leadership']
   },
@@ -169,7 +169,7 @@ export const MOCK_TEAM: TeamMember[] = [
     name: 'Naveen Kumar A', 
     role: 'Co-Design Lead', 
     bio: 'Passionate about AI, Machine Learning, IoT, and Full Stack Development, I enjoy building practical and impactful tech solutions. I love exploring new technologies, solving real-world problems, and creating intelligent systems through hands-on projects.\nskills Full Stack Development • Design Thinking • Programming • Creativity • Data Science', 
-    imageUrl: './Naveen Kumar A.jpg',
+    imageUrl: 'https://image2url.com/images/1764600689321-471ddb61-00a-4b12-92d7-b9a555c44e9e.jpg',
     year: 'second year',
     skills: ['Full Stack Development', 'Design Thinking', 'Programming', 'Creativity', 'Data Science']
   },

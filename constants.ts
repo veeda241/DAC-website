@@ -61,7 +61,7 @@ export const MOCK_TEAM: TeamMember[] = [
     name: 'Kiruthik kumar J', 
     role: 'Founder', 
     bio: 'A motivated learner who enjoys exploring technology, teamwork, and innovative ideas. With a strong interest in data analytics, AI-driven solutions, and team management, I’m passionate about turning insights into impactful outcomes. Driven by curiosity and continuous learning, I strive to grow, collaborate, and contribute meaningfully through every project I take on.', 
-    imageUrl: './WhatsApp Image 2025-11-30 at 10.22.01_14d03351.jpg',
+    imageUrl: 'https://image2url.com/images/1764601375256-ffedabce-e9bd-4ce4-b585-c90aa194f09a.jpg',
     year: 'final year, ADS',
     skills: ['Data Analytics', 'Team Management', 'Problem-Solving', 'Programming', 'Communication', 'Leadership', 'Creativity', 'Critical Thinking']
   },

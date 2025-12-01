@@ -151,7 +151,7 @@ export const MOCK_TEAM: TeamMember[] = [
     name: 'Vyas S', 
     role: 'Event Coordinator', 
     bio: 'an AI/ML student, React Developer, Backend Developer, and SLM Model Developer with a strong passion for building intelligent, scalable solutions. My hands‑on experience includes developing innovative AI projects such projects as Nova AI and Aerorover, while also architecting full‑stack applications that combine dynamic front‑end experiences with robust backend systems. Beyond technical development, I thrive as a community leader in CodeHackPirates, where I engage peers, organize campus activities, and promote AI adoption. My work spans building interactive AI assistants with Hugging Face, Gradio, and Python, designing responsive interfaces with React, and implementing backend services that ensure reliability and performance. Driven by curiosity and collaboration, I aim to bridge creativity with engineering—developing language models, applications, and community initiatives that inspire innovation and make a lasting impact.', 
-    imageUrl: './WhatsApp Image 2025-12-01 at 07.23.50_ae974cac.jpg',
+    imageUrl: 'https://image2url.com/images/1764602138898-55d117ef-deb9-486c-96fa-6c377d90d5df.jpg',
     year: 'second year ADS',
     skills: ['AI/ML Development', 'SLM (Small Language Model) Development', 'React Development', 'Backend Development', 'Full‑Stack Application Design', 'Interactive AI Assistants (Hugging Face, Gradio, Python)', 'Community Leadership']
   },

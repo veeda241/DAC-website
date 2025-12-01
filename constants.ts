@@ -212,6 +212,6 @@ export const MOCK_REPORTS: ClubReport[] = [
   }
 ];
 
-export const LOGO_URL = './Data analytics Club.png';
+export const LOGO_URL = 'https://image2url.com/images/1764599986332-d2fc7639-c2aa-4aa5-9e27-3cd6f510e03c.png';
 export const MASCOT_URL = 'https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Animals/Owl.png';
     

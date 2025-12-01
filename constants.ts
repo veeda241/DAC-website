@@ -7,89 +7,13 @@ export const MOCK_USERS: User[] = [
     name: 'Vyas Admin', 
     email: 'vyas.sk17@gmail.com', 
     role: UserRole.ADMIN, 
-    avatar: 'https://i.pravatar.cc/150?u=99' 
+    avatar: 'https://placehold.co/150/000000/FFFFFF/png?text=Admin' 
   },
-  { id: '1', name: 'Alice Johnson', email: 'alice@datanexus.com', role: UserRole.ADMIN, avatar: 'https://i.pravatar.cc/150?u=1' },
-  { id: '2', name: 'Bob Smith', email: 'bob@datanexus.com', role: UserRole.MEMBER, avatar: 'https://i.pravatar.cc/150?u=2' },
-  { id: '3', name: 'Charlie Davis', email: 'charlie@datanexus.com', role: UserRole.MEMBER, avatar: 'https://i.pravatar.cc/150?u=3' },
-  { id: '4', name: 'Dana Lee', email: 'dana@datanexus.com', role: UserRole.MEMBER, avatar: 'https://i.pravatar.cc/150?u=4' },
 ];
 
-export const MOCK_EVENTS: ClubEvent[] = [
-  // Upcoming (2025 dates)
-  {
-    id: 'e1',
-    title: 'Future of AI Summit 2025',
-    date: '2025-06-15',
-    description: 'Annual gathering of data enthusiasts to discuss the latest trends in Generative AI and LLMs.',
-    location: 'Main Auditorium',
-    imageUrl: 'https://picsum.photos/id/4/800/400'
-  },
-  {
-    id: 'e2',
-    title: 'Advanced Python Workshop',
-    date: '2025-07-22',
-    description: 'Deep dive into PyTorch and TensorFlow for building neural networks.',
-    location: 'Lab 304',
-    imageUrl: 'https://picsum.photos/id/20/800/400'
-  },
-  // Past (2023 dates)
-  {
-    id: 'e3',
-    title: 'Data Visualization Hackathon 2023',
-    date: '2023-11-10',
-    description: 'Our biggest hackathon yet where students visualized climate change data.',
-    location: 'Innovation Hub',
-    imageUrl: 'https://picsum.photos/id/60/800/400'
-  },
-  {
-    id: 'e4',
-    title: 'Intro to SQL Bootcamp',
-    date: '2023-09-05',
-    description: 'A weekend crash course getting 50+ students certified in SQL basics.',
-    location: 'Virtual',
-    imageUrl: 'https://picsum.photos/id/180/800/400'
-  }
-];
+export const MOCK_EVENTS: ClubEvent[] = [];
 
-export const MOCK_TASKS: Task[] = [
-  {
-    id: 't1',
-    eventId: 'e1',
-    title: 'Design Marketing Flyers',
-    description: 'Create social media assets and physical flyers for the summit.',
-    assigneeId: '2',
-    status: TaskStatus.COMPLETED,
-    deadline: '2025-06-01'
-  },
-  {
-    id: 't2',
-    eventId: 'e1',
-    title: 'Guest Speaker Coordination',
-    description: 'Confirm travel arrangements for keynote speakers.',
-    assigneeId: 'admin_vyas',
-    status: TaskStatus.IN_PROGRESS,
-    deadline: '2025-06-10'
-  },
-  {
-    id: 't3',
-    eventId: 'e2',
-    title: 'Prepare Workshop Datasets',
-    description: 'Clean and package the housing prices dataset for the workshop.',
-    assigneeId: '3',
-    status: TaskStatus.PENDING,
-    deadline: '2025-06-20'
-  },
-  {
-    id: 't4',
-    eventId: 'e3',
-    title: 'Secure Sponsorships',
-    description: 'Contact tech companies for prize sponsorships.',
-    assigneeId: null,
-    status: TaskStatus.PENDING,
-    deadline: '2025-07-01'
-  }
-];
+export const MOCK_TASKS: Task[] = [];
 
 export const MOCK_MENTORS: TeamMember[] = [
   {
@@ -97,7 +21,7 @@ export const MOCK_MENTORS: TeamMember[] = [
     name: 'Dr. L. Sherly Annabel',
     role: 'Head Of the Department',
     bio: 'PhD in Machine Learning with over 10 years of experience in AI research. Leading the department with a vision for innovation and academic excellence.',
-    imageUrl: 'https://i.pravatar.cc/150?u=45',
+    imageUrl: './WhatsApp Image 2025-09-16 at 14.11.03_d9342d70.jpg',
     year: 'Department Head',
     skills: ['Machine Learning', 'AI Research', 'Academic Leadership', 'Deep Learning']
   },
@@ -106,7 +30,7 @@ export const MOCK_MENTORS: TeamMember[] = [
     name: 'Mrs. Arunmozhi B',
     role: 'Faculty Advisor',
     bio: 'Specialist in Machine Learning and AI research. Dedicated to mentoring students and bridging the gap between theory and application.',
-    imageUrl: 'https://i.pravatar.cc/150?u=47',
+    imageUrl: 'https://placehold.co/150/000000/FFFFFF/png?text=Faculty',
     year: 'Faculty Advisor',
     skills: ['Machine Learning', 'Research', 'Student Mentoring', 'AI Development']
   },
@@ -115,7 +39,7 @@ export const MOCK_MENTORS: TeamMember[] = [
     name: 'Mr. Eneeyan Nanmaran',
     role: 'Industrial Expert',
     bio: 'Corporate Trainer & Expert in BI/Data Analytics. Skilled in SQL, Python, ML, & Power BI. Successfully cracked 23+ offers in the analytics domain.',
-    imageUrl: '/eneeyan.png', 
+    imageUrl: './Eneyaan.png', 
     year: 'Corporate Trainer',
     skills: ['SQL', 'Python', 'Power BI', 'Machine Learning', 'Career Coaching']
   }
@@ -124,57 +48,130 @@ export const MOCK_MENTORS: TeamMember[] = [
 export const MOCK_TEAM: TeamMember[] = [
   { 
     id: 'm1', 
-    name: 'Sarah Connor', 
+    name: 'Syed Aejaz Ahmed A', 
     role: 'President', 
-    bio: 'Passionate about bridging the gap between academia and industry in AI. Leading the club to new heights with a focus on collaborative projects.', 
-    imageUrl: 'https://i.pravatar.cc/150?u=20',
-    year: 'Final Year, CS',
-    skills: ['Leadership', 'Python', 'Machine Learning', 'Public Speaking']
+    bio: 'An aspiring Data Scientist with expertise in Machine Learning, Data Analytics, Deep Learning, and Generative Transformers. Passionate about solving complex challenges through data-driven solutions, I specialize in Explainable AI with Deep Learning, Generative AI, and building intelligent systems that bridge the gap between cutting-edge technology and real-world applications.', 
+    imageUrl: './WhatsApp Image 2025-11-30 at 18.55.16_79a39fa1.jpg',
+    year: 'Pre final year, ADS',
+    skills: ['Leadership', 'Python', 'Machine Learning', 'Public Speaking', 'Retrieval-Augmented Generation (RAG)', 'AI Agents & LLM Evaluation', 'ETL & Data Pipelines', 'Machine Learning Interpretability', 'Explainable AI with CAM and CRP']
+  },
+
+  { 
+    id: 'm7', 
+    name: 'Kiruthik kumar J', 
+    role: 'Founder', 
+    bio: 'A motivated learner who enjoys exploring technology, teamwork, and innovative ideas. With a strong interest in data analytics, AI-driven solutions, and team management, I’m passionate about turning insights into impactful outcomes. Driven by curiosity and continuous learning, I strive to grow, collaborate, and contribute meaningfully through every project I take on.', 
+    imageUrl: './WhatsApp Image 2025-11-30 at 10.22.01_14d03351.jpg',
+    year: 'final year, ADS',
+    skills: ['Data Analytics', 'Team Management', 'Problem-Solving', 'Programming', 'Communication', 'Leadership', 'Creativity', 'Critical Thinking']
   },
   { 
-    id: 'm2', 
-    name: 'John Reese', 
-    role: 'VP of Tech', 
-    bio: 'AI Researcher with a focus on Computer Vision. organized 10+ workshops and hackathons.', 
-    imageUrl: 'https://i.pravatar.cc/150?u=30',
-    year: '3rd Year, AI & DS',
-    skills: ['TensorFlow', 'PyTorch', 'Computer Vision', 'Docker']
-  },
-  { 
-    id: 'm3', 
-    name: 'Harold Finch', 
-    role: 'Treasurer', 
-    bio: 'Handling finances and logistics. Ensuring every event runs smoothly and under budget.', 
-    imageUrl: 'https://i.pravatar.cc/150?u=40',
-    year: '3rd Year, IT',
-    skills: ['Financial Planning', 'Excel', 'SQL', 'Data Analytics']
-  },
-  { 
-    id: 'm4', 
-    name: 'Sameen Shaw', 
-    role: 'Event Coordinator', 
-    bio: 'Master of logistics and execution. If there is an event, Shaw makes it happen flawlessly.', 
-    imageUrl: 'https://i.pravatar.cc/150?u=50',
-    year: '2nd Year, AI & DS',
-    skills: ['Event Management', 'Communication', 'Agile', 'Logistics']
-  },
-  { 
-    id: 'm5', 
-    name: 'Lionel Fusco', 
+    id: 'm8', 
+    name: 'NOWRIN BEGUM', 
     role: 'Technical Lead', 
-    bio: 'Full stack developer turned data enthusiast. Mentoring juniors in web scraping and data pipeline building.', 
-    imageUrl: 'https://i.pravatar.cc/150?u=60',
-    year: '3rd Year, CS',
-    skills: ['React', 'Node.js', 'Web Scraping', 'Pandas']
+    bio: 'an enthusiastic learner in Data Science and AI. I work on exploring datasets to uncover patterns, trends, and meaningful insights. My learning domain includes data analytics, machine learning, AI applications, and real-world problem solving.I am building strong skills in Python, R, SQL, Excel, KNIME, Power BI, Tableau, Gen AI, and data visualization.I look forward to collaborating, contributing, and growing within our Data Analytics Club.', 
+    imageUrl: './WhatsApp Image 2025-11-30 at 20.04.55_a64f3723.jpg',
+    year: 'pre final year, ADS',
+    skills: ['Python', 'R', 'SQL', 'Excel', 'KNIME', 'Power BI', 'Tableau', 'Gen AI', 'data visualization']
   },
   { 
-    id: 'm6', 
-    name: 'Root', 
-    role: 'Outreach Lead', 
-    bio: 'Connecting the club with external sponsors and industry experts.', 
-    imageUrl: 'https://i.pravatar.cc/150?u=70',
-    year: '2nd Year, CS',
-    skills: ['Networking', 'Marketing', 'Social Media', 'Content Creation']
+    id: 'm9', 
+    name: 'Dinesh kalangiyam p', 
+    role: 'social media', 
+    bio: 'passionate explorer who thrives on uncovering new tech, sparking creativity, and diving into ideas that matter. I’m driven to turn visions into tangible solutions through innovation and relentless learning. With curiosity and grit, I aim to evolve, create, and leave a mark through my journey', 
+    imageUrl: './WhatsApp Image 2025-11-30 at 20.33.27_ca809943.jpg',
+    year: 'second year, ADS',
+    skills: ['Tech Exploration', 'Creative Problem-Solving', 'Collaborative Communication', 'Rapid Learning', 'Critical Thinking', 'Idea Prototyping']
+  },
+  { 
+    id: 'm10', 
+    name: 'Gavin N Benedict', 
+    role: 'social media', 
+    bio: 'I am an AI and Data Science student driven by a passion for data‑driven storytelling. Within the Data Science Club’s Social Media Department, I manage content creation, videography, photography, and editing. I enjoy blending creativity with analytics to craft narratives that inspire and engage our community. From documenting events to designing digital campaigns, I aim to make complex ideas accessible and visually appealing.', 
+    imageUrl: './WhatsApp Image 2025-11-30 at 21.15.55_d739fa9b.jpg',
+    year: 'second year, ADS',
+    skills: ['Data‑Driven Storytelling', 'Content Creation', 'Videography', 'Photography', 'Video Editing', 'Photo Editing', 'Social Media Management', 'Creative Branding', 'Analytics Integration', 'Community Engagement']
+  },
+  { 
+    id: 'm11', 
+    name: 'Bhavadarshini R G', 
+    role: 'outreach coordinator', 
+    bio: 'A confident learner who takes chances, leads when needed, and tackles challenges with clarity. I balance multiple priorities ,from technical work to teamwork — while staying focused on what’s right.With focus and determination, I balance technical thinking with people-first leadership,I strive to grow constantly, contribute meaningfully, and bring honesty and effort into everything I do.', 
+    imageUrl: './WhatsApp Image 2025-11-30 at 19.17.14_cce190e1.jpg',
+    year: 'pre final year, ADS',
+    skills: ['Leadership', 'Communication', 'Problem-Solving', 'Adaptability', 'Creativity', 'Critical Thinking']
+  },
+  { 
+    id: 'm12', 
+    name: 'Srivardhni Palaniappan', 
+    role: 'Script Writer', 
+    bio: 'An AI & Data Science student who is passionate in Python, cybersecurity, and 3D modelling. Active campus host and podcast interviewer, engaged in tech communities, CTFs, and FOSS meetups. Driven by curiosity across gaming, literature, and creative digital design. With drive and adaptability, I continue to grow, contribute, and make an impact across every space I step into.', 
+    imageUrl: './WhatsApp Image 2025-11-30 at 20.31.13_f5f3ea7d.jpg',
+    year: 'second year, ADS',
+    skills: ['Python Programming', 'Cybersecurity Fundamentals', '3D Modelling (Blender)', 'Creative Design (Logos, Visuals)', 'Communication & Hosting']
+  },
+  { 
+    id: 'm13', 
+    name: 'Krissal K V', 
+    role: 'Dataset Manager', 
+    bio: 'I’m deeply passionate about data science and analytics, driven by a strong desire to learn, innovate, and create solutions that deliver real value. I thrive on exploring new ideas, transforming insights into meaningful outcomes, and continuously elevating my skills to achieve excellence in everything I pursue.', 
+    imageUrl: './WhatsApp Image 2025-11-30 at 19.02.16_226eb778.jpg',
+    year: 'second year, ADS',
+    skills: ['Programming', 'Problem-Solving', 'Communication', 'Creativity', 'Leadership', 'Critical Thinking']
+  },
+  { 
+    id: 'm14', 
+    name: 'Angel Sini S A', 
+    role: 'Design Lead', 
+    imageUrl: './Snapchat-477616967.jpg',
+    bio: 'Dynamic and motivated learner who enjoys exploring technology, creativity, and meaningful ideas. Recognized for excellent communication skills, quick learning ability, and adaptability in fast-changing environments. Seeking opportunities in applying technical knowledge to impactful projects and gain hands-on experience in a collaborative and growth-oriented environment', 
+    year: 'pre final year, ADS',
+    skills: ['Programming', 'Problem-Solving', 'Communication', 'Team work', 'Creativity', 'Leadership']
+  },
+  { 
+    id: 'm15', 
+    name: 'Sri Sudharsanan K', 
+    role: 'Dataset Manager', 
+    bio: 'I’m a grounded, curious learner who enjoys exploring creative tech ideas and meaningful conversations while staying calm and sharp in how I think. I love taking on challenges in AI and data, balancing structured technical work with open-ended exploration to build practical, scalable solutions that matter. As a quick learner and collaborative teammate, I focus on understanding things deeply and creating projects with real purpose.', 
+    imageUrl: './WhatsApp Image 2025-11-30 at 12.16.19_c6973493.jpg',
+    year: 'second year, ADS',
+    skills: ['AI & NLP', 'Data Analysis', 'Python', 'Problem Solving', 'Creativity & Ideation', 'Team Collaboration', 'Fast Learning']
+  },
+  { 
+    id: 'm16', 
+    name: 'SHYLESH S', 
+    role: 'Script Writer', 
+    bio: 'An AI & Data Science enthusiast with a strong drive to explore emerging technology, creativity, and impactful innovation. Dedicated to transforming ideas into real solutions through continuous learning, hands-on building, and purposeful exploration. With curiosity, discipline, and determination, I aim to grow, innovate, and contribute meaningfully to the world through my work.', 
+    imageUrl: './shyleshinbluecoat.jpg',
+    year: 'second year, ADS',
+    skills: ['Artificial Intelligence & Machine Learning', 'Programming (Python, Java, etc.)', 'Data Science & Automation', 'UI/UX Fundamentals', 'Problem-Solving & Critical Thinking', 'Leadership', 'Communication', 'Creativity']
+  },
+  { 
+    id: 'm17', 
+    name: 'Vyas S', 
+    role: 'Event Coordinator', 
+    bio: 'an AI/ML student, React Developer, Backend Developer, and SLM Model Developer with a strong passion for building intelligent, scalable solutions. My hands‑on experience includes developing innovative AI projects such projects as Nova AI and Aerorover, while also architecting full‑stack applications that combine dynamic front‑end experiences with robust backend systems. Beyond technical development, I thrive as a community leader in CodeHackPirates, where I engage peers, organize campus activities, and promote AI adoption. My work spans building interactive AI assistants with Hugging Face, Gradio, and Python, designing responsive interfaces with React, and implementing backend services that ensure reliability and performance. Driven by curiosity and collaboration, I aim to bridge creativity with engineering—developing language models, applications, and community initiatives that inspire innovation and make a lasting impact.', 
+    imageUrl: './WhatsApp Image 2025-12-01 at 07.23.50_ae974cac.jpg',
+    year: 'second year ADS',
+    skills: ['AI/ML Development', 'SLM (Small Language Model) Development', 'React Development', 'Backend Development', 'Full‑Stack Application Design', 'Interactive AI Assistants (Hugging Face, Gradio, Python)', 'Community Leadership']
+  },
+  { 
+    id: 'm18', 
+    name: 'Marcben James Samuel S', 
+    role: 'Vice President', 
+    bio: 'A driven learner who enjoys exploring technology, building ideas, and creating meaningful projects.\nI’m passionate about turning concepts into practical solutions through curiosity and consistent growth.\nWith focus and creativity, I aim to improve, innovate, and make a positive impact through my work.', 
+    imageUrl: './Marcben James Samuel S.jpg',
+    year: 'second year',
+    skills: ['AI & Programming', 'Problem-Solving', 'Creativity', 'Quick Learning', 'Communication', 'Leadership']
+  },
+  { 
+    id: 'm19', 
+    name: 'Naveen Kumar A', 
+    role: 'Co-Design Lead', 
+    bio: 'Passionate about AI, Machine Learning, IoT, and Full Stack Development, I enjoy building practical and impactful tech solutions. I love exploring new technologies, solving real-world problems, and creating intelligent systems through hands-on projects.\nskills Full Stack Development • Design Thinking • Programming • Creativity • Data Science', 
+    imageUrl: './Naveen Kumar A.jpg',
+    year: 'second year',
+    skills: ['Full Stack Development', 'Design Thinking', 'Programming', 'Creativity', 'Data Science']
   },
 ];
 
@@ -206,6 +203,6 @@ export const MOCK_REPORTS: ClubReport[] = [
   }
 ];
 
-export const LOGO_URL = '/logo.png';
+export const LOGO_URL = './Data analytics Club.png';
 export const MASCOT_URL = 'https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Animals/Owl.png';
     

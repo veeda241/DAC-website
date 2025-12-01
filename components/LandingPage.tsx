@@ -59,7 +59,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ events, reports, photos, onLo
         />
       </div>
       <h3 className="text-xl font-bold text-white">{member.name}</h3>
-      <p className="text-indigo-400 font-medium text-sm mb-2">{member.role}</p>
+      <p className="text-indigo-400 font-bold text-sm mb-2">{member.role}</p>
       <span className="text-xs text-slate-500 px-3 py-1 bg-slate-800 rounded-full">{member.year}</span>
       
       <div className="absolute inset-0 bg-indigo-600/90 flex flex-col items-center justify-center p-6 opacity-0 group-hover:opacity-100 transition-opacity duration-300 backdrop-blur-sm">
@@ -364,7 +364,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ events, reports, photos, onLo
                      <div className="md:w-3/5 p-8 flex flex-col justify-center">
                         <div className="mb-6">
                            <h2 className="text-3xl font-bold text-white mb-1">{selectedMember.name}</h2>
-                           <p className="text-indigo-400 text-lg font-medium">{selectedMember.role}</p>
+                           <p className="text-indigo-400 text-lg font-bold">{selectedMember.role}</p>
                            <p className="text-slate-500 text-sm flex items-center gap-2 mt-2">
                              <GraduationCap className="w-4 h-4"/> {selectedMember.year}
                            </p>

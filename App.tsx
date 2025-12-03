@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import LandingPage from './components/LandingPage';
 import Dashboard from './components/Dashboard';
 import Auth from './components/Auth';
@@ -13,7 +13,18 @@ const App: React.FC = () => {
   // Data State (Lifted up so it persists between views)
   const [events, setEvents] = useState<ClubEvent[]>(MOCK_EVENTS);
   const [tasks, setTasks] = useState<Task[]>(MOCK_TASKS);
-  const [users, setUsers] = useState<User[]>(MOCK_USERS);
+  
+  // Initialize users from localStorage if available, otherwise use MOCK_USERS
+  const [users, setUsers] = useState<User[]>(() => {
+    const saved = localStorage.getItem('dac_users');
+    return saved ? JSON.parse(saved) : MOCK_USERS;
+  });
+
+  // Persist users to localStorage whenever they change
+  useEffect(() => {
+    localStorage.setItem('dac_users', JSON.stringify(users));
+  }, [users]);
+
   const [reports, setReports] = useState<ClubReport[]>(MOCK_REPORTS);
   const [photos, setPhotos] = useState<Photo[]>(MOCK_PHOTOS);
   

@@ -24,20 +24,14 @@ const Auth: React.FC<AuthProps> = ({ users, onLogin, onRegister, onCancel }) => 
     if (isSignUp) {
       // --- SIGN UP LOGIC ---
       
-      // 1. Prevent Admin Registration
-      if (email.toLowerCase() === 'vyas.sk17@gmail.com') {
-        setError('This email is reserved. You cannot register as Administrator.');
-        return;
-      }
-
-      // 2. Check if user already exists
+      // 1. Check if user already exists
       const existingUser = users.find(u => u.email.toLowerCase() === email.toLowerCase());
       if (existingUser) {
         setError('User already exists. Please login.');
         return;
       }
 
-      // 3. Register valid normal user
+      // 2. Register valid user
       if (name.trim() && email.trim() && password.trim()) {
         onRegister(name, email);
       } else {
@@ -47,29 +41,19 @@ const Auth: React.FC<AuthProps> = ({ users, onLogin, onRegister, onCancel }) => 
     } else {
       // --- LOGIN LOGIC ---
 
-      // 1. Specific Admin Check
-      if (email === 'vyas.sk17@gmail.com') {
-        if (password === 'admin123') {
-          const adminUser = users.find(u => u.email === 'vyas.sk17@gmail.com');
-          if (adminUser) {
-            onLogin(adminUser);
-          } else {
-            setError('System Error: Admin account not found in database.');
-          }
-          return;
-        } else {
-          setError('Invalid credentials for Administrator.');
-          return;
-        }
-      }
-
-      // 2. Normal User Check
       const foundUser = users.find(u => u.email.toLowerCase() === email.toLowerCase());
       if (foundUser) {
         // In a real app, we would hash and check password. 
         // For this demo, we accept the login if the user exists and password field is not empty.
+        // Special check for the initial admin account purely for simulation if desired, 
+        // but now we rely on the database role.
         if (password.trim().length > 0) {
-          onLogin(foundUser);
+           // Simple check to ensure the admin knows their password if it's the admin account
+           if (foundUser.email === 'vyas.sk17@gmail.com' && password !== 'admin123') {
+             setError('Invalid credentials.');
+             return;
+           }
+           onLogin(foundUser);
         } else {
           setError('Please enter your password.');
         }

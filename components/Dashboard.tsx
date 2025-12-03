@@ -103,6 +103,8 @@ const Dashboard: React.FC<DashboardProps> = ({
     UserRole.EVENT_COORDINATOR,
     UserRole.TECHNICAL_LEAD,
     UserRole.CONTENT_WRITER,
+    UserRole.SOCIAL_MEDIA_LEAD,
+    UserRole.DESIGNING_TEAM,
     UserRole.DATASET_MANAGER
   ].includes(user.role);
 
@@ -183,8 +185,11 @@ const Dashboard: React.FC<DashboardProps> = ({
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      // In a real app, upload to S3 here. For now, we simulate success.
-      setReportFile('#download-simulated'); 
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setReportFile(reader.result as string);
+      };
+      reader.readAsDataURL(file);
     }
   };
 
@@ -660,7 +665,7 @@ const Dashboard: React.FC<DashboardProps> = ({
                            </div>
                            
                            <div className="flex items-center gap-2">
-                              <a href={report.fileUrl} download className="p-2 text-slate-400 hover:text-indigo-400 hover:bg-indigo-500/10 rounded-lg transition-colors" title="Download">
+                              <a href={report.fileUrl} download={`${report.title}.pdf`} className="p-2 text-slate-400 hover:text-indigo-400 hover:bg-indigo-500/10 rounded-lg transition-colors" title="Download">
                                 <Download className="w-4 h-4" />
                               </a>
                               {canManageContent && (
@@ -811,6 +816,7 @@ const Dashboard: React.FC<DashboardProps> = ({
                                     <option value={UserRole.TECHNICAL_LEAD}>Technical Lead</option>
                                     <option value={UserRole.CONTENT_WRITER}>Content Writer</option>
                                     <option value={UserRole.SOCIAL_MEDIA_LEAD}>Social Media Lead</option>
+                                    <option value={UserRole.DESIGNING_TEAM}>Designing Team</option>
                                     <option value={UserRole.DATASET_MANAGER}>Dataset Manager</option>
                                   </select>
                                   <ChevronDown className="absolute right-2 top-1/2 -translate-y-1/2 w-3 h-3 text-slate-500 pointer-events-none" />

@@ -110,7 +110,13 @@ export const fetchReports = async (): Promise<ClubReport[]> => {
 };
 
 export const createReport = async (report: Omit<ClubReport, 'id'>): Promise<ClubReport | null> => {
-  if (!supabase) return null;
+  if (!supabase) {
+    console.warn("Supabase not connected. Returning mock report.");
+    return {
+      id: `report-${Date.now()}`,
+      ...report
+    };
+  }
   const { data, error } = await supabase
     .from('reports')
     .insert([report])

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { supabase } from './services/supabaseService';
 import LandingPage from './components/LandingPage';
 import Dashboard from './components/Dashboard';
 import Auth from './components/Auth';
@@ -14,16 +15,8 @@ const App: React.FC = () => {
   const [events, setEvents] = useState<ClubEvent[]>(MOCK_EVENTS);
   const [tasks, setTasks] = useState<Task[]>(MOCK_TASKS);
   
-  // Initialize users from localStorage if available, otherwise use MOCK_USERS
-  const [users, setUsers] = useState<User[]>(() => {
-    const saved = localStorage.getItem('dac_users');
-    return saved ? JSON.parse(saved) : MOCK_USERS;
-  });
-
-  // Persist users to localStorage whenever they change
-  useEffect(() => {
-    localStorage.setItem('dac_users', JSON.stringify(users));
-  }, [users]);
+  // State for users, initially empty or MOCK_USERS until fetched from Supabase
+  const [users, setUsers] = useState<User[]>(MOCK_USERS); // Use MOCK_USERS as fallback/initial while loading
 
   const [reports, setReports] = useState<ClubReport[]>(MOCK_REPORTS);
   const [photos, setPhotos] = useState<Photo[]>(MOCK_PHOTOS);
@@ -32,25 +25,63 @@ const App: React.FC = () => {
   const [activityLog, setActivityLog] = useState<ActivityLog[]>([]);
   const [notifications, setNotifications] = useState<Notification[]>([]);
 
+  // Fetch users from Supabase on component mount
+  useEffect(() => {
+    const fetchUsers = async () => {
+      const { data, error } = await supabase
+        .from('users') // Assuming 'users' is the table name
+        .select('*');
+
+      if (error) {
+        console.error('Error fetching users:', error);
+        // Fallback to MOCK_USERS if Supabase fetch fails
+        setUsers(MOCK_USERS);
+      } else if (data) {
+        setUsers(data as User[]);
+      } else {
+        // If no data and no error, means table is empty, use MOCK_USERS
+        setUsers(MOCK_USERS);
+      }
+    };
+
+    fetchUsers();
+  }, []); // Empty dependency array means this runs once on mount
+
   const handleLogin = (user: User) => {
     setCurrentUser(user);
     setShowAuthModal(false);
     addNotification(`Welcome back, ${user.name}!`, 'success');
   };
 
-  const handleRegister = (name: string, email: string) => {
+  const handleRegister = async (name: string, email: string) => {
     const newUser: User = {
-      id: `user-${Date.now()}`,
+      id: `user-${Date.now()}`, // Supabase can generate UUIDs, but we'll keep this for now.
       name,
       email,
       role: UserRole.MEMBER, // Default to Member
       avatar: `https://i.pravatar.cc/150?u=${Date.now()}`
     };
-    setUsers(prev => [...prev, newUser]);
-    setCurrentUser(newUser);
-    setShowAuthModal(false);
-    addNotification(`Welcome to Data Analytics Club, ${name}!`, 'success');
-    addActivity('New Member Joined', `${name} joined the club.`);
+
+    // Insert into Supabase
+    const { data, error } = await supabase
+      .from('users') // Assuming 'users' table
+      .insert([newUser])
+      .select(); // Select the inserted data to get any generated fields (like default IDs)
+
+    if (error) {
+      console.error('Error registering user:', error);
+      addNotification('Failed to register user.', 'error');
+      return;
+    }
+
+    if (data && data.length > 0) {
+      const registeredUser = data[0] as User;
+      setUsers(prev => [...prev, registeredUser]);
+      setCurrentUser(registeredUser);
+      setShowAuthModal(false);
+      addNotification(`Welcome to Data Analytics Club, ${name}!`, 'success');
+      addActivity('New Member Joined', `${name} joined the club.`);
+    }
   };
 
   const handleLogout = () => {
@@ -58,7 +89,19 @@ const App: React.FC = () => {
     setNotifications([]); // Clear specific session notifications
   };
 
-  const handleUpdateUser = (updatedUser: User) => {
+  const handleUpdateUser = async (updatedUser: User) => {
+    // Update in Supabase
+    const { error } = await supabase
+      .from('users')
+      .update(updatedUser)
+      .eq('id', updatedUser.id);
+
+    if (error) {
+      console.error('Error updating user:', error);
+      addNotification('Failed to update user.', 'error');
+      return;
+    }
+
     // If the currently logged in user is updating themselves, update current session
     if (currentUser && currentUser.id === updatedUser.id) {
         setCurrentUser(updatedUser);
@@ -70,14 +113,29 @@ const App: React.FC = () => {
     if (currentUser && currentUser.id === updatedUser.id) {
       addNotification('Profile updated successfully', 'success');
       addActivity('Updated Profile', 'Changed account details');
+    } else {
+        // If an admin updated someone else's role, notify admin
+        addNotification(`User ${updatedUser.name}'s profile updated.`, 'info');
     }
   };
 
-  const handleDeleteUser = (userId: string) => {
-      setUsers(prev => prev.filter(u => u.id !== userId));
-      // Also unassign their tasks
-      setTasks(prev => prev.map(t => t.assigneeId === userId ? { ...t, assigneeId: null } : t));
-      addNotification('User removed and tasks unassigned', 'info');
+  const handleDeleteUser = async (userId: string) => {
+    // Delete from Supabase
+    const { error } = await supabase
+      .from('users')
+      .delete()
+      .eq('id', userId);
+
+    if (error) {
+      console.error('Error deleting user:', error);
+      addNotification('Failed to delete user.', 'error');
+      return;
+    }
+
+    setUsers(prev => prev.filter(u => u.id !== userId));
+    // Also unassign their tasks
+    setTasks(prev => prev.map(t => t.assigneeId === userId ? { ...t, assigneeId: null } : t));
+    addNotification('User removed and tasks unassigned', 'info');
   };
 
   const addActivity = (action: string, details?: string) => {

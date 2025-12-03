@@ -26,10 +26,12 @@ const App: React.FC = () => {
   useEffect(() => {
     const loadData = async () => {
       // Users
-      const { data: userData, error: userError } = await supabase
-        .from('users')
-        .select('*');
-      if (!userError && userData) setUsers(userData as User[]);
+      if (supabase) {
+        const { data: userData, error: userError } = await supabase
+          .from('users')
+          .select('*');
+        if (!userError && userData) setUsers(userData as User[]);
+      }
 
       // Events
       const eventsData = await fetchEvents();
@@ -58,6 +60,11 @@ const App: React.FC = () => {
   };
 
   const handleRegister = async (name: string, email: string) => {
+    if (!supabase) {
+        addNotification('Database connection missing.', 'error');
+        return;
+    }
+
     const newUser: User = {
       id: `user-${Date.now()}`, // Supabase can generate UUIDs, but we'll keep this for now.
       name,
@@ -93,6 +100,11 @@ const App: React.FC = () => {
   };
 
   const handleUpdateUser = async (updatedUser: User) => {
+    if (!supabase) {
+        addNotification('Database connection missing.', 'error');
+        return;
+    }
+    
     const { error } = await supabase
       .from('users')
       .update(updatedUser)
@@ -118,6 +130,11 @@ const App: React.FC = () => {
   };
 
   const handleDeleteUser = async (userId: string) => {
+    if (!supabase) {
+        addNotification('Database connection missing.', 'error');
+        return;
+    }
+
     const { error } = await supabase
       .from('users')
       .delete()
@@ -221,6 +238,7 @@ const App: React.FC = () => {
   };
 
   const handleDeleteEvent = async (eventId: string) => {
+    if (!supabase) return;
     // In a real app, delete from Supabase
     const { error } = await supabase.from('events').delete().eq('id', eventId);
     if (error) {
@@ -232,6 +250,7 @@ const App: React.FC = () => {
   };
 
   const handleDeleteTask = async (taskId: string) => {
+     if (!supabase) return;
      // In a real app, delete from Supabase
      const { error } = await supabase.from('tasks').delete().eq('id', taskId);
      if (error) {

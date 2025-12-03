@@ -102,7 +102,8 @@ const Dashboard: React.FC<DashboardProps> = ({
     UserRole.VICE_PRESIDENT, 
     UserRole.EVENT_COORDINATOR,
     UserRole.TECHNICAL_LEAD,
-    UserRole.CONTENT_WRITER
+    UserRole.CONTENT_WRITER,
+    UserRole.DATASET_MANAGER
   ].includes(user.role);
 
   // --- Handlers ---
@@ -810,6 +811,7 @@ const Dashboard: React.FC<DashboardProps> = ({
                                     <option value={UserRole.TECHNICAL_LEAD}>Technical Lead</option>
                                     <option value={UserRole.CONTENT_WRITER}>Content Writer</option>
                                     <option value={UserRole.SOCIAL_MEDIA_LEAD}>Social Media Lead</option>
+                                    <option value={UserRole.DATASET_MANAGER}>Dataset Manager</option>
                                   </select>
                                   <ChevronDown className="absolute right-2 top-1/2 -translate-y-1/2 w-3 h-3 text-slate-500 pointer-events-none" />
                                 </div>

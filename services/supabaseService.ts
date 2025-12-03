@@ -1,4 +1,4 @@
-import { createClient } from '@supabase/supabase-js';
+import { createClient, SupabaseClient } from '@supabase/supabase-js';
 import { ClubEvent, Task, ClubReport, Photo } from '../types';
 
 // NOTE: You need to create a .env file with these variables
@@ -8,10 +8,19 @@ import { ClubEvent, Task, ClubReport, Photo } from '../types';
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
 
-export const supabase = createClient(supabaseUrl, supabaseAnonKey);
+let supabase: SupabaseClient | null = null;
+
+if (supabaseUrl && supabaseAnonKey) {
+  supabase = createClient(supabaseUrl, supabaseAnonKey);
+} else {
+  console.error('Supabase URL or Anon Key is missing. Please check your .env file.');
+}
+
+export { supabase };
 
 // Events
 export const fetchEvents = async (): Promise<ClubEvent[]> => {
+  if (!supabase) return [];
   const { data, error } = await supabase
     .from('events')
     .select('*')
@@ -25,6 +34,7 @@ export const fetchEvents = async (): Promise<ClubEvent[]> => {
 };
 
 export const createEvent = async (event: Omit<ClubEvent, 'id'>): Promise<ClubEvent | null> => {
+  if (!supabase) return null;
   const { data, error } = await supabase
     .from('events')
     .insert([event])
@@ -40,6 +50,7 @@ export const createEvent = async (event: Omit<ClubEvent, 'id'>): Promise<ClubEve
 
 // Tasks
 export const fetchTasks = async (): Promise<Task[]> => {
+  if (!supabase) return [];
   const { data, error } = await supabase
     .from('tasks')
     .select('*')
@@ -53,6 +64,7 @@ export const fetchTasks = async (): Promise<Task[]> => {
 };
 
 export const createTask = async (task: Omit<Task, 'id'>): Promise<Task | null> => {
+  if (!supabase) return null;
   const { data, error } = await supabase
     .from('tasks')
     .insert([task])
@@ -67,6 +79,7 @@ export const createTask = async (task: Omit<Task, 'id'>): Promise<Task | null> =
 };
 
 export const updateTaskStatus = async (taskId: string, status: string): Promise<Task | null> => {
+  if (!supabase) return null;
   const { data, error } = await supabase
     .from('tasks')
     .update({ status })
@@ -83,6 +96,7 @@ export const updateTaskStatus = async (taskId: string, status: string): Promise<
 
 // Reports
 export const fetchReports = async (): Promise<ClubReport[]> => {
+  if (!supabase) return [];
   const { data, error } = await supabase
     .from('reports')
     .select('*')
@@ -96,6 +110,7 @@ export const fetchReports = async (): Promise<ClubReport[]> => {
 };
 
 export const createReport = async (report: Omit<ClubReport, 'id'>): Promise<ClubReport | null> => {
+  if (!supabase) return null;
   const { data, error } = await supabase
     .from('reports')
     .insert([report])
@@ -111,6 +126,7 @@ export const createReport = async (report: Omit<ClubReport, 'id'>): Promise<Club
 
 // Photos
 export const fetchPhotos = async (): Promise<Photo[]> => {
+  if (!supabase) return [];
   const { data, error } = await supabase
     .from('photos')
     .select('*');
@@ -123,6 +139,7 @@ export const fetchPhotos = async (): Promise<Photo[]> => {
 };
 
 export const createPhoto = async (photo: Omit<Photo, 'id'>): Promise<Photo | null> => {
+  if (!supabase) return null;
   const { data, error } = await supabase
     .from('photos')
     .insert([photo])

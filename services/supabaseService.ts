@@ -1,6 +1,137 @@
 import { createClient } from '@supabase/supabase-js';
+import { ClubEvent, Task, ClubReport, Photo } from '../types';
 
-const supabaseUrl = `https://ffkmidestrmiwnjiixvy.supabase.co`;
-const supabaseAnonKey = `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZma21pZGVzdHJtaXduamlpeHZ5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQ2OTkwNDgsImV4cCI6MjA4MDI3NTA0OH0.znubXh4RAOFhFLhTMlLgjZMfPTBDms0CrEJbdZvt0m8`;
+// NOTE: You need to create a .env file with these variables
+// VITE_SUPABASE_URL=your_project_url
+// VITE_SUPABASE_ANON_KEY=your_anon_key
+
+const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
 
 export const supabase = createClient(supabaseUrl, supabaseAnonKey);
+
+// Events
+export const fetchEvents = async (): Promise<ClubEvent[]> => {
+  const { data, error } = await supabase
+    .from('events')
+    .select('*')
+    .order('date', { ascending: true });
+  
+  if (error) {
+    console.error('Error fetching events:', error);
+    return [];
+  }
+  return data || [];
+};
+
+export const createEvent = async (event: Omit<ClubEvent, 'id'>): Promise<ClubEvent | null> => {
+  const { data, error } = await supabase
+    .from('events')
+    .insert([event])
+    .select()
+    .single();
+
+  if (error) {
+    console.error('Error creating event:', error);
+    return null;
+  }
+  return data;
+};
+
+// Tasks
+export const fetchTasks = async (): Promise<Task[]> => {
+  const { data, error } = await supabase
+    .from('tasks')
+    .select('*')
+    .order('deadline', { ascending: true });
+
+  if (error) {
+    console.error('Error fetching tasks:', error);
+    return [];
+  }
+  return data || [];
+};
+
+export const createTask = async (task: Omit<Task, 'id'>): Promise<Task | null> => {
+  const { data, error } = await supabase
+    .from('tasks')
+    .insert([task])
+    .select()
+    .single();
+
+  if (error) {
+    console.error('Error creating task:', error);
+    return null;
+  }
+  return data;
+};
+
+export const updateTaskStatus = async (taskId: string, status: string): Promise<Task | null> => {
+  const { data, error } = await supabase
+    .from('tasks')
+    .update({ status })
+    .eq('id', taskId)
+    .select()
+    .single();
+
+  if (error) {
+    console.error('Error updating task status:', error);
+    return null;
+  }
+  return data;
+};
+
+// Reports
+export const fetchReports = async (): Promise<ClubReport[]> => {
+  const { data, error } = await supabase
+    .from('reports')
+    .select('*')
+    .order('date', { ascending: false });
+
+  if (error) {
+    console.error('Error fetching reports:', error);
+    return [];
+  }
+  return data || [];
+};
+
+export const createReport = async (report: Omit<ClubReport, 'id'>): Promise<ClubReport | null> => {
+  const { data, error } = await supabase
+    .from('reports')
+    .insert([report])
+    .select()
+    .single();
+
+  if (error) {
+    console.error('Error creating report:', error);
+    return null;
+  }
+  return data;
+};
+
+// Photos
+export const fetchPhotos = async (): Promise<Photo[]> => {
+  const { data, error } = await supabase
+    .from('photos')
+    .select('*');
+
+  if (error) {
+    console.error('Error fetching photos:', error);
+    return [];
+  }
+  return data || [];
+};
+
+export const createPhoto = async (photo: Omit<Photo, 'id'>): Promise<Photo | null> => {
+  const { data, error } = await supabase
+    .from('photos')
+    .insert([photo])
+    .select()
+    .single();
+
+  if (error) {
+    console.error('Error creating photo:', error);
+    return null;
+  }
+  return data;
+};

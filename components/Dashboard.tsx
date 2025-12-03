@@ -12,6 +12,16 @@ interface DashboardProps {
   tasks: Task[];
   reports: ClubReport[];
   photos: Photo[];
+  
+  // Create Handlers
+  onCreateEvent: (event: Omit<ClubEvent, 'id'>) => void;
+  onCreateTask: (task: Omit<Task, 'id'>) => void;
+  onCreateReport: (report: Omit<ClubReport, 'id'>) => void;
+  onCreatePhoto: (photo: Omit<Photo, 'id'>) => void;
+
+  // Update Handlers
+  onUpdateTaskStatus: (taskId: string, status: TaskStatus) => void;
+
   setEvents: React.Dispatch<React.SetStateAction<ClubEvent[]>>;
   setTasks: React.Dispatch<React.SetStateAction<Task[]>>;
   setReports: React.Dispatch<React.SetStateAction<ClubReport[]>>;
@@ -28,7 +38,9 @@ interface DashboardProps {
 }
 
 const Dashboard: React.FC<DashboardProps> = ({ 
-  user, users, events, tasks, reports, photos, setEvents, setTasks, setReports, setPhotos, onUpdateUser, onDeleteUser, onDeleteEvent, onDeleteTask, activityLog, addActivity, notifications, removeNotification, onLogout, 
+  user, users, events, tasks, reports, photos, 
+  onCreateEvent, onCreateTask, onCreateReport, onCreatePhoto, onUpdateTaskStatus,
+  setEvents, setTasks, setReports, setPhotos, onUpdateUser, onDeleteUser, onDeleteEvent, onDeleteTask, activityLog, addActivity, notifications, removeNotification, onLogout, 
 }) => {
   const [activeTab, setActiveTab] = useState<'overview' | 'events' | 'tasks' | 'settings' | 'team' | 'reports' | 'gallery'>('overview');
   const [isSidebarOpen, setSidebarOpen] = useState(false);
@@ -97,16 +109,14 @@ const Dashboard: React.FC<DashboardProps> = ({
 
   const handleCreateEvent = (e: React.FormEvent) => {
     e.preventDefault();
-    const newEvent: ClubEvent = {
-      id: `e${Date.now()}`,
+    const newEvent = {
       title: newEventTitle,
       date: newEventDate,
       description: newEventDesc,
       location: 'TBD',
       imageUrl: `https://picsum.photos/800/400?random=${Date.now()}`
     };
-    setEvents(prev => [...prev, newEvent]);
-    addActivity('Created Event', newEvent.title);
+    onCreateEvent(newEvent);
     setEventModalOpen(false);
     resetEventForm();
   };
@@ -131,8 +141,7 @@ const Dashboard: React.FC<DashboardProps> = ({
   const handleCreateTask = (e: React.FormEvent) => {
     e.preventDefault();
     const assignee = users.find(u => u.id === newTaskAssigneeId);
-    const newTask: Task = {
-      id: `t${Date.now()}`,
+    const newTask = {
       eventId: newTaskEventId,
       title: newTaskTitle,
       description: 'Assigned via dashboard',
@@ -140,8 +149,7 @@ const Dashboard: React.FC<DashboardProps> = ({
       status: TaskStatus.PENDING,
       deadline: newTaskDeadline || '2025-12-31'
     };
-    setTasks(prev => [...prev, newTask]);
-    addActivity('Assigned Task', `${newTask.title} to ${assignee ? assignee.name : 'Unassigned'}`);
+    onCreateTask(newTask);
     setTaskModalOpen(false);
     setNewTaskTitle('');
     setNewTaskAssigneeId('');
@@ -156,8 +164,7 @@ const Dashboard: React.FC<DashboardProps> = ({
       return;
     }
 
-    const newReport: ClubReport = {
-      id: `r${Date.now()}`,
+    const newReport = {
       title: reportTitle,
       date: new Date().toISOString().split('T')[0], // Auto-set today's date
       description: 'PDF Report', // Default description
@@ -165,8 +172,7 @@ const Dashboard: React.FC<DashboardProps> = ({
       fileUrl: reportFile || '#' 
     };
 
-    setReports(prev => [newReport, ...prev]);
-    addActivity('Published Report', reportTitle);
+    onCreateReport(newReport);
     
     // Reset Form
     setReportTitle('');
@@ -190,15 +196,13 @@ const Dashboard: React.FC<DashboardProps> = ({
     }
 
     // In a real app, we'd use the file URL. Here we pick a random image if simulation fails or use the uploaded one
-    const newPhoto: Photo = {
-      id: `p${Date.now()}`,
+    const newPhoto = {
       url: photoFile || `https://picsum.photos/seed/${Date.now()}/800/600`,
       caption: photoCaption,
       eventId: photoEventId
     };
 
-    setPhotos(prev => [newPhoto, ...prev]);
-    addActivity('Uploaded Photo', `Added to Gallery: ${photoCaption}`);
+    onCreatePhoto(newPhoto);
     
     // Reset
     setPhotoCaption('');
@@ -219,16 +223,7 @@ const Dashboard: React.FC<DashboardProps> = ({
   };
 
   const handleTaskStatusChange = (taskId: string, newStatus: TaskStatus) => {
-    const task = tasks.find(t => t.id === taskId);
-    if (!task) return;
-    
-    setTasks(tasks.map(t => t.id === taskId ? { ...t, status: newStatus } : t));
-    
-    let action = 'Updated Task';
-    if (newStatus === TaskStatus.IN_PROGRESS) action = 'Started Task';
-    if (newStatus === TaskStatus.COMPLETED) action = 'Completed Task';
-    
-    addActivity(action, task.title);
+    onUpdateTaskStatus(taskId, newStatus);
   };
 
   const handleGetAnalysis = async () => {

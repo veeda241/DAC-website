@@ -1,51 +1,55 @@
 import React, { useState, useEffect } from 'react';
-import { supabase } from './services/supabaseService';
+import { supabase, fetchEvents, createEvent, fetchTasks, createTask, fetchReports, createReport, fetchPhotos, createPhoto, updateTaskStatus } from './services/supabaseService';
 import LandingPage from './components/LandingPage';
 import Dashboard from './components/Dashboard';
 import Auth from './components/Auth';
-import { User, ClubEvent, Task, ActivityLog, Notification, UserRole, ClubReport, Photo } from './types';
-import { MOCK_EVENTS, MOCK_TASKS, MOCK_USERS, MOCK_REPORTS, MOCK_PHOTOS } from './constants';
+import { User, ClubEvent, Task, ActivityLog, Notification, UserRole, ClubReport, Photo, TaskStatus } from './types';
+import { MOCK_USERS } from './constants';
 
 const App: React.FC = () => {
   // Global State
   const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [showAuthModal, setShowAuthModal] = useState(false);
   
-  // Data State (Lifted up so it persists between views)
-  const [events, setEvents] = useState<ClubEvent[]>(MOCK_EVENTS);
-  const [tasks, setTasks] = useState<Task[]>(MOCK_TASKS);
-  
-  // State for users, initially empty or MOCK_USERS until fetched from Supabase
-  const [users, setUsers] = useState<User[]>(MOCK_USERS); // Use MOCK_USERS as fallback/initial while loading
-
-  const [reports, setReports] = useState<ClubReport[]>(MOCK_REPORTS);
-  const [photos, setPhotos] = useState<Photo[]>(MOCK_PHOTOS);
+  // Data State
+  const [events, setEvents] = useState<ClubEvent[]>([]);
+  const [tasks, setTasks] = useState<Task[]>([]);
+  const [users, setUsers] = useState<User[]>(MOCK_USERS);
+  const [reports, setReports] = useState<ClubReport[]>([]);
+  const [photos, setPhotos] = useState<Photo[]>([]);
   
   // Dynamic State
   const [activityLog, setActivityLog] = useState<ActivityLog[]>([]);
   const [notifications, setNotifications] = useState<Notification[]>([]);
 
-  // Fetch users from Supabase on component mount
+  // Fetch data from Supabase on component mount
   useEffect(() => {
-    const fetchUsers = async () => {
-      const { data, error } = await supabase
-        .from('users') // Assuming 'users' is the table name
+    const loadData = async () => {
+      // Users
+      const { data: userData, error: userError } = await supabase
+        .from('users')
         .select('*');
+      if (!userError && userData) setUsers(userData as User[]);
 
-      if (error) {
-        console.error('Error fetching users:', error);
-        // Fallback to MOCK_USERS if Supabase fetch fails
-        setUsers(MOCK_USERS);
-      } else if (data) {
-        setUsers(data as User[]);
-      } else {
-        // If no data and no error, means table is empty, use MOCK_USERS
-        setUsers(MOCK_USERS);
-      }
+      // Events
+      const eventsData = await fetchEvents();
+      setEvents(eventsData);
+
+      // Tasks
+      const tasksData = await fetchTasks();
+      setTasks(tasksData);
+
+      // Reports
+      const reportsData = await fetchReports();
+      setReports(reportsData);
+
+      // Photos
+      const photosData = await fetchPhotos();
+      setPhotos(photosData);
     };
 
-    fetchUsers();
-  }, []); // Empty dependency array means this runs once on mount
+    loadData();
+  }, []);
 
   const handleLogin = (user: User) => {
     setCurrentUser(user);
@@ -58,15 +62,14 @@ const App: React.FC = () => {
       id: `user-${Date.now()}`, // Supabase can generate UUIDs, but we'll keep this for now.
       name,
       email,
-      role: UserRole.MEMBER, // Default to Member
+      role: UserRole.MEMBER,
       avatar: `https://i.pravatar.cc/150?u=${Date.now()}`
     };
 
-    // Insert into Supabase
     const { data, error } = await supabase
-      .from('users') // Assuming 'users' table
+      .from('users')
       .insert([newUser])
-      .select(); // Select the inserted data to get any generated fields (like default IDs)
+      .select();
 
     if (error) {
       console.error('Error registering user:', error);
@@ -86,11 +89,10 @@ const App: React.FC = () => {
 
   const handleLogout = () => {
     setCurrentUser(null);
-    setNotifications([]); // Clear specific session notifications
+    setNotifications([]);
   };
 
   const handleUpdateUser = async (updatedUser: User) => {
-    // Update in Supabase
     const { error } = await supabase
       .from('users')
       .update(updatedUser)
@@ -102,25 +104,20 @@ const App: React.FC = () => {
       return;
     }
 
-    // If the currently logged in user is updating themselves, update current session
     if (currentUser && currentUser.id === updatedUser.id) {
         setCurrentUser(updatedUser);
     }
-    // Update the user in the main users list as well so assignments reflect the new name/avatar
     setUsers(prev => prev.map(u => u.id === updatedUser.id ? updatedUser : u));
     
-    // Only show notification if it wasn't a role update performed by admin on someone else
     if (currentUser && currentUser.id === updatedUser.id) {
       addNotification('Profile updated successfully', 'success');
       addActivity('Updated Profile', 'Changed account details');
     } else {
-        // If an admin updated someone else's role, notify admin
         addNotification(`User ${updatedUser.name}'s profile updated.`, 'info');
     }
   };
 
   const handleDeleteUser = async (userId: string) => {
-    // Delete from Supabase
     const { error } = await supabase
       .from('users')
       .delete()
@@ -133,9 +130,70 @@ const App: React.FC = () => {
     }
 
     setUsers(prev => prev.filter(u => u.id !== userId));
-    // Also unassign their tasks
     setTasks(prev => prev.map(t => t.assigneeId === userId ? { ...t, assigneeId: null } : t));
     addNotification('User removed and tasks unassigned', 'info');
+  };
+
+  // --- New Create Handlers ---
+
+  const handleCreateEvent = async (eventData: Omit<ClubEvent, 'id'>) => {
+    const newEvent = await createEvent(eventData);
+    if (newEvent) {
+      setEvents(prev => [...prev, newEvent]);
+      addActivity('Created Event', newEvent.title);
+      addNotification('Event created successfully!', 'success');
+    } else {
+      addNotification('Failed to create event.', 'error');
+    }
+  };
+
+  const handleCreateTask = async (taskData: Omit<Task, 'id'>) => {
+    const newTask = await createTask(taskData);
+    if (newTask) {
+      setTasks(prev => [...prev, newTask]);
+      // Use assignee name if available
+      const assignee = users.find(u => u.id === taskData.assigneeId);
+      addActivity('Assigned Task', `${newTask.title} to ${assignee ? assignee.name : 'Unassigned'}`);
+      addNotification('Task created successfully!', 'success');
+    } else {
+      addNotification('Failed to create task.', 'error');
+    }
+  };
+
+  const handleCreateReport = async (reportData: Omit<ClubReport, 'id'>) => {
+    const newReport = await createReport(reportData);
+    if (newReport) {
+      setReports(prev => [newReport, ...prev]); // Add to top
+      addActivity('Published Report', newReport.title);
+      addNotification('Report published successfully!', 'success');
+    } else {
+      addNotification('Failed to publish report.', 'error');
+    }
+  };
+
+  const handleCreatePhoto = async (photoData: Omit<Photo, 'id'>) => {
+    const newPhoto = await createPhoto(photoData);
+    if (newPhoto) {
+      setPhotos(prev => [newPhoto, ...prev]);
+      addActivity('Uploaded Photo', `Added to Gallery: ${newPhoto.caption}`);
+      addNotification('Photo uploaded successfully!', 'success');
+    } else {
+      addNotification('Failed to upload photo.', 'error');
+    }
+  };
+
+  const handleUpdateTaskStatus = async (taskId: string, status: TaskStatus) => {
+      const updatedTask = await updateTaskStatus(taskId, status);
+      if (updatedTask) {
+          setTasks(prev => prev.map(t => t.id === taskId ? updatedTask : t));
+          
+          let action = 'Updated Task';
+          if (status === TaskStatus.IN_PROGRESS) action = 'Started Task';
+          if (status === TaskStatus.COMPLETED) action = 'Completed Task';
+          addActivity(action, updatedTask.title);
+      } else {
+          addNotification('Failed to update task status', 'error');
+      }
   };
 
   const addActivity = (action: string, details?: string) => {
@@ -148,17 +206,11 @@ const App: React.FC = () => {
       timestamp: new Date()
     };
     setActivityLog(prev => [...prev, newLog]);
-    
-    // Auto-notify for success actions
-    if (action.includes('Created') || action.includes('Completed') || action.includes('Assigned') || action.includes('Published') || action.includes('Uploaded')) {
-       addNotification(`${action} successfully!`, 'success');
-    }
   };
 
   const addNotification = (message: string, type: 'success' | 'info' | 'error') => {
     const id = `notif-${Date.now()}`;
     setNotifications(prev => [...prev, { id, message, type }]);
-    // Auto remove after 3s
     setTimeout(() => {
       setNotifications(prev => prev.filter(n => n.id !== id));
     }, 3000);
@@ -168,12 +220,24 @@ const App: React.FC = () => {
     setNotifications(prev => prev.filter(n => n.id !== id));
   };
 
-  const handleDeleteEvent = (eventId: string) => {
+  const handleDeleteEvent = async (eventId: string) => {
+    // In a real app, delete from Supabase
+    const { error } = await supabase.from('events').delete().eq('id', eventId);
+    if (error) {
+        addNotification('Failed to delete event', 'error');
+        return;
+    }
     setEvents(prev => prev.filter(e => e.id !== eventId));
     addActivity('Deleted Event', `Event with ID ${eventId} removed.`);
   };
 
-  const handleDeleteTask = (taskId: string) => {
+  const handleDeleteTask = async (taskId: string) => {
+     // In a real app, delete from Supabase
+     const { error } = await supabase.from('tasks').delete().eq('id', taskId);
+     if (error) {
+         addNotification('Failed to delete task', 'error');
+         return;
+     }
     setTasks(prev => prev.filter(t => t.id !== taskId));
     addActivity('Deleted Task', `Task with ID ${taskId} removed.`);
   };
@@ -205,7 +269,12 @@ const App: React.FC = () => {
           tasks={tasks}
           reports={reports}
           photos={photos}
-          setEvents={setEvents}
+          onCreateEvent={handleCreateEvent}
+          onCreateTask={handleCreateTask}
+          onCreateReport={handleCreateReport}
+          onCreatePhoto={handleCreatePhoto}
+          onUpdateTaskStatus={handleUpdateTaskStatus}
+          setEvents={setEvents} // Still needed for updates? Or should we add onUpdateEvent?
           setTasks={setTasks}
           setReports={setReports}
           setPhotos={setPhotos}

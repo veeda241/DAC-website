@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { ClubEvent, TeamMember, ClubReport, Photo } from '../types';
 import { MOCK_TEAM, MOCK_MENTORS, MASCOT_URL, LOGO_URL } from '../constants';
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from 'recharts';
-import { ArrowRight, Calendar, Users, TrendingUp, ChevronDown, Camera, MapPin, Clock, CheckCircle, GraduationCap, X, Target, Lightbulb, Code, Briefcase, FileText, Download, ExternalLink } from 'lucide-react';
+import { ArrowRight, Calendar, Users, TrendingUp, ChevronDown, Camera, MapPin, Clock, CheckCircle, GraduationCap, X, Target, Lightbulb, Code, Briefcase, FileText, Download, ExternalLink, Menu } from 'lucide-react';
 
 interface LandingPageProps {
   events: ClubEvent[];
@@ -18,6 +18,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ events, reports, photos, onLo
   const [currentPage, setCurrentPage] = useState<PageView>('home');
   const [isVisible, setIsVisible] = useState(false);
   const [selectedMember, setSelectedMember] = useState<TeamMember | null>(null);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   useEffect(() => {
     setIsVisible(true);
@@ -82,7 +83,8 @@ const LandingPage: React.FC<LandingPageProps> = ({ events, reports, photos, onLo
               onClick={() => setCurrentPage('home')}
             >
               <img src={LOGO_URL} alt="DAC Logo" className="h-10 w-10 object-contain drop-shadow-lg" />
-              <span className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-indigo-400 to-cyan-400">Data Analytics Club</span>
+              <span className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-indigo-400 to-cyan-400 hidden sm:block">Data Analytics Club</span>
+              <span className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-indigo-400 to-cyan-400 sm:hidden">DAC</span>
             </div>
 
             {/* Desktop Nav */}
@@ -109,15 +111,64 @@ const LandingPage: React.FC<LandingPageProps> = ({ events, reports, photos, onLo
               ))}
             </div>
 
-            {/* Login Button */}
-            <button 
-              onClick={onLoginClick}
-              className="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-2.5 rounded-full text-sm font-semibold transition-all hover:shadow-[0_0_15px_rgba(99,102,241,0.5)] hover:-translate-y-0.5"
-            >
-              Member Login
-            </button>
+            {/* Login Button & Mobile Menu Toggle */}
+            <div className="flex items-center gap-4">
+              <button 
+                onClick={onLoginClick}
+                className="hidden md:block bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-2.5 rounded-full text-sm font-semibold transition-all hover:shadow-[0_0_15px_rgba(99,102,241,0.5)] hover:-translate-y-0.5"
+              >
+                Member Login
+              </button>
+              
+              <button 
+                className="md:hidden text-slate-300 hover:text-white transition-colors"
+                onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+              >
+                {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+              </button>
+            </div>
           </div>
         </div>
+
+        {/* Mobile Menu Overlay */}
+        {isMobileMenuOpen && (
+          <div className="md:hidden bg-slate-950 border-b border-slate-800 absolute w-full animate-fade-in-up shadow-2xl">
+            <div className="px-4 pt-2 pb-6 space-y-1">
+              {[
+                { id: 'home', label: 'Home' },
+                { id: 'about', label: 'About' },
+                { id: 'members', label: 'Members' },
+                { id: 'events', label: 'Events' },
+                { id: 'reports', label: 'Reports' },
+                { id: 'photos', label: 'Gallery' }
+              ].map((item) => (
+                <button 
+                  key={item.id} 
+                  onClick={() => {
+                    setCurrentPage(item.id as PageView);
+                    setIsMobileMenuOpen(false);
+                  }}
+                  className={`block w-full text-left px-3 py-3 rounded-lg text-base font-medium transition-colors ${
+                    currentPage === item.id 
+                    ? 'bg-indigo-900/20 text-indigo-400' 
+                    : 'text-slate-300 hover:text-white hover:bg-slate-800'
+                  }`}
+                >
+                  {item.label}
+                </button>
+              ))}
+              <button 
+                onClick={() => {
+                  onLoginClick();
+                  setIsMobileMenuOpen(false);
+                }}
+                className="w-full mt-4 bg-indigo-600 hover:bg-indigo-700 text-white px-3 py-3 rounded-lg text-base font-semibold transition-colors text-center"
+              >
+                Member Login
+              </button>
+            </div>
+          </div>
+        )}
       </nav>
 
       {/* --- Content Area --- */}

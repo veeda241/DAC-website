@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { ClubEvent, Task, TaskStatus, User, UserRole, ActivityLog, Notification, ClubReport, Photo } from '../types';
 import { generateEventDescription, generateTaskAnalysis } from '../services/geminiService';
 import { PieChart, Pie, Cell, ResponsiveContainer, Legend, Tooltip } from 'recharts';
-import { Plus, CheckCircle, Circle, Clock, Loader2, Sparkles, LogOut, Calendar, Layout, Search, BrainCircuit, X, Users, Activity, Filter, Bell, User as UserIcon, Settings, Save, Upload, Shield, Trash2, ChevronDown, FileText, Image as ImageIcon, PieChart as PieChartIcon, Download, Camera } from 'lucide-react';
+import { Plus, CheckCircle, Circle, Clock, Loader2, Sparkles, LogOut, Calendar, Layout, Search, BrainCircuit, X, Users, Activity, Filter, Bell, User as UserIcon, Settings, Save, Upload, Shield, Trash2, ChevronDown, FileText, Image as ImageIcon, PieChart as PieChartIcon, Download, Camera, Menu } from 'lucide-react';
 import { MASCOT_URL, LOGO_URL } from '../constants';
 
 interface DashboardProps {
@@ -31,6 +31,7 @@ const Dashboard: React.FC<DashboardProps> = ({
   user, users, events, tasks, reports, photos, setEvents, setTasks, setReports, setPhotos, onUpdateUser, onDeleteUser, onDeleteEvent, onDeleteTask, activityLog, addActivity, notifications, removeNotification, onLogout, 
 }) => {
   const [activeTab, setActiveTab] = useState<'overview' | 'events' | 'tasks' | 'settings' | 'team' | 'reports' | 'gallery'>('overview');
+  const [isSidebarOpen, setSidebarOpen] = useState(false);
   
   // Modal states
   const [isEventModalOpen, setEventModalOpen] = useState(false);
@@ -75,6 +76,11 @@ const Dashboard: React.FC<DashboardProps> = ({
     setSettingsEmail(user.email);
     setSettingsAvatar(user.avatar || '');
   }, [user]);
+
+  // Close sidebar when changing tabs on mobile
+  useEffect(() => {
+    setSidebarOpen(false);
+  }, [activeTab]);
 
   // --- Permissions Logic ---
   const canManageContent = [
@@ -299,17 +305,28 @@ const Dashboard: React.FC<DashboardProps> = ({
         ))}
       </div>
 
+      {/* Mobile Sidebar Overlay */}
+      {isSidebarOpen && (
+        <div 
+          className="fixed inset-0 bg-black/60 backdrop-blur-sm z-20 md:hidden"
+          onClick={() => setSidebarOpen(false)}
+        ></div>
+      )}
+
       {/* Sidebar */}
-      <aside className="w-64 bg-slate-900/50 backdrop-blur-xl border-r border-slate-800 flex flex-col fixed h-full z-10 transition-all">
-        <div className="p-6 border-b border-slate-800/50">
+      <aside className={`w-64 bg-slate-900/95 backdrop-blur-xl border-r border-slate-800 flex flex-col fixed h-full z-30 transition-transform duration-300 md:translate-x-0 ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'}`}>
+        <div className="p-6 border-b border-slate-800/50 flex justify-between items-center">
           <div className="flex items-center gap-3">
              <img src={LOGO_URL} alt="Logo" className="w-8 h-8 object-contain" />
              <h2 className="text-xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-cyan-400">
                Portal
              </h2>
           </div>
+          <button onClick={() => setSidebarOpen(false)} className="md:hidden text-slate-400 hover:text-white">
+            <X className="w-6 h-6" />
+          </button>
         </div>
-        <nav className="flex-1 p-4 space-y-2">
+        <nav className="flex-1 p-4 space-y-2 overflow-y-auto">
           {[
             { id: 'overview', icon: PieChartIcon, label: 'Overview' },
             { id: 'events', icon: Calendar, label: 'Event Manager' },
@@ -350,48 +367,58 @@ const Dashboard: React.FC<DashboardProps> = ({
       </aside>
 
       {/* Main Content */}
-      <main className="flex-1 ml-64 p-8 overflow-y-auto h-screen relative">
+      <main className="flex-1 md:ml-64 p-4 md:p-8 overflow-y-auto h-screen relative w-full">
         <div className="max-w-7xl mx-auto space-y-8 pb-20">
           
           {/* Header & Search */}
           <header className="flex flex-col md:flex-row md:items-center justify-between gap-4 animate-fade-in-up">
-            <div>
-               <h1 className="text-2xl font-bold text-white">
-                 {activeTab === 'overview' ? `Welcome back, ${user.name.split(' ')[0]}` : 
-                  activeTab === 'events' ? 'Events' : 
-                  activeTab === 'tasks' ? 'Tasks' : 
-                  activeTab === 'reports' ? 'Report Management' :
-                  activeTab === 'gallery' ? 'Gallery Management' :
-                  activeTab === 'team' ? 'Team Management' : 'Profile Settings'}
-               </h1>
-               <p className="text-slate-400 text-sm">
-                 {activeTab === 'overview' ? "Here's your daily briefing." : 
-                  activeTab === 'events' ? "Manage upcoming club activities." : 
-                  activeTab === 'tasks' ? "Track and complete assignments." : 
-                  activeTab === 'reports' ? "Upload and manage public reports." :
-                  activeTab === 'gallery' ? "Upload photos from events." :
-                  activeTab === 'team' ? "Manage user roles and permissions." : "Update your account information."}
-               </p>
+            <div className="flex items-center gap-4">
+               {/* Mobile Menu Toggle */}
+               <button 
+                 onClick={() => setSidebarOpen(true)}
+                 className="md:hidden p-2 bg-slate-800 rounded-lg text-white hover:bg-slate-700 transition-colors"
+               >
+                 <Menu className="w-6 h-6" />
+               </button>
+
+               <div>
+                 <h1 className="text-xl md:text-2xl font-bold text-white">
+                   {activeTab === 'overview' ? `Welcome back, ${user.name.split(' ')[0]}` : 
+                    activeTab === 'events' ? 'Events' : 
+                    activeTab === 'tasks' ? 'Tasks' : 
+                    activeTab === 'reports' ? 'Report Management' :
+                    activeTab === 'gallery' ? 'Gallery Management' :
+                    activeTab === 'team' ? 'Team Management' : 'Profile Settings'}
+                 </h1>
+                 <p className="text-slate-400 text-xs md:text-sm hidden sm:block">
+                   {activeTab === 'overview' ? "Here's your daily briefing." : 
+                    activeTab === 'events' ? "Manage upcoming club activities." : 
+                    activeTab === 'tasks' ? "Track and complete assignments." : 
+                    activeTab === 'reports' ? "Upload and manage public reports." :
+                    activeTab === 'gallery' ? "Upload photos from events." :
+                    activeTab === 'team' ? "Manage user roles and permissions." : "Update your account information."}
+                 </p>
+               </div>
             </div>
             
             {activeTab !== 'overview' && activeTab !== 'settings' && activeTab !== 'team' && activeTab !== 'reports' && activeTab !== 'gallery' && (
-              <div className="flex items-center gap-3">
-                 <div className="relative">
+              <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+                 <div className="relative flex-1">
                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
                    <input 
                     type="text" 
                     placeholder="Search..." 
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
-                    className="pl-9 pr-4 py-2 bg-slate-900 border border-slate-700 rounded-lg text-sm text-white focus:outline-none focus:border-indigo-500 w-64 transition-all"
+                    className="w-full pl-9 pr-4 py-2 bg-slate-900 border border-slate-700 rounded-lg text-sm text-white focus:outline-none focus:border-indigo-500 sm:w-64 transition-all"
                    />
                  </div>
                  {activeTab === 'tasks' && (
                    <button 
                     onClick={() => setShowMyTasksOnly(!showMyTasksOnly)}
-                    className={`flex items-center gap-2 px-3 py-2 rounded-lg text-sm border transition-all ${showMyTasksOnly ? 'bg-indigo-600 border-indigo-500 text-white' : 'bg-slate-900 border-slate-700 text-slate-400 hover:text-white'}`}
+                    className={`flex items-center justify-center gap-2 px-3 py-2 rounded-lg text-sm border transition-all ${showMyTasksOnly ? 'bg-indigo-600 border-indigo-500 text-white' : 'bg-slate-900 border-slate-700 text-slate-400 hover:text-white'}`}
                    >
-                     <UserIcon className="w-4 h-4" /> My Tasks
+                     <UserIcon className="w-4 h-4" /> <span className="sm:hidden md:inline">My Tasks</span>
                    </button>
                  )}
               </div>

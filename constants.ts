@@ -1,5 +1,6 @@
 
 import { ClubEvent, Task, TaskStatus, User, UserRole, TeamMember, Photo, ClubReport } from "./types";
+import arunmozhiImg from './Arunmozhi.jpg';
 
 export const MOCK_USERS: User[] = [
   { 
@@ -30,7 +31,7 @@ export const MOCK_MENTORS: TeamMember[] = [
     name: 'Mrs. Arunmozhi B',
     role: 'Faculty Advisor',
     bio: 'Specialist in Machine Learning and AI research. Dedicated to mentoring students and bridging the gap between theory and application.',
-    imageUrl: 'https://placehold.co/150/000000/FFFFFF/png?text=Faculty',
+    imageUrl: arunmozhiImg,
     year: 'Faculty Advisor',
     skills: ['Machine Learning', 'Research', 'Student Mentoring', 'AI Development']
   },

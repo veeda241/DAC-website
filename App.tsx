@@ -164,6 +164,11 @@ const App: React.FC = () => {
     }
   };
 
+  const handleUpdateEvent = (updatedEvent: ClubEvent) => {
+    setEvents(events.map(e => e.id === updatedEvent.id ? updatedEvent : e));
+    addActivity('Updated Event', updatedEvent.title);
+  };
+
   const handleCreateTask = async (taskData: Omit<Task, 'id'>) => {
     const newTask = await createTask(taskData);
     if (newTask) {
@@ -281,32 +286,33 @@ const App: React.FC = () => {
           )}
         </>
       ) : (
-        <Dashboard 
-          user={currentUser}
-          users={users}
-          events={events}
-          tasks={tasks}
-          reports={reports}
-          photos={photos}
-          onCreateEvent={handleCreateEvent}
-          onCreateTask={handleCreateTask}
-          onCreateReport={handleCreateReport}
-          onCreatePhoto={handleCreatePhoto}
-          onUpdateTaskStatus={handleUpdateTaskStatus}
-          setEvents={setEvents} // Still needed for updates? Or should we add onUpdateEvent?
-          setTasks={setTasks}
-          setReports={setReports}
-          setPhotos={setPhotos}
-          onUpdateUser={handleUpdateUser}
-          onDeleteUser={handleDeleteUser}
-          onDeleteEvent={handleDeleteEvent}
-          onDeleteTask={handleDeleteTask}
-          onLogout={handleLogout}
-          activityLog={activityLog}
-          addActivity={addActivity}
-          notifications={notifications}
-          removeNotification={removeNotification}
-        />
+          <Dashboard 
+            user={currentUser} 
+            users={users}
+            events={events}
+            tasks={tasks}
+            reports={reports}
+            photos={photos}
+            onCreateEvent={handleCreateEvent}
+            onCreateTask={handleCreateTask}
+            onCreateReport={handleCreateReport}
+            onCreatePhoto={handleCreatePhoto}
+            onUpdateTaskStatus={handleUpdateTaskStatus}
+            onUpdateEvent={handleUpdateEvent}
+            setEvents={setEvents}
+            setTasks={setTasks}
+            setReports={setReports}
+            setPhotos={setPhotos}
+            onUpdateUser={handleUpdateUser}
+            onDeleteUser={handleDeleteUser}
+            onDeleteEvent={handleDeleteEvent}
+            onDeleteTask={handleDeleteTask}
+            activityLog={activityLog}
+            addActivity={addActivity}
+            notifications={notifications}
+            removeNotification={removeNotification}
+            onLogout={handleLogout}
+          />
       )}
     </>
   );

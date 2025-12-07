@@ -21,6 +21,7 @@ interface DashboardProps {
 
   // Update Handlers
   onUpdateTaskStatus: (taskId: string, status: TaskStatus) => void;
+  onUpdateEvent: (event: ClubEvent) => void;
 
   setEvents: React.Dispatch<React.SetStateAction<ClubEvent[]>>;
   setTasks: React.Dispatch<React.SetStateAction<Task[]>>;
@@ -39,7 +40,7 @@ interface DashboardProps {
 
 const Dashboard: React.FC<DashboardProps> = ({ 
   user, users, events, tasks, reports, photos, 
-  onCreateEvent, onCreateTask, onCreateReport, onCreatePhoto, onUpdateTaskStatus,
+  onCreateEvent, onCreateTask, onCreateReport, onCreatePhoto, onUpdateTaskStatus, onUpdateEvent,
   setEvents, setTasks, setReports, setPhotos, onUpdateUser, onDeleteUser, onDeleteEvent, onDeleteTask, activityLog, addActivity, notifications, removeNotification, onLogout, 
 }) => {
   const [activeTab, setActiveTab] = useState<'overview' | 'events' | 'tasks' | 'settings' | 'team' | 'reports' | 'gallery'>('overview');
@@ -48,11 +49,13 @@ const Dashboard: React.FC<DashboardProps> = ({
   // Modal states
   const [isEventModalOpen, setEventModalOpen] = useState(false);
   const [isTaskModalOpen, setTaskModalOpen] = useState(false);
+  const [editingEventId, setEditingEventId] = useState<string | null>(null);
   
   // New Item States
   const [newEventTitle, setNewEventTitle] = useState('');
   const [newEventDate, setNewEventDate] = useState('');
   const [newEventDesc, setNewEventDesc] = useState('');
+  const [newEventImage, setNewEventImage] = useState('');
   const [isGeneratingDesc, setIsGeneratingDesc] = useState(false);
 
   const [newTaskTitle, setNewTaskTitle] = useState('');
@@ -112,14 +115,27 @@ const Dashboard: React.FC<DashboardProps> = ({
 
   const handleCreateEvent = (e: React.FormEvent) => {
     e.preventDefault();
-    const newEvent = {
-      title: newEventTitle,
-      date: newEventDate,
-      description: newEventDesc,
-      location: 'TBD',
-      imageUrl: `https://picsum.photos/800/400?random=${Date.now()}`
-    };
-    onCreateEvent(newEvent);
+    
+    if (editingEventId) {
+        const updatedEvent = {
+            id: editingEventId,
+            title: newEventTitle,
+            date: newEventDate,
+            description: newEventDesc,
+            location: 'TBD',
+            imageUrl: newEventImage || events.find(e => e.id === editingEventId)?.imageUrl || `https://picsum.photos/800/400?random=${Date.now()}`
+        };
+        onUpdateEvent(updatedEvent);
+    } else {
+        const newEvent = {
+            title: newEventTitle,
+            date: newEventDate,
+            description: newEventDesc,
+            location: 'TBD',
+            imageUrl: newEventImage || `https://picsum.photos/800/400?random=${Date.now()}`
+        };
+        onCreateEvent(newEvent);
+    }
     setEventModalOpen(false);
     resetEventForm();
   };
@@ -139,6 +155,19 @@ const Dashboard: React.FC<DashboardProps> = ({
     setNewEventTitle('');
     setNewEventDate('');
     setNewEventDesc('');
+    setNewEventImage('');
+    setEditingEventId(null);
+  };
+
+  const handleEventImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setNewEventImage(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
   };
 
   const handleCreateTask = (e: React.FormEvent) => {
@@ -550,7 +579,21 @@ const Dashboard: React.FC<DashboardProps> = ({
                     <div className="p-5 flex-1 flex flex-col">
                       <p className="text-slate-400 text-sm mb-4 flex-1 leading-relaxed">{event.description}</p>
                       {canManageContent && (
-                        <div className="flex justify-end">
+                        <div className="flex justify-end gap-2">
+                          <button 
+                            onClick={() => {
+                                setEditingEventId(event.id);
+                                setNewEventTitle(event.title);
+                                setNewEventDate(event.date);
+                                setNewEventDesc(event.description);
+                                setNewEventImage(event.imageUrl || '');
+                                setEventModalOpen(true);
+                            }}
+                            className="p-2 text-slate-400 hover:text-indigo-400 hover:bg-indigo-500/10 rounded-lg transition-colors"
+                            title="Edit Event"
+                          >
+                            <Settings className="w-4 h-4" />
+                          </button>
                           <button 
                             onClick={() => {
                               if(confirm('Are you sure you want to delete this event?')) {
@@ -919,8 +962,8 @@ const Dashboard: React.FC<DashboardProps> = ({
       {isEventModalOpen && (
         <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4 backdrop-blur-sm animate-fade-in-up">
           <div className="bg-slate-900 p-6 rounded-2xl w-full max-w-md border border-slate-700 shadow-2xl relative">
-            <button onClick={() => setEventModalOpen(false)} className="absolute top-4 right-4 text-slate-400 hover:text-white"><X /></button>
-            <h3 className="text-xl font-bold text-white mb-6">Create New Event</h3>
+            <button onClick={() => { setEventModalOpen(false); resetEventForm(); }} className="absolute top-4 right-4 text-slate-400 hover:text-white"><X /></button>
+            <h3 className="text-xl font-bold text-white mb-6">{editingEventId ? 'Edit Event' : 'Create New Event'}</h3>
             <form onSubmit={handleCreateEvent} className="space-y-4">
               <div>
                 <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">Event Title</label>
@@ -931,6 +974,15 @@ const Dashboard: React.FC<DashboardProps> = ({
                 <input required type="date" value={newEventDate} onChange={(e) => setNewEventDate(e.target.value)} className="w-full bg-slate-950 border border-slate-800 rounded-lg p-3 text-white focus:outline-none focus:border-indigo-500" />
               </div>
               <div>
+                 <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">Event Thumbnail</label>
+                 <input type="file" onChange={handleEventImageChange} accept="image/*" className="w-full text-xs text-slate-400 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-semibold file:bg-indigo-500/10 file:text-indigo-400 hover:file:bg-indigo-500/20 cursor-pointer" />
+              </div>
+              {newEventImage && (
+                 <div className="w-full h-32 rounded-lg overflow-hidden border border-slate-800 mb-4">
+                    <img src={newEventImage} alt="Preview" className="w-full h-full object-cover" />
+                 </div>
+              )}
+              <div>
                 <div className="flex justify-between items-center mb-1">
                   <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider">Description</label>
                   <button type="button" onClick={handleGenerateDescription} disabled={isGeneratingDesc} className="text-xs text-indigo-400 hover:text-indigo-300 flex items-center gap-1 transition-colors">
@@ -940,7 +992,7 @@ const Dashboard: React.FC<DashboardProps> = ({
                 </div>
                 <textarea required value={newEventDesc} onChange={(e) => setNewEventDesc(e.target.value)} className="w-full bg-slate-950 border border-slate-800 rounded-lg p-3 text-white h-24 focus:outline-none focus:border-indigo-500" placeholder="Brief event details..." />
               </div>
-              <button type="submit" className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 rounded-lg transition-all hover:scale-[1.02]">Publish Event</button>
+              <button type="submit" className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 rounded-lg transition-all hover:scale-[1.02]">{editingEventId ? 'Update Event' : 'Publish Event'}</button>
             </form>
           </div>
         </div>

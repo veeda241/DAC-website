@@ -1,0 +1,131 @@
+/* DataSphere Animation Keyframes */
+@keyframes rotateY {
+    from {
+        transform: rotateY(0deg);
+    }
+
+    to {
+        transform: rotateY(360deg);
+    }
+}
+
+@keyframes spin {
+    from {
+        transform: rotateX(70deg) rotateZ(0deg);
+    }
+
+    to {
+        transform: rotateX(70deg) rotateZ(360deg);
+    }
+}
+
+@keyframes orbit {
+    from {
+        transform: translateX(-50%) rotate(0deg) translateY(-130px) rotate(0deg);
+    }
+
+    to {
+        transform: translateX(-50%) rotate(360deg) translateY(-130px) rotate(-360deg);
+    }
+}
+
+@keyframes sphereFloat {
+
+    0%,
+    100% {
+        transform: translate(-50%, -50%) translateY(0px);
+    }
+
+    50% {
+        transform: translate(-50%, -50%) translateY(-8px);
+    }
+}
+
+@keyframes mascotFloat {
+
+    0%,
+    100% {
+        transform: translateY(0) rotate(0deg) rotateX(5deg);
+    }
+
+    33% {
+        transform: translateY(-15px) rotate(2deg) rotateX(-5deg);
+    }
+
+    66% {
+        transform: translateY(10px) rotate(-2deg) rotateX(10deg);
+    }
+}
+
+@keyframes tilt {
+
+    0%,
+    100% {
+        transform: perspective(1000px) rotateY(-5deg) rotateX(5deg);
+    }
+
+    50% {
+        transform: perspective(1000px) rotateY(5deg) rotateX(-5deg);
+    }
+}
+
+@keyframes pulse-glow {
+
+    0%,
+    100% {
+        opacity: 0.3;
+        transform: scale(1);
+    }
+
+    50% {
+        opacity: 0.6;
+        transform: scale(1.1);
+    }
+}
+
+/* Tailwind animate class mappings */
+.animate-rotateY {
+    animation: rotateY 30s linear infinite;
+}
+
+.animate-sphere-float {
+    animation: sphereFloat 3s ease-in-out infinite;
+}
+
+.animate-mascot-float {
+    animation: mascotFloat 8s ease-in-out infinite;
+}
+
+.animate-tilt {
+    animation: tilt 10s ease-in-out infinite;
+}
+
+.animate-pulse-glow {
+    animation: pulse-glow 4s ease-in-out infinite;
+}
+
+/* Additional visual enhancements */
+.preserve-3d {
+    transform-style: preserve-3d;
+}
+
+.perspective-1000 {
+    perspective: 1000px;
+}
+
+.backface-hidden {
+    backface-visibility: hidden;
+}
+
+.glass-card {
+    background: rgba(15, 23, 42, 0.4);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+}
+
+.glass-card:hover {
+    border-color: rgba(99, 102, 241, 0.5);
+    background: rgba(15, 23, 42, 0.5);
+}

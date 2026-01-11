@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { supabase, fetchEvents, createEvent, fetchTasks, createTask, fetchReports, createReport, fetchPhotos, createPhoto, updateTaskStatus } from './services/supabaseService';
+import { supabase, fetchEvents, createEvent, updateEvent, fetchTasks, createTask, fetchReports, createReport, fetchPhotos, createPhoto, updateTaskStatus } from './services/supabaseService';
 import LandingPage from './components/LandingPage';
 import Dashboard from './components/Dashboard';
 import Auth from './components/Auth';
@@ -177,19 +177,8 @@ const App: React.FC = () => {
     const handleUpdateEvent = async (updatedEvent: ClubEvent) => {
         // Update in Supabase if connected
         if (supabase) {
-            const { error } = await supabase
-                .from('events')
-                .update({
-                    title: updatedEvent.title,
-                    date: updatedEvent.date,
-                    description: updatedEvent.description,
-                    location: updatedEvent.location,
-                    imageUrl: updatedEvent.imageUrl
-                })
-                .eq('id', updatedEvent.id);
-
-            if (error) {
-                console.log('Supabase update failed:', error.message);
+            const updated = await updateEvent(updatedEvent);
+            if (!updated) {
                 addNotification('Failed to save event to database', 'error');
             } else {
                 addNotification('Event updated and saved!', 'success');

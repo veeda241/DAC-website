@@ -25,6 +25,17 @@ const LandingPage: React.FC<LandingPageProps> = ({ events, reports, photos, onLo
   const [currentPage, setCurrentPage] = useState<PageView>('home');
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [lightboxPhoto, setLightboxPhoto] = useState<Photo | null>(null);
+  const [logoClickCount, setLogoClickCount] = useState(0);
+
+  useEffect(() => {
+    if (logoClickCount === 0) return;
+    const timer = setTimeout(() => setLogoClickCount(0), 1000);
+    if (logoClickCount === 3) {
+      onLoginClick();
+      setLogoClickCount(0);
+    }
+    return () => clearTimeout(timer);
+  }, [logoClickCount, onLoginClick]);
 
   useEffect(() => {
     // Scroll to top on page change
@@ -45,7 +56,10 @@ const LandingPage: React.FC<LandingPageProps> = ({ events, reports, photos, onLo
             {/* Logo area */}
             <div
               className="flex items-center space-x-3 group cursor-pointer"
-              onClick={() => setCurrentPage('home')}
+              onClick={() => {
+                setCurrentPage('home');
+                setLogoClickCount(prev => prev + 1);
+              }}
             >
               <div className="relative">
                 <div className="absolute -inset-1 bg-gradient-to-r from-cyan-500 to-blue-600 rounded-full blur opacity-25 group-hover:opacity-75 transition duration-500"></div>
@@ -85,16 +99,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ events, reports, photos, onLo
 
             {/* Login Button */}
             <div className="flex items-center gap-4">
-              <button
-                onClick={onLoginClick}
-                className="hidden md:block relative group px-6 py-2.5 rounded-full overflow-hidden"
-              >
-                <div className="absolute inset-0 bg-gradient-to-r from-cyan-500 via-blue-500 to-purple-600 opacity-80 group-hover:opacity-100 transition-opacity duration-300"></div>
-                <div className="absolute inset-[1px] bg-[#050505] rounded-full group-hover:bg-transparent transition-colors duration-300"></div>
-                <span className="relative text-sm font-bold bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 to-purple-400 group-hover:text-white transition-colors duration-300">
-                  Team Portal
-                </span>
-              </button>
+
 
               <button
                 className="md:hidden text-slate-300 hover:text-white transition-colors p-2 hover:bg-white/10 rounded-lg"
@@ -132,15 +137,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ events, reports, photos, onLo
                   {item.label}
                 </button>
               ))}
-              <button
-                onClick={() => {
-                  onLoginClick();
-                  setIsMobileMenuOpen(false);
-                }}
-                className="w-full mt-4 bg-indigo-600 hover:bg-indigo-700 text-white px-3 py-3 rounded-lg text-base font-semibold transition-colors text-center"
-              >
-                Team Portal
-              </button>
+
             </div>
           </div>
         )}

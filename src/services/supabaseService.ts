@@ -25,12 +25,19 @@ export const fetchEvents = async (): Promise<ClubEvent[]> => {
     .from('events')
     .select('*')
     .order('date', { ascending: true });
-  
+
   if (error) {
     console.error('Error fetching events:', error);
     return [];
   }
-  return data || [];
+
+  // Custom mapping to handle potential snake_case (e.g. registration_link) from DB
+  return (data || []).map((event: any) => ({
+    ...event,
+    // Map registration_link to registrationLink if it exists and registrationLink is missing
+    registrationLink: event.registrationLink || event.registration_link,
+    imageUrl: event.imageUrl || event.image_url
+  })) as ClubEvent[];
 };
 
 export const createEvent = async (event: Omit<ClubEvent, 'id'>): Promise<ClubEvent | null> => {
@@ -43,6 +50,30 @@ export const createEvent = async (event: Omit<ClubEvent, 'id'>): Promise<ClubEve
 
   if (error) {
     console.error('Error creating event:', error);
+    return null;
+  }
+  return data;
+};
+
+export const updateEvent = async (event: ClubEvent): Promise<ClubEvent | null> => {
+  if (!supabase) return null;
+
+  // Create a payload that includes snake_case keys just in case the DB expects them
+  const payload: any = {
+    ...event,
+    registration_link: event.registrationLink,
+    image_url: event.imageUrl
+  };
+
+  const { data, error } = await supabase
+    .from('events')
+    .update(payload)
+    .eq('id', event.id)
+    .select()
+    .single();
+
+  if (error) {
+    console.error('Error updating event:', error);
     return null;
   }
   return data;

@@ -50,16 +50,6 @@ const Home: React.FC<HomeProps> = ({ onLoginClick, setCurrentPage }) => {
                                 <ArrowRight className="h-5 w-5 group-hover:translate-x-1 transition-transform" />
                             </button>
 
-                            <a
-                                href="https://chat.whatsapp.com/I8x1vrpqdnHFfym2ilUMg0"
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="group flex items-center justify-center space-x-2 bg-[#25D366] hover:bg-[#20bd5a] text-white px-8 py-4 rounded-full font-bold transition-all hover:scale-105 hover:shadow-[0_0_20px_rgba(37,211,102,0.4)]"
-                            >
-                                <MessageCircle className="w-5 h-5 fill-current" />
-                                <span>Join Community</span>
-                            </a>
-
                             <button
                                 onClick={() => setCurrentPage('events')}
                                 className="flex items-center justify-center space-x-2 bg-white/5 hover:bg-white/10 border border-white/10 hover:border-white/20 px-8 py-4 rounded-full font-semibold transition-all backdrop-blur-md"

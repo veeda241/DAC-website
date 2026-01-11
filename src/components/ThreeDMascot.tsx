@@ -3,6 +3,10 @@ import { Canvas, useFrame } from '@react-three/fiber';
 import { useGLTF, OrbitControls, Stage, Float, Environment, ContactShadows } from '@react-three/drei';
 import * as THREE from 'three';
 import { MASCOT_URL } from '../constants';
+import ModelViewer from './ModelViewer';
+
+// Toggle this to switch between implementations
+const USE_MODEL_VIEWER = true;
 
 const Model = ({ url }: { url: string }) => {
     const { scene } = useGLTF(url);
@@ -46,6 +50,57 @@ const ThreeDMascot = () => {
         );
     }
 
+    // New ModelViewer Implementation
+    if (USE_MODEL_VIEWER) {
+        return (
+            <div
+                onMouseEnter={() => setIsHovered(true)}
+                onMouseLeave={() => setIsHovered(false)}
+                className="relative w-full h-[500px] md:h-[600px] flex items-center justify-center group"
+            >
+                {/* Animated background glow */}
+                <div className={`absolute inset-0 bg-gradient-to-tr from-cyan-500/10 via-purple-500/5 to-indigo-500/10 rounded-full blur-[100px] transition-all duration-1000 ${isHovered ? 'opacity-60 scale-110' : 'opacity-30'}`}></div>
+
+                {/* ModelViewer Component - Fixed size configuration */}
+                <div className="relative z-10" style={{ width: '450px', height: '500px' }}>
+                    <ModelViewer
+                        url="/owl.glb"
+                        width={450}
+                        height={500}
+                        defaultRotationX={0}
+                        defaultRotationY={0}
+                        defaultZoom={2.2}
+                        minZoomDistance={2.2}
+                        maxZoomDistance={2.2}
+                        enableMouseParallax={true}
+                        enableManualRotation={true}
+                        enableHoverRotation={false}
+                        enableManualZoom={false}
+                        ambientIntensity={0.6}
+                        keyLightIntensity={1.5}
+                        fillLightIntensity={0.8}
+                        rimLightIntensity={1.0}
+                        environmentPreset="city"
+                        autoFrame={false}
+                        showScreenshotButton={false}
+                        fadeIn={true}
+                        autoRotate={false}
+                        autoRotateSpeed={0}
+                    />
+                </div>
+
+                {/* Hover instruction */}
+                <div className={`absolute -bottom-8 left-1/2 -translate-x-1/2 transition-all duration-700 ${isHovered ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'}`}>
+                    <div className="glass-card px-6 py-3 rounded-2xl text-xs font-bold text-white flex items-center gap-3 border-cyan-500/30 backdrop-blur-md bg-slate-900/50 border">
+                        <span className="w-2 h-2 bg-cyan-400 rounded-full animate-ping"></span>
+                        Drag to interact
+                    </div>
+                </div>
+            </div>
+        );
+    }
+
+    // Original Canvas Implementation
     return (
         <div
             onMouseEnter={() => setIsHovered(true)}
@@ -99,3 +154,4 @@ const ThreeDMascot = () => {
 };
 
 export default ThreeDMascot;
+

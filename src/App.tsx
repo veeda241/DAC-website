@@ -42,7 +42,7 @@ const App: React.FC = () => {
                 }
             }
 
-            // Events
+            // Events - Load from Supabase only
             const eventsData = await fetchEvents();
             setEvents(eventsData);
 
@@ -173,7 +173,28 @@ const App: React.FC = () => {
         }
     };
 
-    const handleUpdateEvent = (updatedEvent: ClubEvent) => {
+    const handleUpdateEvent = async (updatedEvent: ClubEvent) => {
+        // Update in Supabase if connected
+        if (supabase) {
+            const { error } = await supabase
+                .from('events')
+                .update({
+                    title: updatedEvent.title,
+                    date: updatedEvent.date,
+                    description: updatedEvent.description,
+                    location: updatedEvent.location,
+                    imageUrl: updatedEvent.imageUrl
+                })
+                .eq('id', updatedEvent.id);
+
+            if (error) {
+                console.log('Supabase update failed:', error.message);
+                addNotification('Failed to save event to database', 'error');
+            } else {
+                addNotification('Event updated and saved!', 'success');
+            }
+        }
+        // Always update local state
         setEvents(events.map(e => e.id === updatedEvent.id ? updatedEvent : e));
         addActivity('Updated Event', updatedEvent.title);
     };
@@ -252,15 +273,17 @@ const App: React.FC = () => {
     };
 
     const handleDeleteEvent = async (eventId: string) => {
-        if (!supabase) return;
-        // In a real app, delete from Supabase
-        const { error } = await supabase.from('events').delete().eq('id', eventId);
-        if (error) {
-            addNotification('Failed to delete event', 'error');
-            return;
+        // Try to delete from Supabase if connected
+        if (supabase) {
+            const { error } = await supabase.from('events').delete().eq('id', eventId);
+            if (error) {
+                console.log('Supabase delete failed (may be a local event):', error.message);
+            }
         }
+        // Always remove from local state
         setEvents(prev => prev.filter(e => e.id !== eventId));
         addActivity('Deleted Event', `Event with ID ${eventId} removed.`);
+        addNotification('Event deleted successfully', 'success');
     };
 
     const handleDeleteTask = async (taskId: string) => {

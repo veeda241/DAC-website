@@ -58,6 +58,8 @@ const Dashboard: React.FC<DashboardProps> = ({
   const [newEventDate, setNewEventDate] = useState('');
   const [newEventDesc, setNewEventDesc] = useState('');
   const [newEventImage, setNewEventImage] = useState('');
+  const [newEventLocation, setNewEventLocation] = useState('');
+  const [newEventTime, setNewEventTime] = useState('6:00 PM');
   const [isGeneratingDesc, setIsGeneratingDesc] = useState(false);
 
   const [newTaskTitle, setNewTaskTitle] = useState('');
@@ -68,6 +70,8 @@ const Dashboard: React.FC<DashboardProps> = ({
   // Report Upload States
   const [reportTitle, setReportTitle] = useState('');
   const [reportFile, setReportFile] = useState('');
+  const [reportEventId, setReportEventId] = useState('');
+  const [reportDescription, setReportDescription] = useState('');
 
   // Gallery Upload States
   const [photoCaption, setPhotoCaption] = useState('');
@@ -131,7 +135,7 @@ const Dashboard: React.FC<DashboardProps> = ({
         title: newEventTitle,
         date: newEventDate,
         description: newEventDesc,
-        location: 'TBD',
+        location: newEventLocation || 'TBD',
         imageUrl: newEventImage || events.find(e => e.id === editingEventId)?.imageUrl || `https://picsum.photos/800/400?random=${Date.now()}`
       };
       onUpdateEvent(updatedEvent);
@@ -140,7 +144,7 @@ const Dashboard: React.FC<DashboardProps> = ({
         title: newEventTitle,
         date: newEventDate,
         description: newEventDesc,
-        location: 'TBD',
+        location: newEventLocation || 'TBD',
         imageUrl: newEventImage || `https://picsum.photos/800/400?random=${Date.now()}`
       };
       onCreateEvent(newEvent);
@@ -165,6 +169,8 @@ const Dashboard: React.FC<DashboardProps> = ({
     setNewEventDate('');
     setNewEventDesc('');
     setNewEventImage('');
+    setNewEventLocation('');
+    setNewEventTime('6:00 PM');
     setEditingEventId(null);
   };
 
@@ -360,8 +366,8 @@ const Dashboard: React.FC<DashboardProps> = ({
               key={tab.id}
               onClick={() => setActiveTab(tab.id as any)}
               className={`flex flex-col items-center p-2 rounded-lg transition-all ${activeTab === tab.id
-                  ? 'text-cyan-400'
-                  : 'text-slate-400 hover:text-slate-200'
+                ? 'text-cyan-400'
+                : 'text-slate-400 hover:text-slate-200'
                 }`}
             >
               <tab.icon className={`w-6 h-6 mb-1 ${activeTab === tab.id ? 'drop-shadow-[0_0_8px_rgba(6,182,212,0.5)]' : ''}`} />
@@ -494,30 +500,47 @@ const Dashboard: React.FC<DashboardProps> = ({
                 </div>
               ))}
 
-              {/* Chart */}
-              <div className="lg:col-span-2 bg-slate-900 p-6 rounded-2xl border border-slate-800 shadow-xl h-96 flex flex-col">
-                <h3 className="text-lg font-semibold mb-6 flex items-center gap-2 flex-shrink-0"><Activity className="w-5 h-5 text-indigo-500" /> Task Velocity</h3>
-                <div className="flex-1 min-h-0">
-                  <ResponsiveContainer width="100%" height="100%">
-                    <PieChart>
-                      <Pie
-                        data={taskStatusData}
-                        cx="50%"
-                        cy="50%"
-                        innerRadius={80}
-                        outerRadius={120}
-                        paddingAngle={5}
-                        dataKey="value"
-                        stroke="none"
-                      >
-                        {taskStatusData.map((entry, index) => (
-                          <Cell key={`cell-${index}`} fill={entry.color} className="stroke-slate-900 stroke-2" />
-                        ))}
-                      </Pie>
-                      <Tooltip contentStyle={{ backgroundColor: '#0f172a', borderRadius: '12px', border: '1px solid #1e293b', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.5)' }} itemStyle={{ color: '#fff' }} />
-                      <Legend verticalAlign="bottom" height={36} iconType="circle" />
-                    </PieChart>
-                  </ResponsiveContainer>
+              {/* Upcoming Events Timeline */}
+              <div className="lg:col-span-2 bg-gradient-to-br from-slate-900 to-[#0A0A0C] p-6 rounded-2xl border border-white/5 shadow-xl flex flex-col">
+                <h3 className="text-lg font-semibold mb-6 flex items-center gap-2 flex-shrink-0">
+                  <Calendar className="w-5 h-5 text-cyan-500" /> Upcoming Events
+                </h3>
+                <div className="flex-1 overflow-y-auto space-y-3 pr-2">
+                  {events.filter(e => e.date >= new Date().toISOString().split('T')[0]).length === 0 ? (
+                    <div className="flex flex-col items-center justify-center h-full text-center py-12">
+                      <Calendar className="w-12 h-12 text-slate-700 mb-4" />
+                      <p className="text-slate-500 text-sm">No upcoming events scheduled</p>
+                      <p className="text-slate-600 text-xs mt-1">Create an event to get started</p>
+                    </div>
+                  ) : (
+                    events
+                      .filter(e => e.date >= new Date().toISOString().split('T')[0])
+                      .sort((a, b) => a.date.localeCompare(b.date))
+                      .slice(0, 5)
+                      .map((event, index) => (
+                        <div key={event.id} className="flex gap-4 p-4 rounded-xl bg-white/5 border border-white/5 hover:border-cyan-500/30 transition-all group">
+                          <div className="flex flex-col items-center">
+                            <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-cyan-500/20 to-blue-500/20 border border-cyan-500/30 flex flex-col items-center justify-center">
+                              <span className="text-[10px] text-cyan-400 font-bold uppercase">{new Date(event.date).toLocaleDateString('en-US', { month: 'short' })}</span>
+                              <span className="text-lg font-bold text-white leading-none">{new Date(event.date).getDate()}</span>
+                            </div>
+                            {index < 4 && <div className="w-0.5 h-full bg-gradient-to-b from-cyan-500/30 to-transparent mt-2"></div>}
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <h4 className="font-semibold text-white truncate group-hover:text-cyan-400 transition-colors">{event.title}</h4>
+                            <p className="text-xs text-slate-500 mt-1 line-clamp-2">{event.description}</p>
+                            <div className="flex items-center gap-3 mt-2">
+                              <span className="text-[10px] text-slate-400 flex items-center gap-1">
+                                <Clock className="w-3 h-3" /> 6:00 PM
+                              </span>
+                              <span className="text-[10px] text-slate-400 flex items-center gap-1">
+                                <Layout className="w-3 h-3" /> {event.location || 'TBD'}
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+                      ))
+                  )}
                 </div>
               </div>
 
@@ -591,7 +614,7 @@ const Dashboard: React.FC<DashboardProps> = ({
                 {canManageContent && (
                   <button
                     onClick={() => setEventModalOpen(true)}
-                    className="bg-indigo-600 hover:bg-indigo-700 text-white px-5 py-2 rounded-xl flex items-center gap-2 shadow-lg shadow-indigo-900/20 transition-all hover:scale-105"
+                    className="bg-cyan-600 hover:bg-cyan-700 text-white px-5 py-2 rounded-xl flex items-center gap-2 shadow-lg shadow-cyan-900/20 transition-all hover:scale-105"
                   >
                     <Plus className="w-4 h-4" /> Create Event
                   </button>
@@ -599,13 +622,13 @@ const Dashboard: React.FC<DashboardProps> = ({
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {filteredEvents.map(event => (
-                  <div key={event.id} className="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden flex flex-col group hover:border-indigo-500/30 transition-all duration-300">
+                  <div key={event.id} className="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden flex flex-col group hover:border-cyan-500/30 transition-all duration-300">
                     <div className="h-48 overflow-hidden relative">
                       <img src={event.imageUrl} alt={event.title} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
                       <div className="absolute inset-0 bg-gradient-to-t from-slate-900 via-transparent to-transparent"></div>
                       <div className="absolute bottom-4 left-4">
                         <h3 className="text-xl font-bold text-white shadow-sm">{event.title}</h3>
-                        <p className="text-indigo-300 text-xs font-semibold flex items-center gap-1"><Calendar className="w-3 h-3" /> {event.date} • {event.location}</p>
+                        <p className="text-cyan-300 text-xs font-semibold flex items-center gap-1"><Calendar className="w-3 h-3" /> {event.date} • {event.location}</p>
                       </div>
                     </div>
                     <div className="p-5 flex-1 flex flex-col">
@@ -618,10 +641,11 @@ const Dashboard: React.FC<DashboardProps> = ({
                               setNewEventTitle(event.title);
                               setNewEventDate(event.date);
                               setNewEventDesc(event.description);
+                              setNewEventLocation(event.location || '');
                               setNewEventImage(event.imageUrl || '');
                               setEventModalOpen(true);
                             }}
-                            className="p-2 text-slate-400 hover:text-indigo-400 hover:bg-indigo-500/10 rounded-lg transition-colors"
+                            className="p-2 text-slate-400 hover:text-cyan-400 hover:bg-cyan-500/10 rounded-lg transition-colors"
                             title="Edit Event"
                           >
                             <Settings className="w-4 h-4" />
@@ -661,14 +685,14 @@ const Dashboard: React.FC<DashboardProps> = ({
                       setEditMemberRole(member.role);
                       setEditMemberAvatar(member.avatar || '');
                     }}
-                    className="bg-slate-900 border border-slate-800 rounded-2xl p-6 hover:border-indigo-500/30 transition-all group cursor-pointer"
+                    className="bg-slate-900 border border-slate-800 rounded-2xl p-6 hover:border-cyan-500/30 transition-all group cursor-pointer"
                   >
                     <div className="flex flex-col items-center text-center">
                       <div className="relative">
                         <img
                           src={member.avatar}
                           alt={member.name}
-                          className="w-24 h-24 rounded-full mb-4 border-4 border-slate-800 group-hover:border-indigo-500/50 transition-all"
+                          className="w-24 h-24 rounded-full mb-4 border-4 border-slate-800 group-hover:border-cyan-500/50 transition-all"
                         />
                         <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity rounded-full flex items-center justify-center mb-4">
                           <Settings className="w-6 h-6 text-white" />
@@ -677,7 +701,7 @@ const Dashboard: React.FC<DashboardProps> = ({
                       <h3 className="text-lg font-bold text-white mb-1">{member.name}</h3>
                       <p className="text-sm text-slate-400 mb-2">{member.email}</p>
                       <div className={`inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold ${member.role === UserRole.ADMIN
-                        ? 'bg-indigo-500/10 text-indigo-400 border border-indigo-500/20'
+                        ? 'bg-cyan-500/10 text-cyan-400 border border-cyan-500/20'
                         : member.role === UserRole.MEMBER
                           ? 'bg-cyan-500/10 text-cyan-400 border border-cyan-500/20'
                           : 'bg-slate-500/10 text-slate-400 border border-slate-500/20'
@@ -821,19 +845,78 @@ const Dashboard: React.FC<DashboardProps> = ({
                 {canManageContent && (
                   <div className="md:col-span-1 bg-slate-900 border border-slate-800 rounded-2xl p-6 h-fit shadow-lg">
                     <h3 className="text-lg font-bold text-white mb-6 flex items-center gap-2">
-                      <Upload className="w-5 h-5 text-indigo-500" /> Upload New Report
+                      <Upload className="w-5 h-5 text-cyan-500" /> Upload New Report
                     </h3>
-                    <form onSubmit={handleUploadReport} className="space-y-4">
+                    <form onSubmit={(e) => {
+                      e.preventDefault();
+                      if (!reportTitle) {
+                        alert("Please provide a title for the report.");
+                        return;
+                      }
+
+                      // Get event thumbnail if event is selected
+                      const selectedEvent = events.find(ev => ev.id === reportEventId);
+                      const thumbnail = selectedEvent?.imageUrl || 'https://placehold.co/400x300/0f172a/22d3ee?text=Report';
+
+                      const newReport = {
+                        title: reportTitle,
+                        date: new Date().toISOString().split('T')[0],
+                        description: reportDescription || `Report for ${selectedEvent?.title || 'General'}`,
+                        thumbnailUrl: thumbnail,
+                        fileUrl: reportFile || '#',
+                        eventId: reportEventId || undefined
+                      };
+
+                      onCreateReport(newReport);
+                      setReportTitle('');
+                      setReportDescription('');
+                      setReportFile('');
+                      setReportEventId('');
+                    }} className="space-y-4">
                       <div>
                         <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">Report Title</label>
-                        <input required type="text" value={reportTitle} onChange={e => setReportTitle(e.target.value)} className="w-full bg-slate-950 border border-slate-800 rounded-lg p-3 text-white focus:outline-none focus:border-indigo-500" placeholder="e.g. Monthly Activity Log" />
-                      </div>
-                      <div>
-                        <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">Select File (PDF)</label>
-                        <input type="file" onChange={handleFileChange} accept=".pdf,.doc,.docx" className="w-full text-xs text-slate-400 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-semibold file:bg-indigo-500/10 file:text-indigo-400 hover:file:bg-indigo-500/20 cursor-pointer" required />
+                        <input required type="text" value={reportTitle} onChange={e => setReportTitle(e.target.value)} className="w-full bg-slate-950 border border-slate-800 rounded-lg p-3 text-white focus:outline-none focus:border-cyan-500" placeholder="e.g. Monthly Activity Log" />
                       </div>
 
-                      <button type="submit" className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 rounded-lg transition-all hover:scale-[1.02] mt-2">
+                      <div>
+                        <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">Related Event (Optional)</label>
+                        <select value={reportEventId} onChange={e => setReportEventId(e.target.value)} className="w-full bg-slate-950 border border-slate-800 rounded-lg p-3 text-white focus:outline-none focus:border-cyan-500">
+                          <option value="">Select Event (uses event thumbnail)</option>
+                          {events.map(e => (
+                            <option key={e.id} value={e.id}>{e.title}</option>
+                          ))}
+                        </select>
+                      </div>
+
+                      {/* Show event thumbnail preview */}
+                      {reportEventId && (
+                        <div className="w-full h-32 rounded-lg overflow-hidden border border-cyan-500/30">
+                          <img
+                            src={events.find(e => e.id === reportEventId)?.imageUrl}
+                            alt="Event thumbnail"
+                            className="w-full h-full object-cover"
+                          />
+                          <p className="text-xs text-cyan-400 mt-1">This thumbnail will be used for the report</p>
+                        </div>
+                      )}
+
+                      <div>
+                        <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">Description</label>
+                        <textarea
+                          value={reportDescription}
+                          onChange={e => setReportDescription(e.target.value)}
+                          className="w-full bg-slate-950 border border-slate-800 rounded-lg p-3 text-white focus:outline-none focus:border-cyan-500 resize-none"
+                          rows={3}
+                          placeholder="Brief description of the report..."
+                        />
+                      </div>
+
+                      <div>
+                        <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">Select File (PDF)</label>
+                        <input type="file" onChange={handleFileChange} accept=".pdf,.doc,.docx" className="w-full text-xs text-slate-400 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-semibold file:bg-cyan-500/10 file:text-cyan-400 hover:file:bg-cyan-500/20 cursor-pointer" required />
+                      </div>
+
+                      <button type="submit" className="w-full bg-cyan-600 hover:bg-cyan-700 text-white font-bold py-3 rounded-lg transition-all hover:scale-[1.02] mt-2">
                         Publish Report
                       </button>
                     </form>
@@ -843,46 +926,55 @@ const Dashboard: React.FC<DashboardProps> = ({
                 {/* Published Reports List */}
                 <div className={`${canManageContent ? 'md:col-span-2' : 'md:col-span-3'}`}>
                   <h3 className="text-lg font-bold text-white mb-6">Published Reports</h3>
-                  <div className="space-y-3">
-                    {reports.length === 0 && <p className="text-slate-500 italic border border-dashed border-slate-800 p-8 rounded-xl text-center">No reports uploaded yet.</p>}
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {reports.length === 0 && <p className="col-span-full text-slate-500 italic border border-dashed border-slate-800 p-8 rounded-xl text-center">No reports uploaded yet.</p>}
                     {reports.map(report => (
-                      <div key={report.id} className="bg-slate-900 border border-slate-800 rounded-xl p-4 flex items-center justify-between hover:border-indigo-500/30 transition-colors group">
-                        <div className="flex items-center gap-4">
-                          <div className="w-10 h-10 rounded-lg bg-indigo-500/10 flex items-center justify-center text-indigo-400">
-                            <FileText className="w-5 h-5" />
-                          </div>
-                          <div>
-                            <h4 className="font-medium text-white text-sm">{report.title}</h4>
-                            <p className="text-xs text-slate-500">{report.date}</p>
-                          </div>
+                      <div key={report.id} className="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden hover:border-cyan-500/30 transition-colors group">
+                        {/* Thumbnail */}
+                        <div className="h-32 overflow-hidden relative">
+                          <img
+                            src={report.thumbnailUrl || 'https://placehold.co/400x300/0f172a/22d3ee?text=Report'}
+                            alt={report.title}
+                            className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                          />
+                          <div className="absolute inset-0 bg-gradient-to-t from-slate-900 to-transparent"></div>
                         </div>
 
-                        <div className="flex items-center gap-2">
-                          <button
-                            onClick={() => {
-                              if (report.fileUrl && report.fileUrl !== '#') {
-                                alert('Opening external report link...');
-                                window.open(report.fileUrl, '_blank');
-                              } else {
-                                alert(`Generating PDF for: ${report.title}`);
-                                downloadAsPDF(report.title, report.description, `${report.title}.pdf`);
-                              }
-                            }}
-                            className="p-2 text-slate-400 hover:text-indigo-400 hover:bg-indigo-500/10 rounded-lg transition-colors"
-                            title="Download PDF"
-                          >
-                            <Download className="w-4 h-4" />
-                          </button>
-                          {canManageContent && (
-                            <button onClick={() => {
-                              if (confirm('Delete report?')) {
-                                setReports(prev => prev.filter(r => r.id !== report.id));
-                                addActivity('Deleted Report', report.title);
-                              }
-                            }} className="p-2 text-slate-400 hover:text-red-400 hover:bg-red-500/10 rounded-lg transition-colors" title="Delete">
-                              <Trash2 className="w-4 h-4" />
-                            </button>
-                          )}
+                        <div className="p-4">
+                          <div className="flex items-start justify-between gap-2">
+                            <div>
+                              <h4 className="font-medium text-white text-sm group-hover:text-cyan-400 transition-colors">{report.title}</h4>
+                              <p className="text-xs text-slate-500 mt-1">{report.date}</p>
+                              {report.description && (
+                                <p className="text-xs text-slate-400 mt-2 line-clamp-2">{report.description}</p>
+                              )}
+                            </div>
+                            <div className="flex items-center gap-1 shrink-0">
+                              <button
+                                onClick={() => {
+                                  if (report.fileUrl && report.fileUrl !== '#') {
+                                    window.open(report.fileUrl, '_blank');
+                                  } else {
+                                    downloadAsPDF(report.title, report.description, `${report.title}.pdf`);
+                                  }
+                                }}
+                                className="p-2 text-slate-400 hover:text-cyan-400 hover:bg-cyan-500/10 rounded-lg transition-colors"
+                                title="Download PDF"
+                              >
+                                <Download className="w-4 h-4" />
+                              </button>
+                              {canManageContent && (
+                                <button onClick={() => {
+                                  if (confirm('Delete report?')) {
+                                    setReports(prev => prev.filter(r => r.id !== report.id));
+                                    addActivity('Deleted Report', report.title);
+                                  }
+                                }} className="p-2 text-slate-400 hover:text-red-400 hover:bg-red-500/10 rounded-lg transition-colors" title="Delete">
+                                  <Trash2 className="w-4 h-4" />
+                                </button>
+                              )}
+                            </div>
+                          </div>
                         </div>
                       </div>
                     ))}
@@ -1038,41 +1130,181 @@ const Dashboard: React.FC<DashboardProps> = ({
 
       {/* --- MODALS --- */}
 
-      {/* Create Event Modal */}
+      {/* Create Event Modal - Enhanced UI */}
       {isEventModalOpen && (
-        <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4 backdrop-blur-sm animate-fade-in-up">
-          <div className="bg-slate-900 p-6 rounded-2xl w-full max-w-md border border-slate-700 shadow-2xl relative">
-            <button onClick={() => { setEventModalOpen(false); resetEventForm(); }} className="absolute top-4 right-4 text-slate-400 hover:text-white"><X /></button>
-            <h3 className="text-xl font-bold text-white mb-6">{editingEventId ? 'Edit Event' : 'Create New Event'}</h3>
-            <form onSubmit={handleCreateEvent} className="space-y-4">
-              <div>
-                <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">Event Title</label>
-                <input required type="text" value={newEventTitle} onChange={(e) => setNewEventTitle(e.target.value)} className="w-full bg-slate-950 border border-slate-800 rounded-lg p-3 text-white focus:outline-none focus:border-indigo-500" placeholder="e.g. SQL Bootcamp" />
-              </div>
-              <div>
-                <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">Date</label>
-                <input required type="date" value={newEventDate} onChange={(e) => setNewEventDate(e.target.value)} className="w-full bg-slate-950 border border-slate-800 rounded-lg p-3 text-white focus:outline-none focus:border-indigo-500" />
-              </div>
-              <div>
-                <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">Event Thumbnail</label>
-                <input type="file" onChange={handleEventImageChange} accept="image/*" className="w-full text-xs text-slate-400 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-semibold file:bg-indigo-500/10 file:text-indigo-400 hover:file:bg-indigo-500/20 cursor-pointer" />
-              </div>
-              {newEventImage && (
-                <div className="w-full h-32 rounded-lg overflow-hidden border border-slate-800 mb-4">
-                  <img src={newEventImage} alt="Preview" className="w-full h-full object-cover" />
+        <div
+          className="fixed inset-0 bg-black/90 flex items-center justify-center z-50 p-4 backdrop-blur-xl overflow-y-auto"
+          onClick={() => { setEventModalOpen(false); resetEventForm(); }}
+        >
+          <div
+            className="bg-[#0A0A0C] rounded-[2rem] w-full max-w-2xl border border-white/10 shadow-2xl shadow-cyan-500/10 relative overflow-hidden my-auto"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Modal Header with Gradient */}
+            <div className="relative h-24 bg-gradient-to-r from-cyan-600 via-blue-600 to-purple-600 overflow-hidden">
+              <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNmZmYiIGZpbGwtb3BhY2l0eT0iMC4xIj48cGF0aCBkPSJNMzYgMzRjMC0yLjIxLTEuNzktNC00LTRzLTQgMS43OS00IDQgMS43OSA0IDQgNCA0LTEuNzkgNC00eiIvPjwvZz48L2c+PC9zdmc+')] opacity-30"></div>
+              <div className="absolute bottom-4 left-6">
+                <div className="flex items-center gap-3">
+                  <div className="w-12 h-12 rounded-xl bg-white/20 backdrop-blur-md flex items-center justify-center">
+                    <Calendar className="w-6 h-6 text-white" />
+                  </div>
+                  <div>
+                    <h3 className="text-2xl font-bold text-white">{editingEventId ? 'Edit Event' : 'Create New Event'}</h3>
+                    <p className="text-white/70 text-sm">{editingEventId ? 'Update event details' : 'Add a new event to the calendar'}</p>
+                  </div>
                 </div>
-              )}
+              </div>
+              <button
+                onClick={() => { setEventModalOpen(false); resetEventForm(); }}
+                className="absolute top-4 right-4 p-2 bg-white/10 hover:bg-white/20 rounded-full text-white transition-colors backdrop-blur-md"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            {/* Modal Content */}
+            <form onSubmit={handleCreateEvent} className="p-6 space-y-5">
+              {/* Event Title */}
+              <div className="group">
+                <label className="flex items-center gap-2 text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">
+                  <span className="w-5 h-5 rounded bg-cyan-500/10 flex items-center justify-center">
+                    <FileText className="w-3 h-3 text-cyan-400" />
+                  </span>
+                  Event Title
+                </label>
+                <input
+                  required
+                  type="text"
+                  value={newEventTitle}
+                  onChange={(e) => setNewEventTitle(e.target.value)}
+                  className="w-full bg-slate-900/50 border border-white/10 rounded-xl p-4 text-white text-lg focus:outline-none focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 transition-all placeholder:text-slate-600"
+                  placeholder="e.g. SQL Bootcamp, DataVIZ Workshop"
+                />
+              </div>
+
+              {/* Date, Time, Location Grid */}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                  <label className="flex items-center gap-2 text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">
+                    <span className="w-5 h-5 rounded bg-blue-500/10 flex items-center justify-center">
+                      <Calendar className="w-3 h-3 text-blue-400" />
+                    </span>
+                    Date
+                  </label>
+                  <input
+                    required
+                    type="date"
+                    value={newEventDate}
+                    onChange={(e) => setNewEventDate(e.target.value)}
+                    className="w-full bg-slate-900/50 border border-white/10 rounded-xl p-3 text-white focus:outline-none focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 transition-all"
+                  />
+                </div>
+                <div>
+                  <label className="flex items-center gap-2 text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">
+                    <span className="w-5 h-5 rounded bg-purple-500/10 flex items-center justify-center">
+                      <Clock className="w-3 h-3 text-purple-400" />
+                    </span>
+                    Time
+                  </label>
+                  <input
+                    type="text"
+                    value={newEventTime}
+                    onChange={(e) => setNewEventTime(e.target.value)}
+                    className="w-full bg-slate-900/50 border border-white/10 rounded-xl p-3 text-white focus:outline-none focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 transition-all placeholder:text-slate-600"
+                    placeholder="6:00 PM"
+                  />
+                </div>
+                <div>
+                  <label className="flex items-center gap-2 text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">
+                    <span className="w-5 h-5 rounded bg-emerald-500/10 flex items-center justify-center">
+                      <Layout className="w-3 h-3 text-emerald-400" />
+                    </span>
+                    Location
+                  </label>
+                  <input
+                    type="text"
+                    value={newEventLocation}
+                    onChange={(e) => setNewEventLocation(e.target.value)}
+                    className="w-full bg-slate-900/50 border border-white/10 rounded-xl p-3 text-white focus:outline-none focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 transition-all placeholder:text-slate-600"
+                    placeholder="AV Hall"
+                  />
+                </div>
+              </div>
+
+              {/* Thumbnail Upload */}
               <div>
-                <div className="flex justify-between items-center mb-1">
-                  <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider">Description</label>
-                  <button type="button" onClick={handleGenerateDescription} disabled={isGeneratingDesc} className="text-xs text-indigo-400 hover:text-indigo-300 flex items-center gap-1 transition-colors">
+                <label className="flex items-center gap-2 text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">
+                  <span className="w-5 h-5 rounded bg-pink-500/10 flex items-center justify-center">
+                    <ImageIcon className="w-3 h-3 text-pink-400" />
+                  </span>
+                  Event Thumbnail
+                </label>
+                <div className="flex gap-4">
+                  <div className="flex-1">
+                    <label className="flex items-center justify-center gap-2 p-4 bg-slate-900/50 border-2 border-dashed border-white/10 hover:border-cyan-500/50 rounded-xl cursor-pointer transition-all group">
+                      <Upload className="w-5 h-5 text-slate-500 group-hover:text-cyan-400 transition-colors" />
+                      <span className="text-sm text-slate-500 group-hover:text-cyan-400 transition-colors">
+                        {newEventImage ? 'Change Image' : 'Upload Image'}
+                      </span>
+                      <input type="file" onChange={handleEventImageChange} accept="image/*" className="hidden" />
+                    </label>
+                  </div>
+                  {newEventImage && (
+                    <div className="w-24 h-16 rounded-xl overflow-hidden border border-white/10 relative group">
+                      <img src={newEventImage} alt="Preview" className="w-full h-full object-cover" />
+                      <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                        <CheckCircle className="w-6 h-6 text-emerald-400" />
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {/* Description */}
+              <div>
+                <div className="flex justify-between items-center mb-2">
+                  <label className="flex items-center gap-2 text-xs font-bold text-slate-400 uppercase tracking-wider">
+                    <span className="w-5 h-5 rounded bg-amber-500/10 flex items-center justify-center">
+                      <FileText className="w-3 h-3 text-amber-400" />
+                    </span>
+                    Description
+                  </label>
+                  <button
+                    type="button"
+                    onClick={handleGenerateDescription}
+                    disabled={isGeneratingDesc}
+                    className="flex items-center gap-2 px-3 py-1.5 bg-gradient-to-r from-cyan-500/10 to-purple-500/10 hover:from-cyan-500/20 hover:to-purple-500/20 border border-cyan-500/20 rounded-full text-xs text-cyan-400 font-medium transition-all disabled:opacity-50"
+                  >
                     {isGeneratingDesc ? <Loader2 className="w-3 h-3 animate-spin" /> : <Sparkles className="w-3 h-3" />}
                     AI Auto-Fill
                   </button>
                 </div>
-                <textarea required value={newEventDesc} onChange={(e) => setNewEventDesc(e.target.value)} className="w-full bg-slate-950 border border-slate-800 rounded-lg p-3 text-white h-24 focus:outline-none focus:border-indigo-500" placeholder="Brief event details..." />
+                <textarea
+                  required
+                  value={newEventDesc}
+                  onChange={(e) => setNewEventDesc(e.target.value)}
+                  className="w-full bg-slate-900/50 border border-white/10 rounded-xl p-4 text-white h-28 focus:outline-none focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 transition-all placeholder:text-slate-600 resize-none"
+                  placeholder="Describe your event in detail..."
+                />
               </div>
-              <button type="submit" className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 rounded-lg transition-all hover:scale-[1.02]">{editingEventId ? 'Update Event' : 'Publish Event'}</button>
+
+              {/* Action Buttons */}
+              <div className="flex gap-3 pt-2">
+                <button
+                  type="button"
+                  onClick={() => { setEventModalOpen(false); resetEventForm(); }}
+                  className="flex-1 px-6 py-3 bg-slate-800 hover:bg-slate-700 border border-white/5 rounded-xl text-slate-300 font-semibold transition-all"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="flex-1 px-6 py-3 bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 rounded-xl text-white font-bold transition-all hover:shadow-lg hover:shadow-cyan-500/25 flex items-center justify-center gap-2"
+                >
+                  {editingEventId ? <Save className="w-4 h-4" /> : <Plus className="w-4 h-4" />}
+                  {editingEventId ? 'Update Event' : 'Create Event'}
+                </button>
+              </div>
             </form>
           </div>
         </div>

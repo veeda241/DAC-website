@@ -116,9 +116,15 @@ const Events: React.FC<EventsProps> = ({ events, photos, onLoginClick, setCurren
 
             {/* Event Detail Modal */}
             {selectedEvent && (
-                <div className="fixed inset-0 z-[100] bg-black/90 backdrop-blur-xl overflow-y-auto">
-                    <div className="min-h-full flex items-center justify-center p-4">
-                        <div className="bg-[#0F0F11] border border-white/10 rounded-[2rem] w-full max-w-4xl overflow-hidden shadow-2xl relative">
+                <div
+                    className="fixed inset-0 z-[100] bg-black/90 backdrop-blur-xl overflow-y-auto"
+                    onClick={() => setSelectedEvent(null)}
+                >
+                    <div className="min-h-full flex items-center justify-center p-4 py-12">
+                        <div
+                            className="bg-[#0F0F11] border border-white/10 rounded-[2rem] w-full max-w-4xl overflow-hidden shadow-2xl relative my-auto"
+                            onClick={(e) => e.stopPropagation()}
+                        >
                             {/* Close Button */}
                             <button
                                 onClick={() => setSelectedEvent(null)}

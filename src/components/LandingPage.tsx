@@ -3,6 +3,7 @@ import { Menu, X, Calendar } from 'lucide-react';
 import { ClubEvent, ClubReport, Photo, PageView } from '../types';
 import { LOGO_URL } from '../constants';
 import Beams from './Beams';
+import GooeyNav from './GooeyNav';
 
 // Page Components
 import Home from './pages/Home';
@@ -55,26 +56,30 @@ const LandingPage: React.FC<LandingPageProps> = ({ events, reports, photos, onLo
               <span className="text-xl font-bold text-white sm:hidden tracking-tight">DAC</span>
             </div>
 
-            {/* Desktop Nav - Pill Design */}
-            <div className="hidden md:flex items-center p-1 bg-white/5 rounded-full border border-white/5 backdrop-blur-md">
-              {[
-                { id: 'about', label: 'About' },
-                { id: 'members', label: 'Members' },
-                { id: 'events', label: 'Events' },
-                { id: 'reports', label: 'Reports' },
-                { id: 'photos', label: 'Gallery' }
-              ].map((item) => (
-                <button
-                  key={item.id}
-                  onClick={() => setCurrentPage(item.id as PageView)}
-                  className={`px-5 py-2 rounded-full text-sm font-medium transition-all duration-300 ${currentPage === item.id
-                      ? 'bg-gradient-to-r from-cyan-600 to-blue-600 text-white shadow-lg shadow-cyan-500/20'
-                      : 'text-slate-400 hover:text-white hover:bg-white/5'
-                    }`}
-                >
-                  {item.label}
-                </button>
-              ))}
+            {/* Desktop Nav - GooeyNav with Particle Effects */}
+            <div className="hidden md:flex items-center">
+              <GooeyNav
+                items={[
+                  { label: 'About', href: '#', onClick: () => setCurrentPage('about') },
+                  { label: 'Members', href: '#', onClick: () => setCurrentPage('members') },
+                  { label: 'Events', href: '#', onClick: () => setCurrentPage('events') },
+                  { label: 'Reports', href: '#', onClick: () => setCurrentPage('reports') },
+                  { label: 'Gallery', href: '#', onClick: () => setCurrentPage('photos') }
+                ]}
+                particleCount={12}
+                particleDistances={[70, 10]}
+                particleR={80}
+                initialActiveIndex={
+                  currentPage === 'about' ? 0 :
+                    currentPage === 'members' ? 1 :
+                      currentPage === 'events' ? 2 :
+                        currentPage === 'reports' ? 3 :
+                          currentPage === 'photos' ? 4 : 0
+                }
+                animationTime={500}
+                timeVariance={250}
+                colors={[1, 2, 3, 1, 2, 3, 1, 4]}
+              />
             </div>
 
             {/* Login Button */}

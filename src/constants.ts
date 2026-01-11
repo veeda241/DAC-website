@@ -18,7 +18,32 @@ export const MOCK_USERS: User[] = [
     },
 ];
 
-export const MOCK_EVENTS: ClubEvent[] = [];
+export const MOCK_EVENTS: ClubEvent[] = [
+    {
+        id: 'e1',
+        title: 'DataVIZ 2025',
+        date: '2025-02-15',
+        description: 'Annual inter-college data visualization competition featuring real-world data challenges, workshops, and networking opportunities with industry experts.',
+        location: 'AV Hall',
+        imageUrl: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800'
+    },
+    {
+        id: 'e2',
+        title: 'DAC Inauguration Ceremony',
+        date: '2025-01-20',
+        description: 'Official inauguration of the Data Analytics Club with keynote speakers, vision presentation, and team introduction.',
+        location: 'AV Hall',
+        imageUrl: 'https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=800'
+    },
+    {
+        id: 'e3',
+        title: 'From Idea → Innovation: A Student-Led Guide to Patent Filing',
+        date: '2024-12-10',
+        description: 'An informative session on the patent filing process, intellectual property rights, and how students can protect and commercialize their innovations.',
+        location: 'Hazer Hall',
+        imageUrl: 'https://images.unsplash.com/photo-1589829545856-d10d557cf95f?w=800'
+    }
+];
 
 export const MOCK_TASKS: Task[] = [];
 

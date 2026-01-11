@@ -56,22 +56,22 @@ const ThreeDMascot = () => {
             <div
                 onMouseEnter={() => setIsHovered(true)}
                 onMouseLeave={() => setIsHovered(false)}
-                className="relative w-full h-[500px] md:h-[600px] flex items-center justify-center group"
+                className="relative w-full h-[600px] md:h-[750px] flex items-center justify-center group"
             >
                 {/* Animated background glow */}
                 <div className={`absolute inset-0 bg-gradient-to-tr from-cyan-500/10 via-purple-500/5 to-indigo-500/10 rounded-full blur-[100px] transition-all duration-1000 ${isHovered ? 'opacity-60 scale-110' : 'opacity-30'}`}></div>
 
                 {/* ModelViewer Component - Fixed size configuration */}
-                <div className="relative z-10" style={{ width: '450px', height: '500px' }}>
+                <div className="relative z-10" style={{ width: '600px', height: '650px' }}>
                     <ModelViewer
                         url="/owl.glb"
-                        width={450}
-                        height={500}
+                        width={600}
+                        height={650}
                         defaultRotationX={0}
                         defaultRotationY={0}
-                        defaultZoom={2.2}
-                        minZoomDistance={2.2}
-                        maxZoomDistance={2.2}
+                        defaultZoom={1.6}
+                        minZoomDistance={1.6}
+                        maxZoomDistance={1.6}
                         enableMouseParallax={true}
                         enableManualRotation={true}
                         enableHoverRotation={false}

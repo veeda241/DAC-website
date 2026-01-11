@@ -8,10 +8,11 @@ interface AuthProps {
   onLogin: (user: User) => void;
   onRegister: (name: string, email: string) => void;
   onCancel: () => void;
+  initialMode?: 'login' | 'register';
 }
 
-const Auth: React.FC<AuthProps> = ({ users, onLogin, onRegister, onCancel }) => {
-  const [isSignUp, setIsSignUp] = useState(false);
+const Auth: React.FC<AuthProps> = ({ users, onLogin, onRegister, onCancel, initialMode = 'login' }) => {
+  const [isSignUp, setIsSignUp] = useState(initialMode === 'register');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [name, setName] = useState('');

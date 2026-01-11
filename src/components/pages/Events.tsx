@@ -6,11 +6,12 @@ interface EventsProps {
     events: ClubEvent[];
     photos: Photo[];
     onLoginClick: () => void;
+    onRegisterClick: () => void;
     setCurrentPage: (page: PageView) => void;
     setLightboxPhoto: (photo: Photo | null) => void;
 }
 
-const Events: React.FC<EventsProps> = ({ events, photos, onLoginClick, setCurrentPage, setLightboxPhoto }) => {
+const Events: React.FC<EventsProps> = ({ events, photos, onLoginClick, onRegisterClick, setCurrentPage, setLightboxPhoto }) => {
     const [selectedEvent, setSelectedEvent] = useState<ClubEvent | null>(null);
 
     const currentDate = new Date().toISOString().split('T')[0];
@@ -56,7 +57,7 @@ const Events: React.FC<EventsProps> = ({ events, photos, onLoginClick, setCurren
                                         </div>
                                     </div>
                                     <button
-                                        onClick={() => event.registrationLink ? window.open(event.registrationLink, '_blank') : onLoginClick()}
+                                        onClick={() => event.registrationLink ? window.open(event.registrationLink, '_blank') : onRegisterClick()}
                                         className="w-full bg-white/5 hover:bg-cyan-600 hover:text-white border border-white/10 text-cyan-400 py-3 rounded-xl font-bold transition-all duration-300 flex items-center justify-center gap-2"
                                     >
                                         Register Now {event.registrationLink && <ArrowRight className="w-4 h-4" />}

@@ -18,9 +18,10 @@ interface LandingPageProps {
   reports: ClubReport[];
   photos: Photo[];
   onLoginClick: () => void;
+  onRegisterClick: () => void;
 }
 
-const LandingPage: React.FC<LandingPageProps> = ({ events, reports, photos, onLoginClick }) => {
+const LandingPage: React.FC<LandingPageProps> = ({ events, reports, photos, onLoginClick, onRegisterClick }) => {
   const [currentPage, setCurrentPage] = useState<PageView>('home');
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [lightboxPhoto, setLightboxPhoto] = useState<Photo | null>(null);
@@ -155,6 +156,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ events, reports, photos, onLo
             events={events}
             photos={photos}
             onLoginClick={onLoginClick}
+            onRegisterClick={onRegisterClick}
             setCurrentPage={setCurrentPage}
             setLightboxPhoto={setLightboxPhoto}
           />

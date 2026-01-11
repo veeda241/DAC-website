@@ -10,6 +10,7 @@ const App: React.FC = () => {
     // Global State
     const [currentUser, setCurrentUser] = useState<User | null>(null);
     const [showAuthModal, setShowAuthModal] = useState(false);
+    const [authMode, setAuthMode] = useState<'login' | 'register'>('login');
 
     // Data State
     const [events, setEvents] = useState<ClubEvent[]>([]);
@@ -306,7 +307,8 @@ const App: React.FC = () => {
                         events={events}
                         reports={reports}
                         photos={photos}
-                        onLoginClick={() => setShowAuthModal(true)}
+                        onLoginClick={() => { setAuthMode('login'); setShowAuthModal(true); }}
+                        onRegisterClick={() => { setAuthMode('register'); setShowAuthModal(true); }}
                     />
                     {showAuthModal && (
                         <Auth

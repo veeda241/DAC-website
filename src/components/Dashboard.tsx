@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { ClubEvent, Task, TaskStatus, User, UserRole, ActivityLog, Notification, ClubReport, Photo } from '../types';
 import { generateEventDescription, generateTaskAnalysis } from '../services/geminiService';
 import { PieChart, Pie, Cell, ResponsiveContainer, Legend, Tooltip } from 'recharts';
-import { Plus, CheckCircle, Circle, Clock, Loader2, Sparkles, LogOut, Calendar, Layout, Search, BrainCircuit, X, Users, Activity, Filter, Bell, User as UserIcon, Settings, Save, Upload, Shield, Trash2, ChevronDown, FileText, Image as ImageIcon, PieChart as PieChartIcon, Download, Camera, Menu } from 'lucide-react';
+import { Plus, CheckCircle, Circle, Clock, Loader2, Sparkles, LogOut, Calendar, Layout, Search, BrainCircuit, X, Users, Activity, Filter, Bell, User as UserIcon, Settings, Save, Upload, Shield, Trash2, ChevronDown, FileText, Image as ImageIcon, PieChart as PieChartIcon, Download, Camera, Menu, Link as LinkIcon } from 'lucide-react';
 import { MASCOT_URL, LOGO_URL } from '../constants';
 import { downloadAsPDF } from '../utils/pdfGenerator';
 import Beams from './Beams';
@@ -60,6 +60,7 @@ const Dashboard: React.FC<DashboardProps> = ({
   const [newEventImage, setNewEventImage] = useState('');
   const [newEventLocation, setNewEventLocation] = useState('');
   const [newEventTime, setNewEventTime] = useState('6:00 PM');
+  const [newEventRegistrationLink, setNewEventRegistrationLink] = useState('');
   const [isGeneratingDesc, setIsGeneratingDesc] = useState(false);
 
   const [newTaskTitle, setNewTaskTitle] = useState('');
@@ -136,6 +137,7 @@ const Dashboard: React.FC<DashboardProps> = ({
         date: newEventDate,
         description: newEventDesc,
         location: newEventLocation || 'TBD',
+        registrationLink: newEventRegistrationLink,
         imageUrl: newEventImage || events.find(e => e.id === editingEventId)?.imageUrl || `https://picsum.photos/800/400?random=${Date.now()}`
       };
       onUpdateEvent(updatedEvent);
@@ -145,6 +147,7 @@ const Dashboard: React.FC<DashboardProps> = ({
         date: newEventDate,
         description: newEventDesc,
         location: newEventLocation || 'TBD',
+        registrationLink: newEventRegistrationLink,
         imageUrl: newEventImage || `https://picsum.photos/800/400?random=${Date.now()}`
       };
       onCreateEvent(newEvent);
@@ -170,6 +173,7 @@ const Dashboard: React.FC<DashboardProps> = ({
     setNewEventDesc('');
     setNewEventImage('');
     setNewEventLocation('');
+    setNewEventRegistrationLink('');
     setNewEventTime('6:00 PM');
     setEditingEventId(null);
   };
@@ -642,6 +646,7 @@ const Dashboard: React.FC<DashboardProps> = ({
                               setNewEventDate(event.date);
                               setNewEventDesc(event.description);
                               setNewEventLocation(event.location || '');
+                              setNewEventRegistrationLink(event.registrationLink || '');
                               setNewEventImage(event.imageUrl || '');
                               setEventModalOpen(true);
                             }}
@@ -1229,6 +1234,23 @@ const Dashboard: React.FC<DashboardProps> = ({
                     placeholder="AV Hall"
                   />
                 </div>
+              </div>
+
+              {/* Registration Link (New) */}
+              <div>
+                <label className="flex items-center gap-2 text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">
+                  <span className="w-5 h-5 rounded bg-orange-500/10 flex items-center justify-center">
+                    <LinkIcon className="w-3 h-3 text-orange-400" />
+                  </span>
+                  Registration Link
+                </label>
+                <input
+                  type="url"
+                  value={newEventRegistrationLink}
+                  onChange={(e) => setNewEventRegistrationLink(e.target.value)}
+                  className="w-full bg-slate-900/50 border border-white/10 rounded-xl p-3 text-white focus:outline-none focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 transition-all placeholder:text-slate-600"
+                  placeholder="https://lu.ma/event-id"
+                />
               </div>
 
               {/* Thumbnail Upload */}

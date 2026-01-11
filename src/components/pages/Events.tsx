@@ -55,8 +55,11 @@ const Events: React.FC<EventsProps> = ({ events, photos, onLoginClick, setCurren
                                             <span className="flex items-center gap-1.5"><Clock className="w-4 h-4 text-blue-500" /> 6:00 PM</span>
                                         </div>
                                     </div>
-                                    <button onClick={onLoginClick} className="w-full bg-white/5 hover:bg-cyan-600 hover:text-white border border-white/10 text-cyan-400 py-3 rounded-xl font-bold transition-all duration-300">
-                                        Register Now
+                                    <button
+                                        onClick={() => event.registrationLink ? window.open(event.registrationLink, '_blank') : onLoginClick()}
+                                        className="w-full bg-white/5 hover:bg-cyan-600 hover:text-white border border-white/10 text-cyan-400 py-3 rounded-xl font-bold transition-all duration-300 flex items-center justify-center gap-2"
+                                    >
+                                        Register Now {event.registrationLink && <ArrowRight className="w-4 h-4" />}
                                     </button>
                                 </div>
                             </div>

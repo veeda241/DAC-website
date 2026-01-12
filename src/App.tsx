@@ -180,13 +180,15 @@ const App: React.FC = () => {
             const updated = await updateEvent(updatedEvent);
             if (!updated) {
                 addNotification('Failed to save event to database', 'error');
+                return;
             } else {
                 addNotification('Event updated and saved!', 'success');
+                setEvents(prev => prev.map(e => e.id === updated.id ? updated : e));
+                addActivity('Updated Event', updated.title);
             }
+        } else {
+            addNotification('Database disconnected. Update failed.', 'error');
         }
-        // Always update local state
-        setEvents(events.map(e => e.id === updatedEvent.id ? updatedEvent : e));
-        addActivity('Updated Event', updatedEvent.title);
     };
 
     const handleCreateTask = async (taskData: Omit<Task, 'id'>) => {

@@ -45,16 +45,12 @@ const Home: React.FC<HomeProps> = ({ onLoginClick, setCurrentPage }) => {
                         </p>
 
                         <div className="flex flex-col sm:flex-row flex-wrap gap-4 pt-4">
-                            <button onClick={onLoginClick} className="relative group flex items-center justify-center space-x-2 bg-white text-black px-8 py-4 rounded-full font-bold transition-all hover:scale-105 hover:shadow-[0_0_20px_rgba(255,255,255,0.3)]">
-                                <span>Team Portal</span>
-                                <ArrowRight className="h-5 w-5 group-hover:translate-x-1 transition-transform" />
-                            </button>
-
                             <button
                                 onClick={() => setCurrentPage('events')}
-                                className="flex items-center justify-center space-x-2 bg-white/5 hover:bg-white/10 border border-white/10 hover:border-white/20 px-8 py-4 rounded-full font-semibold transition-all backdrop-blur-md"
+                                className="flex items-center justify-center space-x-2 bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 text-white px-8 py-4 rounded-full font-bold transition-all hover:scale-105 hover:shadow-lg hover:shadow-cyan-500/25"
                             >
                                 <span>View Events</span>
+                                <ArrowRight className="h-5 w-5 group-hover:translate-x-1 transition-transform" />
                             </button>
                         </div>
                     </div>

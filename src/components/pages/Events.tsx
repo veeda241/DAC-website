@@ -39,7 +39,11 @@ const Events: React.FC<EventsProps> = ({ events, photos, onLoginClick, onRegiste
                 {upcomingEvents.length > 0 ? (
                     <div className="grid lg:grid-cols-2 gap-8">
                         {upcomingEvents.map(event => (
-                            <div key={event.id} className="flex flex-col md:flex-row bg-[#0F0F11] rounded-[2rem] overflow-hidden border border-white/5 hover:border-cyan-500/30 transition-all hover:shadow-[0_0_30px_rgba(6,182,212,0.15)] group">
+                            <div
+                                key={event.id}
+                                className="flex flex-col md:flex-row bg-[#0F0F11] rounded-[2rem] overflow-hidden border border-white/5 hover:border-cyan-500/30 transition-all hover:shadow-[0_0_30px_rgba(6,182,212,0.15)] group cursor-pointer"
+                                onClick={() => setSelectedEvent(event)}
+                            >
                                 <div className="md:w-2/5 h-64 md:h-auto relative overflow-hidden">
                                     <img src={event.imageUrl} alt={event.title} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
                                     <div className="absolute inset-0 bg-gradient-to-t from-[#0F0F11] to-transparent opacity-60 md:opacity-0 md:bg-gradient-to-r"></div>
@@ -57,10 +61,14 @@ const Events: React.FC<EventsProps> = ({ events, photos, onLoginClick, onRegiste
                                         </div>
                                     </div>
                                     <button
-                                        onClick={() => event.registrationLink ? window.open(event.registrationLink, '_blank') : onRegisterClick()}
+                                        onClick={(e) => {
+                                            e.stopPropagation();
+                                            const link = event.registrationLink || "https://docs.google.com/forms/d/e/1FAIpQLSck7l4BxrEqXGfZzRx8fxryPb5f3v-sPgyz5Xfm6AyYnapHPg/viewform";
+                                            window.open(link, '_blank');
+                                        }}
                                         className="w-full bg-white/5 hover:bg-cyan-600 hover:text-white border border-white/10 text-cyan-400 py-3 rounded-xl font-bold transition-all duration-300 flex items-center justify-center gap-2"
                                     >
-                                        Register Now {event.registrationLink && <ArrowRight className="w-4 h-4" />}
+                                        Register Now <ArrowRight className="w-4 h-4" />
                                     </button>
                                 </div>
                             </div>
@@ -146,9 +154,15 @@ const Events: React.FC<EventsProps> = ({ events, photos, onLoginClick, onRegiste
                                 />
                                 <div className="absolute inset-0 bg-gradient-to-t from-[#0F0F11] via-black/50 to-transparent"></div>
                                 <div className="absolute bottom-6 left-6 right-6">
-                                    <span className="inline-flex items-center gap-1.5 bg-emerald-500/10 backdrop-blur-md text-emerald-400 text-xs font-bold px-3 py-1.5 rounded-full border border-emerald-500/20 mb-3">
-                                        <CheckCircle className="w-3 h-3" /> Concluded
-                                    </span>
+                                    {selectedEvent.date < new Date().toISOString().split('T')[0] ? (
+                                        <span className="inline-flex items-center gap-1.5 bg-emerald-500/10 backdrop-blur-md text-emerald-400 text-xs font-bold px-3 py-1.5 rounded-full border border-emerald-500/20 mb-3">
+                                            <CheckCircle className="w-3 h-3" /> Concluded
+                                        </span>
+                                    ) : (
+                                        <span className="inline-flex items-center gap-1.5 bg-cyan-500/10 backdrop-blur-md text-cyan-400 text-xs font-bold px-3 py-1.5 rounded-full border border-cyan-500/20 mb-3">
+                                            <Calendar className="w-3 h-3" /> Upcoming
+                                        </span>
+                                    )}
                                     <h2 className="text-3xl md:text-4xl font-extrabold text-white">{selectedEvent.title}</h2>
                                 </div>
                             </div>
@@ -209,15 +223,26 @@ const Events: React.FC<EventsProps> = ({ events, photos, onLoginClick, onRegiste
                                     </div>
                                 )}
 
-                                <div className="mt-10 pt-6 border-t border-white/5 flex justify-end">
+                                <div className="mt-10 pt-6 border-t border-white/5 flex flex-col md:flex-row justify-end gap-3">
+                                    {selectedEvent.date >= new Date().toISOString().split('T')[0] && (
+                                        <button
+                                            onClick={() => {
+                                                const link = selectedEvent.registrationLink || "https://docs.google.com/forms/d/e/1FAIpQLSck7l4BxrEqXGfZzRx8fxryPb5f3v-sPgyz5Xfm6AyYnapHPg/viewform";
+                                                window.open(link, '_blank');
+                                            }}
+                                            className="flex items-center justify-center gap-2 bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 text-white px-8 py-3 rounded-full font-bold transition-all shadow-lg shadow-cyan-500/20"
+                                        >
+                                            Register Now <ArrowRight className="w-4 h-4" />
+                                        </button>
+                                    )}
                                     <button
                                         onClick={() => {
                                             setSelectedEvent(null);
                                             setCurrentPage('photos');
                                         }}
-                                        className="flex items-center gap-2 bg-white text-black px-6 py-3 rounded-full font-bold hover:bg-cyan-50 transition-colors"
+                                        className="flex items-center justify-center gap-2 bg-white text-black px-6 py-3 rounded-full font-bold hover:bg-cyan-50 transition-colors"
                                     >
-                                        View Full Gallery <ArrowRight className="w-4 h-4" />
+                                        View Full Gallery <Camera className="w-4 h-4" />
                                     </button>
                                 </div>
                             </div>

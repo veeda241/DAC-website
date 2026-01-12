@@ -624,6 +624,7 @@ const Dashboard: React.FC<DashboardProps> = ({
                   </button>
                 )}
               </div>
+
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {filteredEvents.map(event => (
                   <div key={event.id} className="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden flex flex-col group hover:border-cyan-500/30 transition-all duration-300">

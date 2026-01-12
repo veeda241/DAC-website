@@ -32,19 +32,32 @@ export const fetchEvents = async (): Promise<ClubEvent[]> => {
   }
 
   // Custom mapping to handle potential snake_case (e.g. registration_link) from DB
-  return (data || []).map((event: any) => ({
+  const mappedEvents = (data || []).map((event: any) => ({
     ...event,
     // Map registration_link to registrationLink if it exists and registrationLink is missing
-    registrationLink: event.registrationLink || event.registration_link,
+    registrationLink: event.registrationLink || event.registration_link || event.link || '',
     imageUrl: event.imageUrl || event.image_url
   })) as ClubEvent[];
+
+  return mappedEvents;
 };
 
 export const createEvent = async (event: Omit<ClubEvent, 'id'>): Promise<ClubEvent | null> => {
   if (!supabase) return null;
+
+  // STRICT PAYLOAD: Only send columns that exist in the DB (snake_case)
+  const payload = {
+    title: event.title,
+    date: event.date,
+    description: event.description,
+    location: event.location,
+    registration_link: event.registrationLink,
+    image_url: event.imageUrl
+  };
+
   const { data, error } = await supabase
     .from('events')
-    .insert([event])
+    .insert([payload])
     .select()
     .single();
 
@@ -58,9 +71,12 @@ export const createEvent = async (event: Omit<ClubEvent, 'id'>): Promise<ClubEve
 export const updateEvent = async (event: ClubEvent): Promise<ClubEvent | null> => {
   if (!supabase) return null;
 
-  // Create a payload that includes snake_case keys just in case the DB expects them
-  const payload: any = {
-    ...event,
+  // STRICT PAYLOAD: Only send columns that exist in the DB (snake_case)
+  const payload = {
+    title: event.title,
+    date: event.date,
+    description: event.description,
+    location: event.location,
     registration_link: event.registrationLink,
     image_url: event.imageUrl
   };

@@ -26,6 +26,15 @@ const App: React.FC = () => {
 
     // Loading State
     const [isLoading, setIsLoading] = useState(true);
+    const [isAppReady, setIsAppReady] = useState(false); // New state to delay background rendering
+
+    // Delay background rendering to allow video to start smoothly
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            setIsAppReady(true);
+        }, 800);
+        return () => clearTimeout(timer);
+    }, []);
 
     // Fetch data from Supabase on component mount
     useEffect(() => {
@@ -296,53 +305,55 @@ const App: React.FC = () => {
 
     return (
         <>
-            {/* Main Content Rendered Always (behind loading screen) */}
-            {!currentUser ? (
-                <>
-                    <LandingPage
+            {/* Main Content Rendered Always (behind loading screen) - Delayed to prevent lag */}
+            {isAppReady && (
+                !currentUser ? (
+                    <>
+                        <LandingPage
+                            events={events}
+                            reports={reports}
+                            photos={photos}
+                            onLoginClick={() => { setAuthMode('login'); setShowAuthModal(true); }}
+                            onRegisterClick={() => { setAuthMode('register'); setShowAuthModal(true); }}
+                        />
+                        {showAuthModal && (
+                            <Auth
+                                users={users}
+                                onLogin={handleLogin}
+                                onRegister={handleRegister}
+                                onCancel={() => setShowAuthModal(false)}
+                            />
+                        )}
+                    </>
+                ) : (
+                    <Dashboard
+                        user={currentUser}
+                        users={users}
                         events={events}
+                        tasks={tasks}
                         reports={reports}
                         photos={photos}
-                        onLoginClick={() => { setAuthMode('login'); setShowAuthModal(true); }}
-                        onRegisterClick={() => { setAuthMode('register'); setShowAuthModal(true); }}
+                        onCreateEvent={handleCreateEvent}
+                        onCreateTask={handleCreateTask}
+                        onCreateReport={handleCreateReport}
+                        onCreatePhoto={handleCreatePhoto}
+                        onUpdateTaskStatus={handleUpdateTaskStatus}
+                        onUpdateEvent={handleUpdateEvent}
+                        setEvents={setEvents}
+                        setTasks={setTasks}
+                        setReports={setReports}
+                        setPhotos={setPhotos}
+                        onUpdateUser={handleUpdateUser}
+                        onDeleteUser={handleDeleteUser}
+                        onDeleteEvent={handleDeleteEvent}
+                        onDeleteTask={handleDeleteTask}
+                        activityLog={activityLog}
+                        addActivity={addActivity}
+                        notifications={notifications}
+                        removeNotification={removeNotification}
+                        onLogout={handleLogout}
                     />
-                    {showAuthModal && (
-                        <Auth
-                            users={users}
-                            onLogin={handleLogin}
-                            onRegister={handleRegister}
-                            onCancel={() => setShowAuthModal(false)}
-                        />
-                    )}
-                </>
-            ) : (
-                <Dashboard
-                    user={currentUser}
-                    users={users}
-                    events={events}
-                    tasks={tasks}
-                    reports={reports}
-                    photos={photos}
-                    onCreateEvent={handleCreateEvent}
-                    onCreateTask={handleCreateTask}
-                    onCreateReport={handleCreateReport}
-                    onCreatePhoto={handleCreatePhoto}
-                    onUpdateTaskStatus={handleUpdateTaskStatus}
-                    onUpdateEvent={handleUpdateEvent}
-                    setEvents={setEvents}
-                    setTasks={setTasks}
-                    setReports={setReports}
-                    setPhotos={setPhotos}
-                    onUpdateUser={handleUpdateUser}
-                    onDeleteUser={handleDeleteUser}
-                    onDeleteEvent={handleDeleteEvent}
-                    onDeleteTask={handleDeleteTask}
-                    activityLog={activityLog}
-                    addActivity={addActivity}
-                    notifications={notifications}
-                    removeNotification={removeNotification}
-                    onLogout={handleLogout}
-                />
+                )
             )}
 
             {/* Loading Screen Overlay */}

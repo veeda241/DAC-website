@@ -5,6 +5,7 @@ import Dashboard from './components/Dashboard';
 import Auth from './components/Auth';
 import { User, ClubEvent, Task, ActivityLog, Notification, UserRole, ClubReport, Photo, TaskStatus } from './types';
 import { MOCK_USERS } from './constants';
+import LoadingScreen from './components/LoadingScreen';
 
 const App: React.FC = () => {
     // Global State
@@ -22,6 +23,9 @@ const App: React.FC = () => {
     // Dynamic State
     const [activityLog, setActivityLog] = useState<ActivityLog[]>([]);
     const [notifications, setNotifications] = useState<Notification[]>([]);
+
+    // Loading State
+    const [isLoading, setIsLoading] = useState(true);
 
     // Fetch data from Supabase on component mount
     useEffect(() => {
@@ -292,6 +296,7 @@ const App: React.FC = () => {
 
     return (
         <>
+            {/* Main Content Rendered Always (behind loading screen) */}
             {!currentUser ? (
                 <>
                     <LandingPage
@@ -338,6 +343,11 @@ const App: React.FC = () => {
                     removeNotification={removeNotification}
                     onLogout={handleLogout}
                 />
+            )}
+
+            {/* Loading Screen Overlay */}
+            {isLoading && (
+                <LoadingScreen onFinished={() => setIsLoading(false)} />
             )}
         </>
     );

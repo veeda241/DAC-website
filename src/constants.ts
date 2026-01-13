@@ -59,9 +59,9 @@ export const MOCK_MENTORS: TeamMember[] = [
     },
     {
         id: 'ment2',
-        name: 'Mrs. Arunmozhi B',
+        name: 'Mrs. B. Arunmozhikalanchiam',
         role: 'Faculty Advisor',
-        bio: 'Specialist in Machine Learning and AI research. Dedicated to mentoring students and bridging the gap between theory and application.',
+        bio: "Mrs. B. Arunmozhikalanchiam is an Assistant Professor in the Department of Artificial Intelligence and Data Science at St. Joseph's College of Engineering, holding a M.E degree. Her teaching interests include Image Processing and Machine Learning. She previously served as a lecturer before her current faculty role and as a Senior Software Engineer in a reputed company for more than 6 years.",
         imageUrl: arunmozhiImg,
         year: 'Faculty Advisor',
         skills: ['Machine Learning', 'Research', 'Student Mentoring', 'AI Development']

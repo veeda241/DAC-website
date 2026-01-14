@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { ArrowRight, ChevronDown, MessageCircle } from 'lucide-react';
 import ThreeDMascot from '../ThreeDMascot';
 import { PageView } from '../../types';
+import { WHATSAPP_GROUP_LINK } from '../../constants';
+
 
 
 interface HomeProps {
@@ -72,16 +74,16 @@ const Home: React.FC<HomeProps> = ({ onLoginClick, setCurrentPage }) => {
                 <div className="absolute inset-0 bg-gradient-to-t from-cyan-900/10 to-transparent pointer-events-none"></div>
                 <div className="max-w-5xl mx-auto px-4 relative z-10">
                     <div className="bg-[#0A0A0A]/50 backdrop-blur-2xl border border-white/5 rounded-[2.5rem] p-12 md:p-20 text-center shadow-2xl relative overflow-hidden group">
-                        <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/5 to-purple-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-1000"></div>
+                        <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/5 to-purple-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-1000 pointer-events-none"></div>
 
                         <h2 className="text-3xl md:text-5xl font-bold mb-6 tracking-tight">Ready to shape the future?</h2>
                         <p className="text-slate-400 mb-10 max-w-2xl mx-auto text-lg">Join a community of innovators, thinkers, and builders. Your data science journey starts here.</p>
 
                         <a
-                            href="https://chat.whatsapp.com/I8x1vrpqdnHFfym2ilUMg0"
+                            href={WHATSAPP_GROUP_LINK}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="inline-flex items-center space-x-3 bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white px-10 py-5 rounded-full font-bold transition-all hover:scale-105 hover:shadow-lg hover:shadow-cyan-500/25"
+                            className="relative z-10 inline-flex items-center space-x-3 bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white px-10 py-5 rounded-full font-bold transition-all hover:scale-105 hover:shadow-lg hover:shadow-cyan-500/25"
                         >
                             <span>Join via WhatsApp</span>
                             <ArrowRight className="w-5 h-5" />

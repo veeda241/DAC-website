@@ -48,13 +48,6 @@ const GalleryPage: React.FC<GalleryPageProps> = ({ photos, onLoginClick, setCurr
                     <span className="text-xs font-bold text-cyan-400 bg-cyan-950/30 px-4 py-2 rounded-full border border-cyan-500/20 backdrop-blur-md">
                         {photos.length} Memories
                     </span>
-                    <button
-                        onClick={onLoginClick}
-                        className="flex items-center gap-2 bg-white/5 hover:bg-cyan-600 hover:text-white border border-white/10 text-cyan-400 px-5 py-2.5 rounded-full transition-all duration-300 shadow-lg"
-                    >
-                        <Users className="w-4 h-4" />
-                        <span className="text-sm font-bold">Admin Portal</span>
-                    </button>
                 </div>
             </div>
 

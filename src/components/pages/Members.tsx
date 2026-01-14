@@ -60,7 +60,17 @@ const Members: React.FC = () => {
                         <h3 className="text-2xl md:text-3xl font-bold text-white">Core Team</h3>
                     </div>
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 justify-items-center">
-                        {MOCK_TEAM.map((member) => (
+                        {MOCK_TEAM.sort((a, b) => {
+                            // Helper to determine year weight
+                            const getYearWeight = (yearStr: string) => {
+                                const y = yearStr.toLowerCase();
+                                if (y.includes('final year') && !y.includes('pre')) return 1;
+                                if (y.includes('pre final') || y.includes('pre-final')) return 2;
+                                if (y.includes('second year') || y.includes('2nd year')) return 3;
+                                return 4; // Others/Unknown
+                            };
+                            return getYearWeight(a.year) - getYearWeight(b.year);
+                        }).map((member) => (
                             <ProfileCard
                                 key={member.id}
                                 name={member.name}

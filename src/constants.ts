@@ -260,7 +260,23 @@ export const MOCK_REPORTS: ClubReport[] = [
         date: '2026-01-15',
         description: 'A comprehensive general report concerning the activities and impact of the Data Analytics Club.',
         thumbnailUrl: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=400',
-        fileUrl: '/DAC_Report.pdf'
+        fileUrl: '/dac_report.pdf'
+    },
+    {
+        id: 'rep_5',
+        title: 'Impact-AI-thon Initial Document',
+        date: '2026-01-16',
+        description: 'Official documentation for the Impact-AI-thon event, including guidelines, themes, and submission details.',
+        thumbnailUrl: 'https://images.unsplash.com/photo-1677442136019-21780ecad995?w=400',
+        fileUrl: '/impact_aithon.pdf'
+    },
+    {
+        id: 'rep_6',
+        title: 'Data Analytics Club Report',
+        date: '2026-01-16',
+        description: 'Detailed report on the Data Analytics Club activities, achievements, and future plans.',
+        thumbnailUrl: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=400',
+        fileUrl: '/dac_club_report.pdf'
     }
 ];
 

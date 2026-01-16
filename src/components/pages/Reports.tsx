@@ -44,21 +44,12 @@ const Reports: React.FC<ReportsProps> = ({ reports }) => {
                                 href={report.fileUrl && report.fileUrl !== '#' ? report.fileUrl : undefined}
                                 target="_blank"
                                 rel="noopener noreferrer"
+                                download={report.fileUrl && report.fileUrl !== '#' ? `${report.title.replace(/\s+/g, '_')}.pdf` : undefined}
                                 className="flex-1 flex flex-col"
                                 onClick={(e) => {
                                     if (!report.fileUrl || report.fileUrl === '#') {
                                         e.preventDefault();
                                         handleDownload(report);
-                                    } else if (report.fileUrl.startsWith('data:')) {
-                                        // Optional: handle extremely large data URLs if needed
-                                        // For now, let default link behavior handle it or force window.open
-                                        e.preventDefault();
-                                        const win = window.open();
-                                        if (win) {
-                                            win.document.write(`<iframe src="${report.fileUrl}" frameborder="0" style="border:0; top:0px; left:0px; bottom:0px; right:0px; width:100%; height:100%;" allowfullscreen></iframe>`);
-                                        } else {
-                                            handleDownload(report);
-                                        }
                                     }
                                 }}
                             >

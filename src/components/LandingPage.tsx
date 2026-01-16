@@ -75,6 +75,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ events, reports, photos, onLo
             <div className="hidden md:flex items-center">
               <GooeyNav
                 items={[
+                  { label: 'Home', href: '#', onClick: () => setCurrentPage('home') },
                   { label: 'About', href: '#', onClick: () => setCurrentPage('about') },
                   { label: 'Members', href: '#', onClick: () => setCurrentPage('members') },
                   { label: 'Events', href: '#', onClick: () => setCurrentPage('events') },
@@ -85,11 +86,12 @@ const LandingPage: React.FC<LandingPageProps> = ({ events, reports, photos, onLo
                 particleDistances={[70, 10]}
                 particleR={80}
                 initialActiveIndex={
-                  currentPage === 'about' ? 0 :
-                    currentPage === 'members' ? 1 :
-                      currentPage === 'events' ? 2 :
-                        currentPage === 'reports' ? 3 :
-                          currentPage === 'photos' ? 4 : 0
+                  currentPage === 'home' ? 0 :
+                    currentPage === 'about' ? 1 :
+                      currentPage === 'members' ? 2 :
+                        currentPage === 'events' ? 3 :
+                          currentPage === 'reports' ? 4 :
+                            currentPage === 'photos' ? 5 : 0
                 }
                 animationTime={500}
                 timeVariance={250}

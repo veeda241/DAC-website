@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Calendar, MapPin, Clock, CheckCircle, Camera, ArrowRight, X } from 'lucide-react';
+import { Calendar, MapPin, Clock, CheckCircle, Camera, ArrowRight, X, FileText } from 'lucide-react';
 import { ClubEvent, Photo, PageView } from '../../types';
 
 interface EventsProps {
@@ -117,7 +117,20 @@ const Events: React.FC<EventsProps> = ({ events, photos, onLoginClick, onRegiste
                                 <h4 className="text-lg font-bold text-white mb-2 line-clamp-1 group-hover:text-cyan-400 transition-colors">{event.title}</h4>
                                 <p className="text-sm text-slate-500 line-clamp-2 mb-4">{event.description}</p>
                                 <div className="flex items-center justify-between text-xs font-medium pt-4 border-t border-white/5">
-                                    <span className="text-emerald-500 flex items-center gap-1"><CheckCircle className="w-3 h-3" /> Completed</span>
+                                    <div className="flex gap-3">
+                                        <span className="text-emerald-500 flex items-center gap-1"><CheckCircle className="w-3 h-3" /> Completed</span>
+                                        {event.reportUrl && (
+                                            <span
+                                                className="text-cyan-400 flex items-center gap-1 hover:text-cyan-300 transition-colors"
+                                                onClick={(e) => {
+                                                    e.stopPropagation();
+                                                    window.open(event.reportUrl, '_blank');
+                                                }}
+                                            >
+                                                <FileText className="w-3 h-3" /> Report
+                                            </span>
+                                        )}
+                                    </div>
                                     <span className="text-indigo-400 flex items-center gap-1 group-hover:translate-x-1 transition-transform">Details <ArrowRight className="w-3 h-3" /></span>
                                 </div>
                             </div>
@@ -222,8 +235,17 @@ const Events: React.FC<EventsProps> = ({ events, photos, onLoginClick, onRegiste
                                         <p className="text-slate-500">No photos available yet.</p>
                                     </div>
                                 )}
-
                                 <div className="mt-10 pt-6 border-t border-white/5 flex flex-col md:flex-row justify-end gap-3">
+                                    {selectedEvent.reportUrl && (
+                                        <button
+                                            onClick={() => {
+                                                window.open(selectedEvent.reportUrl, '_blank');
+                                            }}
+                                            className="flex items-center justify-center gap-2 bg-emerald-600 hover:bg-emerald-500 text-white px-8 py-3 rounded-full font-bold transition-all shadow-lg shadow-emerald-500/20"
+                                        >
+                                            View Report <ArrowRight className="w-4 h-4" />
+                                        </button>
+                                    )}
                                     {selectedEvent.date >= new Date().toISOString().split('T')[0] && (
                                         <button
                                             onClick={() => {

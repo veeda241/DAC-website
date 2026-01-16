@@ -46,6 +46,7 @@ export interface ClubEvent {
     location: string;
     imageUrl?: string;
     registrationLink?: string;
+    reportUrl?: string;
 }
 
 export interface ActivityLog {

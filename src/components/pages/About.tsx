@@ -1,6 +1,6 @@
 import React from 'react';
 import { Target, Lightbulb, Code, Award, BookOpen } from 'lucide-react';
-import { LOGO_URL, COLLEGE_LOGO_URL } from '../../constants';
+import { LOGO_URL, COLLEGE_LOGO_URL, DEPT_LOGO_URL } from '../../constants';
 
 const About: React.FC = () => {
     return (
@@ -59,7 +59,7 @@ const About: React.FC = () => {
                             <div className="relative z-10 flex flex-col items-center text-center">
                                 <div className="w-32 h-32 mb-8 p-6 bg-gradient-to-br from-slate-900 to-black rounded-3xl shadow-2xl shadow-violet-900/20 group-hover:scale-110 transition-transform duration-500 flex items-center justify-center border border-white/10">
                                     <img
-                                        src={LOGO_URL}
+                                        src={DEPT_LOGO_URL}
                                         alt="Department Logo"
                                         className="w-full h-full object-contain"
                                     />

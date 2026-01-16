@@ -10,8 +10,17 @@ interface ReportsProps {
 
 const Reports: React.FC<ReportsProps> = ({ reports }) => {
     const handleDownload = (report: ClubReport) => {
-        if (report.fileUrl !== '#') {
-            window.open(report.fileUrl, '_blank');
+        if (report.fileUrl && report.fileUrl !== '#') {
+            const url = report.fileUrl;
+
+            // If it's a data URL, we might want to handle it differently for large files
+            // but for now, standard link click is fine for download.
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = report.title.replace(/\s+/g, '_') + '.pdf';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
         } else {
             downloadAsPDF(report.title, report.description, `${report.title}.pdf`);
         }
@@ -31,28 +40,52 @@ const Reports: React.FC<ReportsProps> = ({ reports }) => {
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                     {reports.length > 0 ? reports.map(report => (
                         <div key={report.id} className="group bg-[#0A0A0C] border border-white/5 rounded-[1.5rem] overflow-hidden hover:border-cyan-500/30 transition-all hover:-translate-y-2 hover:shadow-2xl hover:shadow-cyan-500/10 flex flex-col relative">
-
-                            <div className="h-48 relative overflow-hidden bg-slate-900 border-b border-white/5">
-                                <img src={report.thumbnailUrl} alt={report.title} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 opacity-80 group-hover:opacity-100" />
-                                <div className="absolute inset-0 bg-gradient-to-t from-[#0A0A0C] via-transparent to-transparent"></div>
-                                <div className="absolute inset-0 bg-cyan-600/20 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                                    <div className="p-3 bg-white/10 backdrop-blur-md rounded-full">
-                                        <ExternalLink className="w-6 h-6 text-white" />
+                            <a
+                                href={report.fileUrl && report.fileUrl !== '#' ? report.fileUrl : undefined}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="flex-1 flex flex-col"
+                                onClick={(e) => {
+                                    if (!report.fileUrl || report.fileUrl === '#') {
+                                        e.preventDefault();
+                                        handleDownload(report);
+                                    } else if (report.fileUrl.startsWith('data:')) {
+                                        // Optional: handle extremely large data URLs if needed
+                                        // For now, let default link behavior handle it or force window.open
+                                        e.preventDefault();
+                                        const win = window.open();
+                                        if (win) {
+                                            win.document.write(`<iframe src="${report.fileUrl}" frameborder="0" style="border:0; top:0px; left:0px; bottom:0px; right:0px; width:100%; height:100%;" allowfullscreen></iframe>`);
+                                        } else {
+                                            handleDownload(report);
+                                        }
+                                    }
+                                }}
+                            >
+                                <div className="h-48 relative overflow-hidden bg-slate-900 border-b border-white/5">
+                                    <img src={report.thumbnailUrl} alt={report.title} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 opacity-80 group-hover:opacity-100" />
+                                    <div className="absolute inset-0 bg-gradient-to-t from-[#0A0A0C] via-transparent to-transparent"></div>
+                                    <div className="absolute inset-0 bg-cyan-600/20 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                                        <div className="p-3 bg-white/10 backdrop-blur-md rounded-full">
+                                            <ExternalLink className="w-6 h-6 text-white" />
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
 
-                            <div className="p-6 flex-1 flex flex-col">
-                                <div className="mb-4">
-                                    <h4 className="font-bold text-white text-lg mb-2 line-clamp-2 leading-tight group-hover:text-cyan-400 transition-colors">{report.title}</h4>
-                                    <p className="text-sm text-slate-500 line-clamp-3 leading-relaxed">{report.description}</p>
-                                </div>
+                                <div className="p-6 flex-1 flex flex-col">
+                                    <div className="mb-4">
+                                        <h4 className="font-bold text-white text-lg mb-2 line-clamp-2 leading-tight group-hover:text-cyan-400 transition-colors">{report.title}</h4>
+                                        <p className="text-sm text-slate-500 line-clamp-3 leading-relaxed">{report.description}</p>
+                                    </div>
 
-                                <div className="mt-auto pt-4 border-t border-white/5 flex justify-between items-center">
-                                    <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">{report.date}</span>
-                                    <DownloadButton onDownload={() => handleDownload(report)} />
+                                    <div className="mt-auto pt-4 border-t border-white/5 flex justify-between items-center">
+                                        <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">{report.date}</span>
+                                        <div onClick={(e) => e.stopPropagation()}>
+                                            <DownloadButton onDownload={() => handleDownload(report)} />
+                                        </div>
+                                    </div>
                                 </div>
-                            </div>
+                            </a>
                         </div>
                     )) : (
                         <div className="col-span-full py-20 text-center text-slate-500 border border-dashed border-white/10 rounded-[2rem] bg-white/5">

@@ -956,19 +956,21 @@ const Dashboard: React.FC<DashboardProps> = ({
                               )}
                             </div>
                             <div className="flex items-center gap-1 shrink-0">
-                              <button
-                                onClick={() => {
-                                  if (report.fileUrl && report.fileUrl !== '#') {
-                                    window.open(report.fileUrl, '_blank');
-                                  } else {
+                              <a
+                                href={report.fileUrl && report.fileUrl !== '#' ? report.fileUrl : undefined}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                onClick={(e) => {
+                                  if (!report.fileUrl || report.fileUrl === '#') {
+                                    e.preventDefault();
                                     downloadAsPDF(report.title, report.description, `${report.title}.pdf`);
                                   }
                                 }}
                                 className="p-2 text-slate-400 hover:text-cyan-400 hover:bg-cyan-500/10 rounded-lg transition-colors"
-                                title="Download PDF"
+                                title="Open or Download PDF"
                               >
                                 <Download className="w-4 h-4" />
-                              </button>
+                              </a>
                               {canManageContent && (
                                 <button onClick={() => {
                                   if (confirm('Delete report?')) {

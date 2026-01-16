@@ -27,7 +27,8 @@ export const MOCK_EVENTS: ClubEvent[] = [
         date: '2025-02-15',
         description: 'Annual inter-college data visualization competition featuring real-world data challenges, workshops, and networking opportunities with industry experts.',
         location: 'AV Hall',
-        imageUrl: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800'
+        imageUrl: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800',
+        reportUrl: '/report_event_2.pdf'
     },
     {
         id: 'e2',
@@ -35,7 +36,8 @@ export const MOCK_EVENTS: ClubEvent[] = [
         date: '2025-01-20',
         description: 'Official inauguration of the Data Analytics Club with keynote speakers, vision presentation, and team introduction.',
         location: 'AV Hall',
-        imageUrl: 'https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=800'
+        imageUrl: 'https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=800',
+        reportUrl: '/DATA_ANALYTICS_CLUB.pdf'
     },
     {
         id: 'e3',
@@ -229,22 +231,39 @@ export const MOCK_PHOTOS: Photo[] = [
 
 export const MOCK_REPORTS: ClubReport[] = [
     {
-        id: 'r1',
-        title: 'Annual Activity Report 2024',
-        date: '2024-12-20',
-        description: 'A comprehensive summary of all workshops, hackathons, and guest lectures conducted in 2024.',
-        thumbnailUrl: 'https://picsum.photos/id/5/400/300',
+        id: 'rep_1',
+        title: 'DAC Inauguration Ceremony Report',
+        date: '2025-01-20',
+        description: 'Official report of the Data Analytics Club inauguration event, detailing the keynote sessions and vision launch.',
+        thumbnailUrl: 'https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=400',
+        fileUrl: '/DATA_ANALYTICS_CLUB.pdf'
+    },
+    {
+        id: 'rep_2',
+        title: 'DataVIZ 2025 Report',
+        date: '2025-02-15',
+        description: 'Comprehensive report on the DataVIZ 2025 competition, including participant metrics and winning project summaries.',
+        thumbnailUrl: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=400',
+        fileUrl: '/report_event_2.pdf'
+    },
+    {
+        id: 'rep_3',
+        title: 'Idea → Innovation Workshop Report',
+        date: '2024-12-10',
+        description: 'Summary of the patent filing guide workshop and intellectual property rights session.',
+        thumbnailUrl: 'https://images.unsplash.com/photo-1589829545856-d10d557cf95f?w=400',
         fileUrl: '#'
     },
     {
-        id: 'r2',
-        title: 'Hackathon Impact Assessment',
-        date: '2023-11-25',
-        description: 'Detailed metrics on participant engagement and project outcomes from the Visualization Hackathon.',
-        thumbnailUrl: 'https://picsum.photos/id/6/400/300',
-        fileUrl: '#'
+        id: 'rep_4',
+        title: 'DAC General Report',
+        date: '2026-01-15',
+        description: 'A comprehensive general report concerning the activities and impact of the Data Analytics Club.',
+        thumbnailUrl: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=400',
+        fileUrl: '/DAC_Report.pdf'
     }
 ];
 
 export const LOGO_URL = departmentLogoImg;
+export const DEPT_LOGO_URL = '/department_logo.jpeg';
 export const MASCOT_URL = NEW_MASCOT_URL;

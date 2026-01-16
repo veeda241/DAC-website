@@ -4,7 +4,7 @@ import LandingPage from './components/LandingPage';
 import Dashboard from './components/Dashboard';
 import Auth from './components/Auth';
 import { User, ClubEvent, Task, ActivityLog, Notification, UserRole, ClubReport, Photo, TaskStatus } from './types';
-import { MOCK_USERS } from './constants';
+import { MOCK_USERS, MOCK_REPORTS } from './constants';
 import LoadingScreen from './components/LoadingScreen';
 
 const App: React.FC = () => {
@@ -17,7 +17,7 @@ const App: React.FC = () => {
     const [events, setEvents] = useState<ClubEvent[]>([]);
     const [tasks, setTasks] = useState<Task[]>([]);
     const [users, setUsers] = useState<User[]>(MOCK_USERS);
-    const [reports, setReports] = useState<ClubReport[]>([]);
+    const [reports, setReports] = useState<ClubReport[]>(MOCK_REPORTS);
     const [photos, setPhotos] = useState<Photo[]>([]);
 
     // Dynamic State
@@ -65,8 +65,9 @@ const App: React.FC = () => {
             setTasks(tasksData);
 
             // Reports
-            const reportsData = await fetchReports();
-            setReports(reportsData);
+            // To 'remove all and newly', we will strictly use MOCK_REPORTS 
+            // and ignore any outdated entries lingering in the database.
+            setReports([...MOCK_REPORTS]);
 
             // Photos
             const photosData = await fetchPhotos();

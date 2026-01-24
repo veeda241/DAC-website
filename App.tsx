@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { supabase, fetchEvents, createEvent, fetchTasks, createTask, fetchReports, createReport, fetchPhotos, createPhoto, updateTaskStatus } from './services/supabaseService';
+import { supabase, fetchEvents, createEvent, fetchTasks, createTask, fetchReports, createReport, fetchPhotos, createPhoto, updateTaskStatus, deletePhoto, deleteTask } from './services/supabaseService';
 import LandingPage from './components/LandingPage';
 import Dashboard from './components/Dashboard';
 import Auth from './components/Auth';
@@ -255,10 +255,8 @@ const App: React.FC = () => {
   };
 
   const handleDeleteTask = async (taskId: string) => {
-     if (!supabase) return;
-     // In a real app, delete from Supabase
-     const { error } = await supabase.from('tasks').delete().eq('id', taskId);
-     if (error) {
+     const success = await deleteTask(taskId);
+     if (!success) {
          addNotification('Failed to delete task', 'error');
          return;
      }
@@ -266,8 +264,19 @@ const App: React.FC = () => {
     addActivity('Deleted Task', `Task with ID ${taskId} removed.`);
   };
 
+  const handleDeletePhoto = async (photoId: string, photoUrl: string) => {
+    const success = await deletePhoto(photoId, photoUrl);
+    if (!success) {
+        addNotification('Failed to delete photo', 'error');
+        return;
+    }
+    setPhotos(prev => prev.filter(p => p.id !== photoId));
+    addActivity('Deleted Photo', 'Removed from gallery');
+  };
+
   return (
     <>
+
       {!currentUser ? (
         <>
           <LandingPage 
@@ -307,6 +316,7 @@ const App: React.FC = () => {
             onDeleteUser={handleDeleteUser}
             onDeleteEvent={handleDeleteEvent}
             onDeleteTask={handleDeleteTask}
+            onDeletePhoto={handleDeletePhoto}
             activityLog={activityLog}
             addActivity={addActivity}
             notifications={notifications}

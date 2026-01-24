@@ -158,3 +158,68 @@ export const createPhoto = async (photo: Omit<Photo, 'id'>): Promise<Photo | nul
   }
   return data;
 };
+
+export const uploadPhotoFile = async (file: File): Promise<string | null> => {
+  if (!supabase) return null;
+  
+  const fileExt = file.name.split('.').pop();
+  const fileName = `${Math.random()}.${fileExt}`;
+  const filePath = `${fileName}`;
+
+  const { error: uploadError } = await supabase.storage
+    .from('photos')
+    .upload(filePath, file);
+
+  if (uploadError) {
+    console.error('Error uploading photo:', uploadError);
+    return null;
+  }
+
+  const { data } = supabase.storage.from('photos').getPublicUrl(filePath);
+  return data.publicUrl;
+};
+
+export const deletePhoto = async (photoId: string, photoUrl: string): Promise<boolean> => {
+    if (!supabase) return false;
+
+    // Delete from DB
+    const { error: dbError } = await supabase
+        .from('photos')
+        .delete()
+        .eq('id', photoId);
+
+    if (dbError) {
+        console.error('Error deleting photo from DB:', dbError);
+        return false;
+    }
+
+    // Attempt to delete from Storage
+    try {
+        const urlObj = new URL(photoUrl);
+        const path = urlObj.pathname.split('/').pop();
+        if (path) {
+             const { error: storageError } = await supabase.storage
+                .from('photos')
+                .remove([path]);
+             if (storageError) console.warn('Error deleting photo from storage:', storageError);
+        }
+    } catch (e) {
+        console.warn("Could not parse photo path for deletion", e);
+    }
+
+    return true;
+};
+
+export const deleteTask = async (taskId: string): Promise<boolean> => {
+  if (!supabase) return false;
+  const { error } = await supabase
+    .from('tasks')
+    .delete()
+    .eq('id', taskId);
+
+  if (error) {
+    console.error('Error deleting task:', error);
+    return false;
+  }
+  return true;
+};

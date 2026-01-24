@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { ClubEvent, Task, TaskStatus, User, UserRole, ActivityLog, Notification, ClubReport, Photo } from '../types';
 import { generateEventDescription, generateTaskAnalysis } from '../services/geminiService';
+import { uploadPhotoFile } from '../services/supabaseService';
 import { PieChart, Pie, Cell, ResponsiveContainer, Legend, Tooltip } from 'recharts';
 import { Plus, CheckCircle, Circle, Clock, Loader2, Sparkles, LogOut, Calendar, Layout, Search, BrainCircuit, X, Users, Activity, Filter, Bell, User as UserIcon, Settings, Save, Upload, Shield, Trash2, ChevronDown, FileText, Image as ImageIcon, PieChart as PieChartIcon, Download, Camera, Menu } from 'lucide-react';
 import { MASCOT_URL, LOGO_URL } from '../constants';
@@ -31,6 +32,7 @@ interface DashboardProps {
   onDeleteUser?: (userId: string) => void;
   onDeleteEvent: (eventId: string) => void; 
   onDeleteTask: (taskId: string) => void; 
+  onDeletePhoto: (photoId: string, photoUrl: string) => void;
   activityLog: ActivityLog[];
   addActivity: (action: string, details?: string) => void;
   notifications: Notification[];
@@ -41,7 +43,7 @@ interface DashboardProps {
 const Dashboard: React.FC<DashboardProps> = ({ 
   user, users, events, tasks, reports, photos, 
   onCreateEvent, onCreateTask, onCreateReport, onCreatePhoto, onUpdateTaskStatus, onUpdateEvent,
-  setEvents, setTasks, setReports, setPhotos, onUpdateUser, onDeleteUser, onDeleteEvent, onDeleteTask, activityLog, addActivity, notifications, removeNotification, onLogout, 
+  setEvents, setTasks, setReports, setPhotos, onUpdateUser, onDeleteUser, onDeleteEvent, onDeleteTask, onDeletePhoto, activityLog, addActivity, notifications, removeNotification, onLogout, 
 }) => {
   const [activeTab, setActiveTab] = useState<'overview' | 'events' | 'tasks' | 'settings' | 'team' | 'reports' | 'gallery'>('overview');
   const [isSidebarOpen, setSidebarOpen] = useState(false);
@@ -71,6 +73,7 @@ const Dashboard: React.FC<DashboardProps> = ({
   const [photoCaption, setPhotoCaption] = useState('');
   const [photoEventId, setPhotoEventId] = useState('');
   const [photoFile, setPhotoFile] = useState('');
+  const [photoFileObj, setPhotoFileObj] = useState<File | null>(null);
 
   // Settings State
   const [settingsName, setSettingsName] = useState(user.name);
@@ -223,16 +226,24 @@ const Dashboard: React.FC<DashboardProps> = ({
   };
 
   // --- Gallery Upload Logic ---
-  const handleUploadPhoto = (e: React.FormEvent) => {
+  const handleUploadPhoto = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!photoCaption || !photoEventId) {
       alert("Please provide a caption and select an event.");
       return;
     }
 
-    // In a real app, we'd use the file URL. Here we pick a random image if simulation fails or use the uploaded one
+    let finalUrl = photoFile || `https://picsum.photos/seed/${Date.now()}/800/600`;
+
+    if (photoFileObj) {
+      const uploadedUrl = await uploadPhotoFile(photoFileObj);
+      if (uploadedUrl) {
+        finalUrl = uploadedUrl;
+      }
+    }
+
     const newPhoto = {
-      url: photoFile || `https://picsum.photos/seed/${Date.now()}/800/600`,
+      url: finalUrl,
       caption: photoCaption,
       eventId: photoEventId
     };
@@ -243,11 +254,13 @@ const Dashboard: React.FC<DashboardProps> = ({
     setPhotoCaption('');
     setPhotoEventId('');
     setPhotoFile('');
+    setPhotoFileObj(null);
   };
 
   const handlePhotoFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
+      setPhotoFileObj(file);
       // Create a fake local URL for preview
       const reader = new FileReader();
       reader.onloadend = () => {
@@ -618,7 +631,7 @@ const Dashboard: React.FC<DashboardProps> = ({
           {/* TAB: TASKS */}
           {activeTab === 'tasks' && (
             <div className="animate-fade-in-up">
-              {canManageContent && (
+              {(
                 <div className="flex justify-end mb-6">
                   <button 
                     onClick={() => setTaskModalOpen(true)}
@@ -652,7 +665,7 @@ const Dashboard: React.FC<DashboardProps> = ({
                           getEventName={getEventName} 
                           onStatusChange={handleTaskStatusChange} 
                           currentUserId={user.id}
-                          canManageContent={canManageContent}
+                          canManageContent={true}
                           onDeleteTask={onDeleteTask}
                         />
                       ))}
@@ -736,7 +749,7 @@ const Dashboard: React.FC<DashboardProps> = ({
               <div className="grid md:grid-cols-3 gap-6">
                 
                 {/* Upload Photo Form */}
-                {canManageContent && (
+                {(
                   <div className="md:col-span-1 bg-slate-900 border border-slate-800 rounded-2xl p-6 h-fit shadow-lg">
                     <h3 className="text-lg font-bold text-white mb-6 flex items-center gap-2">
                        <ImageIcon className="w-5 h-5 text-indigo-500"/> Add to Gallery
@@ -774,7 +787,7 @@ const Dashboard: React.FC<DashboardProps> = ({
                 )}
 
                 {/* Photo Grid */}
-                <div className={`${canManageContent ? 'md:col-span-2' : 'md:col-span-3'}`}>
+                <div className="md:col-span-2">
                   <h3 className="text-lg font-bold text-white mb-6">Gallery Images</h3>
                   <div className="grid grid-cols-2 lg:grid-cols-3 gap-4">
                      {photos.length === 0 && <div className="col-span-full py-12 text-center text-slate-500 border border-dashed border-slate-800 rounded-2xl">No photos in gallery.</div>}
@@ -785,12 +798,11 @@ const Dashboard: React.FC<DashboardProps> = ({
                               <p className="text-white font-medium text-sm line-clamp-1">{photo.caption}</p>
                               <span className="text-[10px] text-indigo-300">{getEventName(photo.eventId)}</span>
                            </div>
-                           {canManageContent && (
+                           {(
                               <button 
                                 onClick={() => {
                                   if(confirm('Delete photo?')) {
-                                    setPhotos(prev => prev.filter(p => p.id !== photo.id));
-                                    addActivity('Deleted Photo', photo.caption);
+                                    onDeletePhoto(photo.id, photo.url);
                                   }
                                 }}
                                 className="absolute top-2 right-2 p-1.5 bg-red-500/80 text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-600"

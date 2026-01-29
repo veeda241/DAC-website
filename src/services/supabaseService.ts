@@ -1,5 +1,6 @@
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
 import { ClubEvent, Task, ClubReport, Photo } from '../types';
+import { MOCK_EVENTS } from '../constants';
 
 // NOTE: You need to create a .env file with these variables
 // VITE_SUPABASE_URL=your_project_url
@@ -20,7 +21,12 @@ export { supabase };
 
 // Events
 export const fetchEvents = async (): Promise<ClubEvent[]> => {
-  if (!supabase) return [];
+  // If Supabase is not connected, return MOCK_EVENTS as fallback
+  if (!supabase) {
+    console.log('Supabase not connected. Using MOCK_EVENTS as fallback.');
+    return MOCK_EVENTS;
+  }
+
   const { data, error } = await supabase
     .from('events')
     .select('*')
@@ -28,18 +34,29 @@ export const fetchEvents = async (): Promise<ClubEvent[]> => {
 
   if (error) {
     console.error('Error fetching events:', error);
-    return [];
+    return MOCK_EVENTS; // Fallback to MOCK_EVENTS on error
   }
 
   // Custom mapping to handle potential snake_case (e.g. registration_link) from DB
-  const mappedEvents = (data || []).map((event: any) => ({
+  const dbEvents = (data || []).map((event: any) => ({
     ...event,
     // Map registration_link to registrationLink if it exists and registrationLink is missing
     registrationLink: event.registrationLink || event.registration_link || event.link || '',
     imageUrl: event.imageUrl || event.image_url
   })) as ClubEvent[];
 
-  return mappedEvents;
+  // Merge MOCK_EVENTS with database events, avoiding duplicates by id
+  const mergedEvents = [...MOCK_EVENTS];
+  dbEvents.forEach(dbEvent => {
+    if (!mergedEvents.some(mockEvent => mockEvent.id === dbEvent.id || mockEvent.title.toLowerCase() === dbEvent.title.toLowerCase())) {
+      mergedEvents.push(dbEvent);
+    }
+  });
+
+  // Sort by date
+  mergedEvents.sort((a, b) => a.date.localeCompare(b.date));
+
+  return mergedEvents;
 };
 
 export const createEvent = async (event: Omit<ClubEvent, 'id'>): Promise<ClubEvent | null> => {

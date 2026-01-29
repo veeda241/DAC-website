@@ -60,16 +60,17 @@ const Events: React.FC<EventsProps> = ({ events, photos, onLoginClick, onRegiste
                                             <span className="flex items-center gap-1.5"><Clock className="w-4 h-4 text-blue-500" /> 6:00 PM</span>
                                         </div>
                                     </div>
-                                    <button
-                                        onClick={(e) => {
-                                            e.stopPropagation();
-                                            const link = event.registrationLink || "https://docs.google.com/forms/d/e/1FAIpQLSck7l4BxrEqXGfZzRx8fxryPb5f3v-sPgyz5Xfm6AyYnapHPg/viewform";
-                                            window.open(link, '_blank');
-                                        }}
-                                        className="w-full bg-white/5 hover:bg-cyan-600 hover:text-white border border-white/10 text-cyan-400 py-3 rounded-xl font-bold transition-all duration-300 flex items-center justify-center gap-2"
-                                    >
-                                        Register Now <ArrowRight className="w-4 h-4" />
-                                    </button>
+                                    {event.registrationLink && (
+                                        <button
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                window.open(event.registrationLink, '_blank');
+                                            }}
+                                            className="w-full bg-white/5 hover:bg-cyan-600 hover:text-white border border-white/10 text-cyan-400 py-3 rounded-xl font-bold transition-all duration-300 flex items-center justify-center gap-2"
+                                        >
+                                            Register Now <ArrowRight className="w-4 h-4" />
+                                        </button>
+                                    )}
                                 </div>
                             </div>
                         ))}
@@ -186,7 +187,7 @@ const Events: React.FC<EventsProps> = ({ events, photos, onLoginClick, onRegiste
                                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8 pb-8 border-b border-white/5">
                                     {[
                                         { icon: Calendar, label: 'Date', val: selectedEvent.date, color: 'text-cyan-400' },
-                                        { icon: Clock, label: 'Time', val: '6:00 PM', color: 'text-blue-400' },
+                                        { icon: Clock, label: 'Time', val: '8:00 PM', color: 'text-blue-400' },
                                         { icon: MapPin, label: 'Location', val: selectedEvent.location, color: 'text-purple-400' },
                                         { icon: Camera, label: 'Photos', val: `${getEventPhotos(selectedEvent.id).length} Shots`, color: 'text-pink-400' }
                                     ].map((item, i) => (
@@ -246,11 +247,10 @@ const Events: React.FC<EventsProps> = ({ events, photos, onLoginClick, onRegiste
                                             View Report <ArrowRight className="w-4 h-4" />
                                         </button>
                                     )}
-                                    {selectedEvent.date >= new Date().toISOString().split('T')[0] && (
+                                    {selectedEvent.date >= new Date().toISOString().split('T')[0] && selectedEvent.registrationLink && (
                                         <button
                                             onClick={() => {
-                                                const link = selectedEvent.registrationLink || "https://docs.google.com/forms/d/e/1FAIpQLSck7l4BxrEqXGfZzRx8fxryPb5f3v-sPgyz5Xfm6AyYnapHPg/viewform";
-                                                window.open(link, '_blank');
+                                                window.open(selectedEvent.registrationLink, '_blank');
                                             }}
                                             className="flex items-center justify-center gap-2 bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 text-white px-8 py-3 rounded-full font-bold transition-all shadow-lg shadow-cyan-500/20"
                                         >

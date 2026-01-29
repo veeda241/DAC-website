@@ -22,6 +22,23 @@ export const MOCK_USERS: User[] = [
 
 export const MOCK_EVENTS: ClubEvent[] = [
     {
+        id: 'e4',
+        title: 'Query Quest',
+        date: '2026-02-02',
+        description: 'An Interactive Workshop on DBMS & SQL - An exciting quiz and workshop event designed for 1st and 2nd year students! Test your knowledge, sharpen your skills, and compete with peers in this engaging learning experience.',
+        location: 'AV Hall',
+        imageUrl: '/query_quest_banner.png'
+    },
+    {
+        id: 'e5',
+        title: 'Impact-AI-Thon',
+        date: '2026-02-23',
+        description: 'IMPACT-AI-THON \'26 is a 24-hour national-level hackathon hosted by the Data Analytics Club. Innovate, collaborate, and compete to create impactful AI-powered solutions!',
+        location: 'Hackathon Center',
+        imageUrl: 'https://images.unsplash.com/photo-1677442136019-21780ecad995?w=800',
+        registrationLink: 'https://docs.google.com/forms/d/e/1FAIpQLSck7l4BxrEqXGfZzRx8fxryPb5f3v-sPgyz5Xfm6AyYnapHPg/viewform'
+    },
+    {
         id: 'e1',
         title: 'DataVIZ 2025',
         date: '2025-02-15',

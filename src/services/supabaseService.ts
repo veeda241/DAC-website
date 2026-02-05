@@ -48,8 +48,20 @@ export const fetchEvents = async (): Promise<ClubEvent[]> => {
   // Merge MOCK_EVENTS with database events, avoiding duplicates by id
   const mergedEvents = [...MOCK_EVENTS];
   dbEvents.forEach(dbEvent => {
-    if (!mergedEvents.some(mockEvent => mockEvent.id === dbEvent.id || mockEvent.title.toLowerCase() === dbEvent.title.toLowerCase())) {
+    // Check if this DB event matches a mock event ID
+    const mockMatch = mergedEvents.find(m => m.id === dbEvent.id);
+    if (!mockMatch) {
+      // New event from DB, add it
       mergedEvents.push(dbEvent);
+    } else {
+      // Conflict: The event exists in both.
+      // We usually prefer DB data, BUT for hardcoded local assets (like images in /public),
+      // we might want to keep the local path if the DB one is just a placeholder.
+      // For now, let's update the mock match with DB data, but preserve the image if DB has none.
+      Object.assign(mockMatch, {
+        ...dbEvent,
+        imageUrl: dbEvent.imageUrl || mockMatch.imageUrl
+      });
     }
   });
 

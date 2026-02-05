@@ -123,7 +123,7 @@ export const MOCK_TEAM: TeamMember[] = [
         name: 'Marcben James Samuel S',
         role: 'Vice President',
         bio: 'A driven learner who enjoys exploring technology, building ideas, and creating meaningful projects.\nI’m passionate about turning concepts into practical solutions through curiosity and consistent growth.\nWith focus and creativity, I aim to improve, innovate, and make a positive impact through my work.',
-        imageUrl: '/marben.jpeg',
+        imageUrl: 'https://image2url.com/r2/default/images/1770282404790-2e546545-33ae-479d-a952-daba7d6f31a0.jpeg',
         year: 'Second Year',
         skills: ['AI & Programming', 'Problem-Solving', 'Creativity', 'Quick Learning', 'Communication', 'Leadership']
     },
@@ -149,7 +149,7 @@ export const MOCK_TEAM: TeamMember[] = [
         id: 'm14',
         name: 'Angel Sini S A',
         role: 'Design Lead',
-        imageUrl: 'https://image2url.com/images/1764601208784-d228336e-fe41-4f20-aa35-e10a17ddb90b.jpg',
+        imageUrl: 'https://image2url.com/r2/default/images/1770282377134-dc448888-0d87-4818-8377-26182d4fd5b4.jpeg',
         bio: 'Dynamic and motivated learner who enjoys exploring technology, creativity, and meaningful ideas. Recognized for excellent communication skills, quick learning ability, and adaptability in fast-changing environments. Seeking opportunities in applying technical knowledge to impactful projects and gain hands-on experience in a collaborative and growth-oriented environment',
         year: 'Pre Final Year, ADS',
         skills: ['Programming', 'Problem-Solving', 'Communication', 'Team work', 'Creativity', 'Leadership']
@@ -159,7 +159,7 @@ export const MOCK_TEAM: TeamMember[] = [
         name: 'Naveen Kumar A',
         role: 'Co-Design Lead',
         bio: 'Passionate about AI, Machine Learning, IoT, and Full Stack Development, I enjoy building practical and impactful tech solutions. I love exploring new technologies, solving real-world problems, and creating intelligent systems through hands-on projects.\nskills Full Stack Development • Design Thinking • Programming • Creativity • Data Science',
-        imageUrl: 'https://image2url.com/images/1764601150429-5afc9289-cbcb-469c-90e3-9381fe32884c.jpg',
+        imageUrl: 'https://image2url.com/r2/default/images/1770282097309-b5ea3d21-10de-4b7e-9892-e8965775a439.jpeg',
         year: 'Second Year',
         skills: ['Full Stack Development', 'Design Thinking', 'Programming', 'Creativity', 'Data Science']
     },
@@ -186,7 +186,7 @@ export const MOCK_TEAM: TeamMember[] = [
         name: 'Krissal K V',
         role: 'Dataset Manager',
         bio: 'I’m deeply passionate about data science and analytics, driven by a strong desire to learn, innovate, and create solutions that deliver real value. I thrive on exploring new ideas, transforming insights into meaningful outcomes, and continuously elevating my skills to achieve excellence in everything I pursue.',
-        imageUrl: 'https://image2url.com/images/1764601668519-7bb72c21-1bc3-4cc4-b7f0-1328fc2c87bd.jpg',
+        imageUrl: 'https://image2url.com/r2/default/images/1770282137973-d442a757-8de3-4c94-a41f-8b25024a2363.jpeg',
         year: 'Second Year, ADS',
         skills: ['Programming', 'Problem-Solving', 'Communication', 'Creativity', 'Leadership', 'Critical Thinking']
     },
@@ -213,7 +213,7 @@ export const MOCK_TEAM: TeamMember[] = [
         name: 'Gavin N Benedict',
         role: 'Social Media Lead',
         bio: 'I am an AI and Data Science student driven by a passion for data‑driven storytelling. Within the Data Science Club’s Social Media Department, I manage content creation, videography, photography, and editing. I enjoy blending creativity with analytics to craft narratives that inspire and engage our community. From documenting events to designing digital campaigns, I aim to make complex ideas accessible and visually appealing.',
-        imageUrl: 'https://image2url.com/images/1764602022945-94e2d729-d4d6-41d4-a6c7-9819f1743957.jpg',
+        imageUrl: 'https://image2url.com/r2/default/images/1770282352971-2c4b3432-01b2-4e37-9c26-aaf808233594.jpeg',
         year: 'Second Year, ADS',
         skills: ['Data‑Driven Storytelling', 'Content Creation', 'Videography', 'Photography', 'Video Editing', 'Photo Editing', 'Social Media Management', 'Creative Branding', 'Analytics Integration', 'Community Engagement']
     },
@@ -222,7 +222,7 @@ export const MOCK_TEAM: TeamMember[] = [
         name: 'Srivardhni Palaniappan',
         role: 'Script Writer',
         bio: 'An AI & Data Science student who is passionate in Python, cybersecurity, and 3D modelling. Active campus host and podcast interviewer, engaged in tech communities, CTFs, and FOSS meetups. Driven by curiosity across gaming, literature, and creative digital design. With drive and adaptability, I continue to grow, contribute, and make an impact across every space I step into.',
-        imageUrl: 'https://image2url.com/images/1764601968880-9d30bd27-d73c-43de-974a-919f3229a976.jpg',
+        imageUrl: 'https://image2url.com/r2/default/images/1770282025605-0fa218e9-2740-47e5-99d1-b739e6119405.jpeg',
         year: 'Second Year, ADS',
         skills: ['Python Programming', 'Cybersecurity Fundamentals', '3D Modelling (Blender)', 'Creative Design (Logos, Visuals)', 'Communication & Hosting']
     },

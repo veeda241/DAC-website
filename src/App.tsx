@@ -64,10 +64,21 @@ const App: React.FC = () => {
             const tasksData = await fetchTasks();
             setTasks(tasksData);
 
-            // Reports
-            // To 'remove all and newly', we will strictly use MOCK_REPORTS 
-            // and ignore any outdated entries lingering in the database.
-            setReports([...MOCK_REPORTS]);
+            // Reports - Fetch from Supabase and merge with Mocks
+            const reportsData = await fetchReports();
+            if (reportsData.length > 0) {
+                const mergedReports = [...MOCK_REPORTS];
+                reportsData.forEach(dbRep => {
+                    if (!mergedReports.some(m => m.id === dbRep.id)) {
+                        mergedReports.unshift(dbRep); // Add new DB uploads to the top
+                    }
+                });
+                // Sort by date descending
+                mergedReports.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+                setReports(mergedReports);
+            } else {
+                setReports([...MOCK_REPORTS]);
+            }
 
             // Photos
             const photosData = await fetchPhotos();

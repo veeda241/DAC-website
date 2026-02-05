@@ -27,7 +27,8 @@ export const MOCK_EVENTS: ClubEvent[] = [
         date: '2026-02-02',
         description: 'An Interactive Workshop on DBMS & SQL - An exciting quiz and workshop event designed for 1st and 2nd year students! Test your knowledge, sharpen your skills, and compete with peers in this engaging learning experience.',
         location: 'AV Hall',
-        imageUrl: '/query_quest_banner.png'
+        imageUrl: '/query_quest_banner.png',
+        reportUrl: '/query_quest_report.pdf'
     },
     {
         id: 'e5',
@@ -294,6 +295,14 @@ export const MOCK_REPORTS: ClubReport[] = [
         description: 'Detailed report on the Data Analytics Club activities, achievements, and future plans.',
         thumbnailUrl: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=400',
         fileUrl: '/dac_club_report.pdf'
+    },
+    {
+        id: 'rep_7',
+        title: 'Query Quest Event Report',
+        date: '2026-02-02',
+        description: 'Report for the Query Quest: DBMS & SQL Workshop and Quiz Competition.',
+        thumbnailUrl: '/query_quest_banner.png',
+        fileUrl: '/query_quest_report.pdf'
     }
 ];
 

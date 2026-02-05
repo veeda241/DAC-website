@@ -77,7 +77,7 @@ const Dashboard: React.FC<DashboardProps> = ({
   // Gallery Upload States
   const [photoCaption, setPhotoCaption] = useState('');
   const [photoEventId, setPhotoEventId] = useState('');
-  const [photoFile, setPhotoFile] = useState('');
+  const [photoFiles, setPhotoFiles] = useState<string[]>([]);
 
   // Settings State
   const [settingsName, setSettingsName] = useState(user.name);
@@ -249,30 +249,36 @@ const Dashboard: React.FC<DashboardProps> = ({
       return;
     }
 
-    // In a real app, we'd use the file URL. Here we pick a random image if simulation fails or use the uploaded one
-    const newPhoto = {
-      url: photoFile || `https://picsum.photos/seed/${Date.now()}/800/600`,
-      caption: photoCaption,
-      eventId: photoEventId
-    };
+    const filesToUpload = photoFiles.length > 0 ? photoFiles : [`https://picsum.photos/seed/${Date.now()}/800/600`];
 
-    onCreatePhoto(newPhoto);
+    filesToUpload.forEach((url, index) => {
+      const caption = filesToUpload.length > 1 ? `${photoCaption} ${index + 1}` : photoCaption;
+      onCreatePhoto({
+        url,
+        caption,
+        eventId: photoEventId
+      });
+    });
 
     // Reset
     setPhotoCaption('');
     setPhotoEventId('');
-    setPhotoFile('');
+    setPhotoFiles([]);
   };
 
   const handlePhotoFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      // Create a fake local URL for preview
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setPhotoFile(reader.result as string);
-      };
-      reader.readAsDataURL(file);
+    if (e.target.files && e.target.files.length > 0) {
+      const files = Array.from(e.target.files);
+      Promise.all(files.map(file => {
+        return new Promise<string>((resolve, reject) => {
+          const reader = new FileReader();
+          reader.onloadend = () => resolve(reader.result as string);
+          reader.onerror = reject;
+          reader.readAsDataURL(file);
+        });
+      })).then(results => {
+        setPhotoFiles(results);
+      });
     }
   };
 
@@ -853,7 +859,7 @@ const Dashboard: React.FC<DashboardProps> = ({
                     <h3 className="text-lg font-bold text-white mb-6 flex items-center gap-2">
                       <Upload className="w-5 h-5 text-cyan-500" /> Upload New Report
                     </h3>
-                    <form onSubmit={(e) => {
+                    <form onSubmit={async (e) => {
                       e.preventDefault();
                       if (!reportTitle) {
                         alert("Please provide a title for the report.");
@@ -864,6 +870,12 @@ const Dashboard: React.FC<DashboardProps> = ({
                       const selectedEvent = events.find(ev => ev.id === reportEventId);
                       const thumbnail = selectedEvent?.imageUrl || 'https://placehold.co/400x300/0f172a/22d3ee?text=Report';
 
+                      // File Size Validation (Max 5MB to prevent DB issues)
+                      if (reportFile && reportFile.length > 5 * 1024 * 1024 * 1.37) { // Base64 overhead approx 37%
+                        alert("File is too large! Please upload a PDF smaller than 5MB.");
+                        return;
+                      }
+
                       const newReport = {
                         title: reportTitle,
                         date: new Date().toISOString().split('T')[0],
@@ -873,11 +885,18 @@ const Dashboard: React.FC<DashboardProps> = ({
                         eventId: reportEventId || undefined
                       };
 
-                      onCreateReport(newReport);
-                      setReportTitle('');
-                      setReportDescription('');
-                      setReportFile('');
-                      setReportEventId('');
+                      // Call create service
+                      const result = await onCreateReport(newReport);
+
+                      if (result) {
+                        alert("Report uploaded successfully!");
+                        setReportTitle('');
+                        setReportDescription('');
+                        setReportFile('');
+                        setReportEventId('');
+                      } else {
+                        alert("Failed to upload report. Please check the console for errors or try a smaller file.");
+                      }
                     }} className="space-y-4">
                       <div>
                         <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">Report Title</label>
@@ -1019,12 +1038,16 @@ const Dashboard: React.FC<DashboardProps> = ({
                       </div>
                       <div>
                         <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">Upload Image</label>
-                        <input type="file" onChange={handlePhotoFileChange} accept="image/*" className="w-full text-xs text-slate-400 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-semibold file:bg-indigo-500/10 file:text-indigo-400 hover:file:bg-indigo-500/20 cursor-pointer" required />
+                        <input type="file" onChange={handlePhotoFileChange} accept="image/*" multiple className="w-full text-xs text-slate-400 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-semibold file:bg-indigo-500/10 file:text-indigo-400 hover:file:bg-indigo-500/20 cursor-pointer" required />
                       </div>
 
-                      {photoFile && (
-                        <div className="w-full h-32 rounded-lg overflow-hidden border border-slate-800">
-                          <img src={photoFile} alt="Preview" className="w-full h-full object-cover" />
+                      {photoFiles.length > 0 && (
+                        <div className="grid grid-cols-3 gap-2">
+                          {photoFiles.map((src, idx) => (
+                            <div key={idx} className="aspect-square rounded-lg overflow-hidden border border-slate-800">
+                              <img src={src} alt="Preview" className="w-full h-full object-cover" />
+                            </div>
+                          ))}
                         </div>
                       )}
 

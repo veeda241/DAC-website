@@ -170,7 +170,13 @@ export const fetchReports = async (): Promise<ClubReport[]> => {
     console.error('Error fetching reports:', error);
     return [];
   }
-  return data || [];
+
+  // Map Supabase snake_case to camelCase if necessary
+  return (data || []).map((item: any) => ({
+    ...item,
+    thumbnailUrl: item.thumbnailUrl || item.thumbnail_url || item.thumbnail || '',
+    fileUrl: item.fileUrl || item.file_url || item.file || item.url || ''
+  })) as ClubReport[];
 };
 
 export const createReport = async (report: Omit<ClubReport, 'id'>): Promise<ClubReport | null> => {
@@ -181,16 +187,41 @@ export const createReport = async (report: Omit<ClubReport, 'id'>): Promise<Club
       ...report
     };
   }
+
+  // Map to snake_case for Supabase if needed, or send as is if columns match
+  // ERROR FIX: The previous error said "Could not find the 'file_url' column". 
+  // This implies the column name might be 'fileUrl' (camelCase preserved) or 'file', or 'url'.
+  // Based on common practices and the error, we will try to match the interface definition or a simpler schema.
+
+  // NOTE: If you are the admin, please check your Supabase Table Definition for 'reports'.
+  // We will assume the columns are named as per the Type definition if snake_case failed, 
+  // or simple names like 'file' and 'thumbnail'.
+
+  const payload = {
+    title: report.title,
+    date: report.date,
+    description: report.description,
+    // Try sending camelCase first if snake_case failed, OR try simpler names if you created the table manually
+    // If the error persists, please check the actual column names in your Supabase Dashboard.
+    thumbnailUrl: report.thumbnailUrl,
+    fileUrl: report.fileUrl,
+    // eventId: report.eventId 
+  };
+
+  console.log("Attempting to upload report with payload:", payload);
+
   const { data, error } = await supabase
     .from('reports')
-    .insert([report])
+    .insert([payload])
     .select()
     .single();
 
   if (error) {
-    console.error('Error creating report:', error);
+    console.error('Error creating report in Supabase:', error);
+    console.error('Error details:', error.details, error.message, error.hint);
     return null;
   }
+
   return data;
 };
 

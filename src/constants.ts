@@ -123,7 +123,7 @@ export const MOCK_TEAM: TeamMember[] = [
         name: 'Marcben James Samuel S',
         role: 'Vice President',
         bio: 'A driven learner who enjoys exploring technology, building ideas, and creating meaningful projects.\nI’m passionate about turning concepts into practical solutions through curiosity and consistent growth.\nWith focus and creativity, I aim to improve, innovate, and make a positive impact through my work.',
-        imageUrl: 'https://image2url.com/images/1764600491711-3ee3148f-9816-401b-9a86-bcb0c5c373a1.jpg',
+        imageUrl: '/marben.jpeg',
         year: 'Second Year',
         skills: ['AI & Programming', 'Problem-Solving', 'Creativity', 'Quick Learning', 'Communication', 'Leadership']
     },

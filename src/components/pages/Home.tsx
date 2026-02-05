@@ -67,53 +67,7 @@ const Home: React.FC<HomeProps> = ({ onLoginClick, setCurrentPage }) => {
                 </div>
             </section>
 
-            {/* Query Quest Event Banner */}
-            <section className="py-12 px-4 sm:px-6 lg:px-8 relative">
-                <div className="max-w-6xl mx-auto">
-                    <div className="relative group cursor-pointer" onClick={() => setCurrentPage('events')}>
-                        {/* Glow effect */}
-                        <div className="absolute -inset-1 bg-gradient-to-r from-cyan-500 via-blue-500 to-purple-500 rounded-3xl blur-lg opacity-30 group-hover:opacity-60 transition-opacity duration-500"></div>
 
-                        {/* Banner Container */}
-                        <div className="relative bg-gradient-to-r from-[#0a1628] to-[#0d1f3c] border border-cyan-500/20 rounded-2xl overflow-hidden shadow-2xl group-hover:shadow-cyan-500/20 transition-all duration-500">
-                            {/* Upcoming Badge */}
-                            <div className="absolute top-4 left-4 z-20 flex items-center gap-2 bg-gradient-to-r from-cyan-500 to-blue-600 text-white text-sm font-bold px-4 py-2 rounded-full shadow-lg animate-pulse">
-                                <span className="w-2 h-2 rounded-full bg-white animate-ping"></span>
-                                <span>UPCOMING EVENT</span>
-                            </div>
-
-                            {/* Banner Image */}
-                            <div className="relative overflow-hidden">
-                                <img
-                                    src="/query_quest_banner.png"
-                                    alt="Query Quest - An Interactive Workshop on DBMS & SQL"
-                                    className="w-full h-auto object-cover group-hover:scale-105 transition-transform duration-700"
-                                />
-                                {/* Overlay gradient */}
-                                <div className="absolute inset-0 bg-gradient-to-t from-[#050505]/90 via-transparent to-transparent"></div>
-                            </div>
-
-                            {/* Event Details Overlay */}
-                            <div className="absolute bottom-0 left-0 right-0 p-6 md:p-8">
-                                <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4">
-                                    <div>
-                                        <p className="text-cyan-400 text-sm font-semibold tracking-wider uppercase mb-2">
-                                            📅 February 2, 2026 • 📍 AV Hall
-                                        </p>
-                                        <p className="text-slate-300 text-sm md:text-base max-w-2xl">
-                                            For 1st & 2nd Year Students
-                                        </p>
-                                    </div>
-                                    <button className="flex items-center justify-center gap-2 bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white px-6 py-3 rounded-full font-bold transition-all hover:scale-105 hover:shadow-lg hover:shadow-cyan-500/25 whitespace-nowrap">
-                                        <span>Learn More</span>
-                                        <ArrowRight className="w-4 h-4" />
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
 
 
 

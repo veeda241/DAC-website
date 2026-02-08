@@ -19,6 +19,8 @@ if (supabaseUrl && supabaseAnonKey) {
 
 export { supabase };
 
+const REG_LINK_DELIMITER = '\n\n||REGISTER:';
+
 // Events
 export const fetchEvents = async (): Promise<ClubEvent[]> => {
   // If Supabase is not connected, return MOCK_EVENTS as fallback
@@ -37,51 +39,41 @@ export const fetchEvents = async (): Promise<ClubEvent[]> => {
     return MOCK_EVENTS; // Fallback to MOCK_EVENTS on error
   }
 
-  // Custom mapping to handle potential snake_case (e.g. registration_link) from DB
-  const dbEvents = (data || []).map((event: any) => ({
-    ...event,
-    // Map registration_link to registrationLink if it exists and registrationLink is missing
-    registrationLink: event.registrationLink || event.registration_link || event.link || '',
-    imageUrl: event.imageUrl || event.image_url
-  })) as ClubEvent[];
+  return (data || []).map((event: any) => {
+    // Extract registration link from description if present
+    let description = event.description || '';
+    let registrationLink = event.registrationLink || event.registration_link || '';
 
-  // Merge MOCK_EVENTS with database events, avoiding duplicates by id
-  const mergedEvents = [...MOCK_EVENTS];
-  dbEvents.forEach(dbEvent => {
-    // Check if this DB event matches a mock event ID
-    const mockMatch = mergedEvents.find(m => m.id === dbEvent.id);
-    if (!mockMatch) {
-      // New event from DB, add it
-      mergedEvents.push(dbEvent);
-    } else {
-      // Conflict: The event exists in both.
-      // We usually prefer DB data, BUT for hardcoded local assets (like images in /public),
-      // we might want to keep the local path if the DB one is just a placeholder.
-      // For now, let's update the mock match with DB data, but preserve the image if DB has none.
-      Object.assign(mockMatch, {
-        ...dbEvent,
-        imageUrl: dbEvent.imageUrl || mockMatch.imageUrl
-      });
+    if (description.includes(REG_LINK_DELIMITER)) {
+      const parts = description.split(REG_LINK_DELIMITER);
+      description = parts[0];
+      registrationLink = parts[1] || registrationLink;
     }
-  });
 
-  // Sort by date
-  mergedEvents.sort((a, b) => a.date.localeCompare(b.date));
-
-  return mergedEvents;
+    return {
+      ...event,
+      description: description,
+      imageUrl: event.image_url || event.imageUrl,
+      registrationLink: registrationLink
+    };
+  }) as ClubEvent[];
 };
 
 export const createEvent = async (event: Omit<ClubEvent, 'id'>): Promise<ClubEvent | null> => {
   if (!supabase) return null;
 
-  // STRICT PAYLOAD: Only send columns that exist in the DB (snake_case)
+  // Append registration link to description
+  let finalDescription = event.description;
+  if (event.registrationLink) {
+    finalDescription += `${REG_LINK_DELIMITER}${event.registrationLink}`;
+  }
+
   const payload = {
     title: event.title,
     date: event.date,
-    description: event.description,
+    description: finalDescription,
     location: event.location,
-    registration_link: event.registrationLink,
-    image_url: event.imageUrl
+    imageUrl: event.imageUrl
   };
 
   const { data, error } = await supabase
@@ -94,21 +86,40 @@ export const createEvent = async (event: Omit<ClubEvent, 'id'>): Promise<ClubEve
     console.error('Error creating event:', error);
     return null;
   }
-  return data;
+
+  // Return clean object locally
+  return {
+    ...data,
+    description: event.description,
+    registrationLink: event.registrationLink,
+    imageUrl: data.imageUrl
+  };
 };
 
 export const updateEvent = async (event: ClubEvent): Promise<ClubEvent | null> => {
   if (!supabase) return null;
 
-  // STRICT PAYLOAD: Only send columns that exist in the DB (snake_case)
+  // Clean description of any existing delimiter first to avoid duplication
+  let cleanDescription = event.description || '';
+  if (cleanDescription.includes(REG_LINK_DELIMITER)) {
+    cleanDescription = cleanDescription.split(REG_LINK_DELIMITER)[0];
+  }
+
+  // Append registration link to clean description
+  let finalDescription = cleanDescription;
+  if (event.registrationLink && event.registrationLink.trim() !== '') {
+    finalDescription += `${REG_LINK_DELIMITER}${event.registrationLink.trim()}`;
+  }
+
   const payload = {
     title: event.title,
     date: event.date,
-    description: event.description,
+    description: finalDescription,
     location: event.location,
-    registration_link: event.registrationLink,
-    image_url: event.imageUrl
+    imageUrl: event.imageUrl
   };
+
+  // console.log('Updating event with payload:', payload);
 
   const { data, error } = await supabase
     .from('events')
@@ -121,7 +132,13 @@ export const updateEvent = async (event: ClubEvent): Promise<ClubEvent | null> =
     console.error('Error updating event:', error);
     return null;
   }
-  return data;
+
+  return {
+    ...data,
+    description: cleanDescription, // Return the clean description to UI
+    registrationLink: event.registrationLink,
+    imageUrl: data.imageUrl
+  };
 };
 
 // Tasks

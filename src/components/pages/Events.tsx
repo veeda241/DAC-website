@@ -247,7 +247,8 @@ const Events: React.FC<EventsProps> = ({ events, photos, onLoginClick, onRegiste
                                             View Report <ArrowRight className="w-4 h-4" />
                                         </button>
                                     )}
-                                    {selectedEvent.date >= new Date().toISOString().split('T')[0] && selectedEvent.registrationLink && (
+                                    {/* Show Register button if link exists, regardless of date (or you can keep date check) */}
+                                    {selectedEvent.registrationLink && (
                                         <button
                                             onClick={() => {
                                                 window.open(selectedEvent.registrationLink, '_blank');

@@ -183,11 +183,17 @@ export const fetchReports = async (): Promise<ClubReport[]> => {
     return [];
   }
 
+  if (data && data.length > 0) {
+    console.log("Supabase Reports Schema (first item keys):", Object.keys(data[0]));
+  }
+
   // Map Supabase snake_case to camelCase if necessary
   return (data || []).map((item: any) => ({
     ...item,
     thumbnailUrl: item.thumbnailUrl || item.thumbnail_url || item.thumbnail || '',
-    fileUrl: item.fileUrl || item.file_url || item.file || item.url || ''
+    fileUrl: item.fileUrl || item.file_url || item.file || item.url || '',
+    // Handle eventId mapping if standard checks fail
+    eventId: item.eventId || item.event_id
   })) as ClubReport[];
 };
 
@@ -200,25 +206,30 @@ export const createReport = async (report: Omit<ClubReport, 'id'>): Promise<Club
     };
   }
 
-  // Map to snake_case for Supabase if needed, or send as is if columns match
-  // ERROR FIX: The previous error said "Could not find the 'file_url' column". 
-  // This implies the column name might be 'fileUrl' (camelCase preserved) or 'file', or 'url'.
-  // Based on common practices and the error, we will try to match the interface definition or a simpler schema.
-
-  // NOTE: If you are the admin, please check your Supabase Table Definition for 'reports'.
-  // We will assume the columns are named as per the Type definition if snake_case failed, 
-  // or simple names like 'file' and 'thumbnail'.
-
-  const payload = {
+  // Schema Inference from Errors:
+  // 1. 'file_url' not found -> Likely 'fileUrl' (CamelCase)
+  // 2. 'eventId' not found -> Likely 'event_id' (SnakeCase, standard FK)
+  const payload: any = {
     title: report.title,
     date: report.date,
     description: report.description,
-    // Try sending camelCase first if snake_case failed, OR try simpler names if you created the table manually
-    // If the error persists, please check the actual column names in your Supabase Dashboard.
     thumbnailUrl: report.thumbnailUrl,
-    fileUrl: report.fileUrl,
-    // eventId: report.eventId 
+    fileUrl: report.fileUrl
   };
+
+  if (report.eventId) {
+    // EVENT ID COLUMN MISSING IN DB
+    // Supabase has confirmed neither 'eventId' nor 'event_id' exist in the reports table.
+    // We are temporarily disabling this field to allow other updates to succeed.
+    // Skip mock IDs
+    // if (report.eventId.length > 20) {
+    //   payload.event_id = report.eventId;
+    // } else {
+    //   console.warn(`Skipping eventId '${report.eventId}' (mock ID) during creation.`);
+    //   payload.event_id = null;
+    // }
+    console.warn("Skipping eventId upload as column is missing in Supabase reports table.");
+  }
 
   console.log("Attempting to upload report with payload:", payload);
 
@@ -230,11 +241,87 @@ export const createReport = async (report: Omit<ClubReport, 'id'>): Promise<Club
 
   if (error) {
     console.error('Error creating report in Supabase:', error);
-    console.error('Error details:', error.details, error.message, error.hint);
     return null;
   }
 
-  return data;
+  if (data) {
+    return {
+      ...data,
+      thumbnailUrl: data.thumbnailUrl || data.thumbnail_url,
+      fileUrl: data.fileUrl || data.file_url,
+      eventId: data.eventId || data.event_id
+    } as ClubReport;
+  }
+
+  return null;
+};
+
+
+export const updateReport = async (report: ClubReport): Promise<ClubReport | null> => {
+  if (!supabase) return null;
+
+  const payload: any = {
+    title: report.title,
+    date: report.date,
+    description: report.description,
+    thumbnailUrl: report.thumbnailUrl,
+    fileUrl: report.fileUrl
+  };
+
+  // Use event_id based on deduction
+  if (report.eventId) {
+    // EVENT ID COLUMN MISSING IN DB
+    // console.warn("Skipping eventId update as column is missing in Supabase.");
+    // if (report.eventId.length > 20) {
+    //     payload.event_id = report.eventId;
+    // } else {
+    //     console.warn(`Skipping eventId '${report.eventId}' as it appears to be a mock ID.`);
+    //     payload.event_id = null;
+    // }
+  } else if (report.eventId === '') {
+    // payload.event_id = null;
+  }
+
+  console.log('Updating report with payload:', payload);
+
+  const { data, error } = await supabase
+    .from('reports')
+    .update(payload)
+    .eq('id', report.id)
+    .select()
+    .single();
+
+  if (error) {
+    console.error('Error updating report:', JSON.stringify(error, null, 2));
+    return null;
+  }
+
+  if (data) {
+    return {
+      ...data,
+      thumbnailUrl: data.thumbnailUrl || data.thumbnail_url || report.thumbnailUrl,
+      fileUrl: data.fileUrl || data.file_url || report.fileUrl,
+      eventId: data.eventId || data.event_id || report.eventId
+    } as ClubReport;
+  }
+
+  return null;
+};
+
+export const deleteReport = async (reportId: string): Promise<boolean> => {
+  if (!supabase) return false;
+
+  const { error } = await supabase
+    .from('reports')
+    .delete()
+    .eq('id', reportId);
+
+  if (error) {
+    console.error('Error deleting report:', error);
+    return false;
+  }
+
+  return true;
 };
 
 // Photos

@@ -64,18 +64,12 @@ const App: React.FC = () => {
             const tasksData = await fetchTasks();
             setTasks(tasksData);
 
-            // Reports - Fetch from Supabase and merge with Mocks
+            // Reports - Fetch from Supabase
             const reportsData = await fetchReports();
             if (reportsData.length > 0) {
-                const mergedReports = [...MOCK_REPORTS];
-                reportsData.forEach(dbRep => {
-                    if (!mergedReports.some(m => m.id === dbRep.id)) {
-                        mergedReports.unshift(dbRep); // Add new DB uploads to the top
-                    }
-                });
-                // Sort by date descending
-                mergedReports.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
-                setReports(mergedReports);
+                // If we have DB data, use ONLY DB data to prevent "zombie" mock reports from reappearing
+                // and to avoid duplication when a mock report is edited (and thus becomes a new DB record).
+                setReports(reportsData);
             } else {
                 setReports([...MOCK_REPORTS]);
             }
@@ -229,14 +223,16 @@ const App: React.FC = () => {
         }
     };
 
-    const handleCreateReport = async (reportData: Omit<ClubReport, 'id'>) => {
+    const handleCreateReport = async (reportData: Omit<ClubReport, 'id'>): Promise<ClubReport | null> => {
         const newReport = await createReport(reportData);
         if (newReport) {
             setReports(prev => [newReport, ...prev]); // Add to top
             addActivity('Published Report', newReport.title);
             addNotification('Report published successfully!', 'success');
+            return newReport;
         } else {
             addNotification('Failed to publish report.', 'error');
+            return null;
         }
     };
 
@@ -248,6 +244,43 @@ const App: React.FC = () => {
             addNotification('Photo uploaded successfully!', 'success');
         } else {
             addNotification('Failed to upload photo.', 'error');
+        }
+    };
+
+    const handleUpdateReport = async (updatedReport: ClubReport) => {
+        // Optimistic update
+        setReports(prev => prev.map(r => r.id === updatedReport.id ? updatedReport : r));
+
+        // Check if this is a "mock" report (ID is short like 'rep_7') or a real DB report (UUID)
+        // If it's a mock report, we can't "update" it in DB because it doesn't exist there.
+        // We should "create" it instead, and then swap the ID.
+        const isMockReport = updatedReport.id.length < 20; // UUIDs are 36 chars
+
+        if (isMockReport) {
+            console.log("Editing a mock report, creating new entry in DB...");
+            const { createReport } = await import('./services/supabaseService');
+            // Remove the mock ID so Supabase/Service generates a new one or handles it
+            const { id, ...reportData } = updatedReport;
+            const newReport = await createReport(reportData);
+
+            if (newReport) {
+                // Replace the mock report in state with the new real report
+                setReports(prev => prev.map(r => r.id === updatedReport.id ? newReport : r));
+                addActivity('Published Edited Report', newReport.title);
+                addNotification('Report saved to database!', 'success');
+            } else {
+                addNotification('Failed to save editable report to database', 'error');
+            }
+        } else {
+            // It's a real report, update it
+            const { updateReport } = await import('./services/supabaseService');
+            const result = await updateReport(updatedReport);
+            if (result) {
+                addActivity('Updated Report', updatedReport.title);
+                addNotification('Report updated successfully!', 'success');
+            } else {
+                addNotification('Failed to update report in database', 'error');
+            }
         }
     };
 
@@ -315,6 +348,18 @@ const App: React.FC = () => {
         addActivity('Deleted Task', `Task with ID ${taskId} removed.`);
     };
 
+    const handleDeleteReport = async (reportId: string) => {
+        const { deleteReport } = await import('./services/supabaseService');
+        const success = await deleteReport(reportId);
+        if (success) {
+            setReports(prev => prev.filter(r => r.id !== reportId));
+            addActivity('Deleted Report', 'Report removed from database.');
+            addNotification('Report deleted successfully', 'success');
+        } else {
+            addNotification('Failed to delete report from database', 'error');
+        }
+    };
+
     return (
         <>
             {/* Main Content Rendered Always (behind loading screen) - Delayed to prevent lag */}
@@ -351,6 +396,7 @@ const App: React.FC = () => {
                         onCreatePhoto={handleCreatePhoto}
                         onUpdateTaskStatus={handleUpdateTaskStatus}
                         onUpdateEvent={handleUpdateEvent}
+                        onUpdateReport={handleUpdateReport}
                         setEvents={setEvents}
                         setTasks={setTasks}
                         setReports={setReports}
@@ -359,6 +405,7 @@ const App: React.FC = () => {
                         onDeleteUser={handleDeleteUser}
                         onDeleteEvent={handleDeleteEvent}
                         onDeleteTask={handleDeleteTask}
+                        onDeleteReport={handleDeleteReport}
                         activityLog={activityLog}
                         addActivity={addActivity}
                         notifications={notifications}

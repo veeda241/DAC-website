@@ -20,6 +20,7 @@ export const MOCK_USERS: User[] = [
     },
 ];
 
+
 export const MOCK_EVENTS: ClubEvent[] = [
     {
         id: 'e4',
@@ -29,45 +30,11 @@ export const MOCK_EVENTS: ClubEvent[] = [
         location: 'AV Hall',
         imageUrl: '/query_quest_banner.png',
         reportUrl: '/query_quest_report.pdf'
-    },
-    {
-        id: 'e5',
-        title: 'Impact-AI-Thon',
-        date: '2026-02-23',
-        description: 'IMPACT-AI-THON \'26 is a 24-hour national-level hackathon hosted by the Data Analytics Club. Innovate, collaborate, and compete to create impactful AI-powered solutions!',
-        location: 'Hackathon Center',
-        imageUrl: 'https://images.unsplash.com/photo-1677442136019-21780ecad995?w=800',
-        registrationLink: 'https://docs.google.com/forms/d/e/1FAIpQLSck7l4BxrEqXGfZzRx8fxryPb5f3v-sPgyz5Xfm6AyYnapHPg/viewform'
-    },
-    {
-        id: 'e1',
-        title: 'DataVIZ 2025',
-        date: '2025-02-15',
-        description: 'Annual inter-college data visualization competition featuring real-world data challenges, workshops, and networking opportunities with industry experts.',
-        location: 'AV Hall',
-        imageUrl: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800',
-        reportUrl: '/report_event_2.pdf'
-    },
-    {
-        id: 'e2',
-        title: 'DAC Inauguration Ceremony',
-        date: '2025-01-20',
-        description: 'Official inauguration of the Data Analytics Club with keynote speakers, vision presentation, and team introduction.',
-        location: 'AV Hall',
-        imageUrl: 'https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=800',
-        reportUrl: '/DATA_ANALYTICS_CLUB.pdf'
-    },
-    {
-        id: 'e3',
-        title: 'From Idea → Innovation: A Student-Led Guide to Patent Filing',
-        date: '2024-12-10',
-        description: 'An informative session on the patent filing process, intellectual property rights, and how students can protect and commercialize their innovations.',
-        location: 'Hazer Hall',
-        imageUrl: 'https://images.unsplash.com/photo-1589829545856-d10d557cf95f?w=800'
     }
 ];
 
 export const MOCK_TASKS: Task[] = [];
+
 
 export const MOCK_MENTORS: TeamMember[] = [
     {
@@ -247,64 +214,13 @@ export const MOCK_PHOTOS: Photo[] = [
     { id: 'p6', url: 'https://picsum.photos/id/4/800/600', caption: 'Team lunch', eventId: 'e1' },
 ];
 
-export const MOCK_REPORTS: ClubReport[] = [
-    {
-        id: 'rep_1',
-        title: 'DAC Inauguration Ceremony Report',
-        date: '2025-01-20',
-        description: 'Official report of the Data Analytics Club inauguration event, detailing the keynote sessions and vision launch.',
-        thumbnailUrl: 'https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=400',
-        fileUrl: '/DATA_ANALYTICS_CLUB.pdf'
-    },
-    {
-        id: 'rep_2',
-        title: 'DataVIZ 2025 Report',
-        date: '2025-02-15',
-        description: 'Comprehensive report on the DataVIZ 2025 competition, including participant metrics and winning project summaries.',
-        thumbnailUrl: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=400',
-        fileUrl: '/report_event_2.pdf'
-    },
-    {
-        id: 'rep_3',
-        title: 'Idea → Innovation Workshop Report',
-        date: '2024-12-10',
-        description: 'Summary of the patent filing guide workshop and intellectual property rights session.',
-        thumbnailUrl: 'https://images.unsplash.com/photo-1589829545856-d10d557cf95f?w=400',
-        fileUrl: '#'
-    },
-    {
-        id: 'rep_4',
-        title: 'DAC General Report',
-        date: '2026-01-15',
-        description: 'A comprehensive general report concerning the activities and impact of the Data Analytics Club.',
-        thumbnailUrl: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=400',
-        fileUrl: '/dac_report.pdf'
-    },
-    {
-        id: 'rep_5',
-        title: 'Impact-AI-thon Initial Document',
-        date: '2026-01-16',
-        description: 'Official documentation for the Impact-AI-thon event, including guidelines, themes, and submission details.',
-        thumbnailUrl: 'https://images.unsplash.com/photo-1677442136019-21780ecad995?w=400',
-        fileUrl: '/impact_aithon.pdf'
-    },
-    {
-        id: 'rep_6',
-        title: 'Data Analytics Club Report',
-        date: '2026-01-16',
-        description: 'Detailed report on the Data Analytics Club activities, achievements, and future plans.',
-        thumbnailUrl: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=400',
-        fileUrl: '/dac_club_report.pdf'
-    },
-    {
-        id: 'rep_7',
-        title: 'Query Quest Event Report',
-        date: '2026-02-02',
-        description: 'Report for the Query Quest: DBMS & SQL Workshop and Quiz Competition.',
-        thumbnailUrl: '/query_quest_banner.png',
-        fileUrl: '/query_quest_report.pdf'
-    }
-];
+
+
+
+export const MOCK_REPORTS: ClubReport[] = [];
+
+
+
 
 export const LOGO_URL = departmentLogoImg;
 export const DEPT_LOGO_URL = '/department_logo.jpeg';

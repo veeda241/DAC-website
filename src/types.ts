@@ -87,6 +87,7 @@ export interface ClubReport {
     description: string;
     thumbnailUrl: string;
     fileUrl: string; // In a real app, this would be a link to S3/Cloud storage
+    eventId?: string;
 }
 
 export type PageView = 'home' | 'about' | 'members' | 'events' | 'photos' | 'reports';

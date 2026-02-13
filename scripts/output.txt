@@ -1,0 +1,6 @@
+Copying c:\hackathon\Gemini_CLI\DAC-website\1749373788465.jpeg to c:\hackathon\Gemini_CLI\DAC-website\public\department_logo.jpeg
+Successfully copied to c:\hackathon\Gemini_CLI\DAC-website\public\department_logo.jpeg
+Copying c:\hackathon\Gemini_CLI\DAC-website\DATA_ANALYTICS_CLUB.pdf to c:\hackathon\Gemini_CLI\DAC-website\public\DATA_ANALYTICS_CLUB.pdf
+Successfully copied to c:\hackathon\Gemini_CLI\DAC-website\public\DATA_ANALYTICS_CLUB.pdf
+Copying c:\hackathon\Gemini_CLI\DAC-website\report event 2.pdf to c:\hackathon\Gemini_CLI\DAC-website\public\report_event_2.pdf
+Successfully copied to c:\hackathon\Gemini_CLI\DAC-website\public\report_event_2.pdf

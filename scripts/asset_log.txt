@@ -1,0 +1,18 @@
+
+--- New Run ---
+Error: Source Untitled video - Made with Clipchamp.mp4 not found/matched.
+Success: Moved 'Query Quest – DBMS & SQL Workshop and Quiz Competition (3).pdf' to 'public/query_quest_report.pdf'.
+Success: Copied '1749373788465.jpeg' to 'public/department_logo.jpeg'.
+Success: Copied 'DATA_ANALYTICS_CLUB.pdf' to 'public/DATA_ANALYTICS_CLUB.pdf'.
+Success: Copied 'report event 2.pdf' to 'public/report_event_2.pdf'.
+Success: Copied 'src\assets\images\Data analytics Club.png' to 'public/dac-logo.png'.
+Success: Copied '1749373788465.jpeg' to 'src/assets/images/department-logo.jpg'.
+
+--- New Run ---
+Error: Source Untitled video - Made with Clipchamp.mp4 not found/matched.
+Error: Source Query Quest*.pdf not found/matched.
+Success: Copied '1749373788465.jpeg' to 'public/department_logo.jpeg'.
+Success: Copied 'DATA_ANALYTICS_CLUB.pdf' to 'public/DATA_ANALYTICS_CLUB.pdf'.
+Success: Copied 'report event 2.pdf' to 'public/report_event_2.pdf'.
+Success: Copied 'src\assets\images\Data analytics Club.png' to 'public/dac-logo.png'.
+Success: Copied '1749373788465.jpeg' to 'src/assets/images/department-logo.jpg'.

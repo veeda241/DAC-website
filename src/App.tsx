@@ -6,6 +6,7 @@ import Auth from './components/Auth';
 import { User, ClubEvent, Task, ActivityLog, Notification, UserRole, ClubReport, Photo, TaskStatus } from './types';
 import { MOCK_USERS, MOCK_REPORTS } from './constants';
 import LoadingScreen from './components/LoadingScreen';
+import Chatbot from './components/Chatbot';
 
 const App: React.FC = () => {
     // Global State
@@ -414,6 +415,9 @@ const App: React.FC = () => {
                     />
                 )
             )}
+
+            {/* Qwalt Chatbot - Available on all pages */}
+            {isAppReady && <Chatbot />}
 
             {/* Loading Screen Overlay */}
             {isLoading && (

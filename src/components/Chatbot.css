@@ -1,0 +1,456 @@
+/* ═══════════════════════════════════════════════════ */
+/*  QWALT CHATBOT - Premium Glassmorphism Design      */
+/* ═══════════════════════════════════════════════════ */
+
+/* Floating Bubble */
+.qwalt-bubble {
+    position: fixed;
+    bottom: 28px;
+    right: 28px;
+    z-index: 9999;
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    cursor: pointer;
+    background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #a78bfa 100%);
+    box-shadow:
+        0 4px 24px rgba(99, 102, 241, 0.45),
+        0 0 0 0 rgba(139, 92, 246, 0.4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s ease;
+    animation: qwalt-pulse 2.5s ease-in-out infinite;
+    overflow: hidden;
+    border: 2px solid rgba(255, 255, 255, 0.2);
+}
+
+.qwalt-bubble:hover {
+    transform: scale(1.12);
+    box-shadow:
+        0 6px 32px rgba(99, 102, 241, 0.6),
+        0 0 0 8px rgba(139, 92, 246, 0.15);
+}
+
+.qwalt-bubble img {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    object-fit: cover;
+    pointer-events: none;
+}
+
+.qwalt-bubble.open {
+    animation: none;
+    transform: scale(0);
+    opacity: 0;
+    pointer-events: none;
+}
+
+@keyframes qwalt-pulse {
+
+    0%,
+    100% {
+        box-shadow:
+            0 4px 24px rgba(99, 102, 241, 0.45),
+            0 0 0 0 rgba(139, 92, 246, 0.4);
+    }
+
+    50% {
+        box-shadow:
+            0 4px 24px rgba(99, 102, 241, 0.45),
+            0 0 0 12px rgba(139, 92, 246, 0);
+    }
+}
+
+/* Unread badge */
+.qwalt-badge {
+    position: absolute;
+    top: -2px;
+    right: -2px;
+    width: 18px;
+    height: 18px;
+    background: #ef4444;
+    border-radius: 50%;
+    border: 2px solid #0f172a;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+    font-weight: 700;
+    color: white;
+    animation: qwalt-badge-pop 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes qwalt-badge-pop {
+    0% {
+        transform: scale(0);
+    }
+
+    100% {
+        transform: scale(1);
+    }
+}
+
+/* ─── Chat Window ─── */
+.qwalt-window {
+    position: fixed;
+    bottom: 28px;
+    right: 28px;
+    z-index: 10000;
+    width: 380px;
+    max-width: calc(100vw - 32px);
+    height: 520px;
+    max-height: calc(100vh - 80px);
+    border-radius: 20px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+
+    /* Glass */
+    background: rgba(10, 15, 30, 0.88);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    border: 1px solid rgba(99, 102, 241, 0.25);
+    box-shadow:
+        0 24px 80px rgba(0, 0, 0, 0.5),
+        0 0 0 1px rgba(99, 102, 241, 0.1),
+        inset 0 1px 0 rgba(255, 255, 255, 0.05);
+
+    /* Animation */
+    transform-origin: bottom right;
+    animation: qwalt-open 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+.qwalt-window.closing {
+    animation: qwalt-close 0.25s ease-in forwards;
+}
+
+@keyframes qwalt-open {
+    0% {
+        opacity: 0;
+        transform: scale(0.4) translateY(20px);
+    }
+
+    100% {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+}
+
+@keyframes qwalt-close {
+    0% {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+
+    100% {
+        opacity: 0;
+        transform: scale(0.4) translateY(20px);
+    }
+}
+
+/* ─── Header ─── */
+.qwalt-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px 18px;
+    background: linear-gradient(135deg, rgba(99, 102, 241, 0.2) 0%, rgba(139, 92, 246, 0.15) 100%);
+    border-bottom: 1px solid rgba(99, 102, 241, 0.15);
+    flex-shrink: 0;
+}
+
+.qwalt-header-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid rgba(139, 92, 246, 0.5);
+    box-shadow: 0 0 12px rgba(139, 92, 246, 0.3);
+}
+
+.qwalt-header-info {
+    flex: 1;
+}
+
+.qwalt-header-name {
+    font-size: 15px;
+    font-weight: 700;
+    color: #e2e8f0;
+    letter-spacing: 0.5px;
+}
+
+.qwalt-header-status {
+    font-size: 11px;
+    color: #94a3b8;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.qwalt-header-status::before {
+    content: '';
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #22c55e;
+    box-shadow: 0 0 6px rgba(34, 197, 94, 0.6);
+}
+
+.qwalt-close-btn {
+    width: 32px;
+    height: 32px;
+    border-radius: 10px;
+    border: none;
+    background: rgba(255, 255, 255, 0.06);
+    color: #94a3b8;
+    font-size: 18px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+}
+
+.qwalt-close-btn:hover {
+    background: rgba(239, 68, 68, 0.15);
+    color: #ef4444;
+}
+
+/* ─── Messages Area ─── */
+.qwalt-messages {
+    flex: 1;
+    overflow-y: auto;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    scroll-behavior: smooth;
+}
+
+.qwalt-messages::-webkit-scrollbar {
+    width: 4px;
+}
+
+.qwalt-messages::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.qwalt-messages::-webkit-scrollbar-thumb {
+    background: rgba(99, 102, 241, 0.3);
+    border-radius: 4px;
+}
+
+/* Message Bubble */
+.qwalt-msg {
+    max-width: 85%;
+    padding: 10px 14px;
+    border-radius: 16px;
+    font-size: 13.5px;
+    line-height: 1.55;
+    animation: qwalt-msg-in 0.25s ease-out;
+    word-wrap: break-word;
+}
+
+@keyframes qwalt-msg-in {
+    0% {
+        opacity: 0;
+        transform: translateY(8px);
+    }
+
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.qwalt-msg.bot {
+    align-self: flex-start;
+    background: rgba(99, 102, 241, 0.12);
+    color: #cbd5e1;
+    border: 1px solid rgba(99, 102, 241, 0.15);
+    border-bottom-left-radius: 4px;
+}
+
+.qwalt-msg.user {
+    align-self: flex-end;
+    background: linear-gradient(135deg, #6366f1, #8b5cf6);
+    color: #fff;
+    border-bottom-right-radius: 4px;
+    box-shadow: 0 2px 12px rgba(99, 102, 241, 0.3);
+}
+
+.qwalt-msg-time {
+    font-size: 10px;
+    color: rgba(148, 163, 184, 0.6);
+    margin-top: 4px;
+}
+
+.qwalt-msg.user .qwalt-msg-time {
+    color: rgba(255, 255, 255, 0.5);
+    text-align: right;
+}
+
+/* Typing Indicator */
+.qwalt-typing {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 12px 16px;
+    align-self: flex-start;
+    background: rgba(99, 102, 241, 0.08);
+    border-radius: 16px;
+    border-bottom-left-radius: 4px;
+    border: 1px solid rgba(99, 102, 241, 0.1);
+}
+
+.qwalt-typing-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: #6366f1;
+    animation: qwalt-bounce 1.4s ease-in-out infinite;
+}
+
+.qwalt-typing-dot:nth-child(2) {
+    animation-delay: 0.2s;
+}
+
+.qwalt-typing-dot:nth-child(3) {
+    animation-delay: 0.4s;
+}
+
+@keyframes qwalt-bounce {
+
+    0%,
+    60%,
+    100% {
+        transform: translateY(0);
+        opacity: 0.4;
+    }
+
+    30% {
+        transform: translateY(-8px);
+        opacity: 1;
+    }
+}
+
+/* ─── Quick Actions ─── */
+.qwalt-quick-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    padding: 0 16px;
+    margin-bottom: 4px;
+}
+
+.qwalt-quick-btn {
+    padding: 6px 12px;
+    border-radius: 20px;
+    border: 1px solid rgba(99, 102, 241, 0.25);
+    background: rgba(99, 102, 241, 0.08);
+    color: #a5b4fc;
+    font-size: 11.5px;
+    cursor: pointer;
+    transition: all 0.2s;
+    white-space: nowrap;
+}
+
+.qwalt-quick-btn:hover {
+    background: rgba(99, 102, 241, 0.2);
+    border-color: rgba(99, 102, 241, 0.5);
+    color: #c7d2fe;
+    transform: translateY(-1px);
+}
+
+/* ─── Input Area ─── */
+.qwalt-input-area {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 14px;
+    border-top: 1px solid rgba(99, 102, 241, 0.1);
+    background: rgba(15, 23, 42, 0.5);
+    flex-shrink: 0;
+}
+
+.qwalt-input {
+    flex: 1;
+    padding: 10px 14px;
+    border-radius: 14px;
+    border: 1px solid rgba(99, 102, 241, 0.15);
+    background: rgba(30, 41, 59, 0.6);
+    color: #e2e8f0;
+    font-size: 13.5px;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    font-family: inherit;
+}
+
+.qwalt-input::placeholder {
+    color: #64748b;
+}
+
+.qwalt-input:focus {
+    border-color: rgba(99, 102, 241, 0.5);
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+}
+
+.qwalt-send-btn {
+    width: 40px;
+    height: 40px;
+    border-radius: 12px;
+    border: none;
+    background: linear-gradient(135deg, #6366f1, #8b5cf6);
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+    flex-shrink: 0;
+}
+
+.qwalt-send-btn:hover:not(:disabled) {
+    transform: scale(1.08);
+    box-shadow: 0 4px 16px rgba(99, 102, 241, 0.4);
+}
+
+.qwalt-send-btn:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+/* ─── Powered By ─── */
+.qwalt-footer {
+    text-align: center;
+    padding: 6px;
+    font-size: 9.5px;
+    color: rgba(148, 163, 184, 0.4);
+    letter-spacing: 0.3px;
+}
+
+/* ─── Mobile Responsive ─── */
+@media (max-width: 480px) {
+    .qwalt-window {
+        width: calc(100vw - 16px);
+        height: calc(100vh - 100px);
+        bottom: 8px;
+        right: 8px;
+        border-radius: 16px;
+    }
+
+    .qwalt-bubble {
+        bottom: 20px;
+        right: 20px;
+        width: 56px;
+        height: 56px;
+    }
+
+    .qwalt-bubble img {
+        width: 40px;
+        height: 40px;
+    }
+}

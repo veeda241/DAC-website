@@ -4,9 +4,11 @@ import {
     WHATSAPP_GROUP_LINK,
     SOCIAL_LINKS,
 } from '../../constants';
+import { useTheme } from '../../contexts/ThemeContext';
 
 const Connect: React.FC = () => {
     const [isVisible, setIsVisible] = useState(false);
+    const { isDark } = useTheme();
 
     useEffect(() => {
         setIsVisible(true);
@@ -42,10 +44,10 @@ const Connect: React.FC = () => {
         {
             name: 'YouTube',
             url: SOCIAL_LINKS.youtube,
-            gradientFrom: 'from-red-600',
-            gradientTo: 'to-red-800',
-            borderColor: 'border-red-500/50',
-            hoverGlow: 'hover:shadow-red-500/30',
+            gradientFrom: 'from-purple-600',
+            gradientTo: 'to-purple-800',
+            borderColor: 'border-purple-500/50',
+            hoverGlow: 'hover:shadow-purple-500/30',
             icon: (
                 <svg viewBox="0 0 24 24" fill="currentColor" className="h-8 w-8 text-white" xmlns="http://www.w3.org/2000/svg">
                     <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z" />
@@ -55,10 +57,10 @@ const Connect: React.FC = () => {
         {
             name: 'Discord',
             url: SOCIAL_LINKS.discord,
-            gradientFrom: 'from-indigo-600',
-            gradientTo: 'to-indigo-800',
-            borderColor: 'border-indigo-500/50',
-            hoverGlow: 'hover:shadow-indigo-500/30',
+            gradientFrom: 'from-purple-600',
+            gradientTo: 'to-purple-800',
+            borderColor: 'border-purple-500/50',
+            hoverGlow: 'hover:shadow-purple-500/30',
             icon: (
                 <svg viewBox="0 0 24 24" fill="currentColor" className="h-8 w-8 text-white" xmlns="http://www.w3.org/2000/svg">
                     <path d="M20.317 4.3698a19.7913 19.7913 0 00-4.8851-1.5152.0741.0741 0 00-.0785.0371c-.211.3753-.4447.8648-.6083 1.2495-1.8447-.2762-3.68-.2762-5.4868 0-.1636-.3933-.4058-.8742-.6177-1.2495a.077.077 0 00-.0785-.037 19.7363 19.7363 0 00-4.8852 1.515.0699.0699 0 00-.0321.0277C.5334 9.0458-.319 13.5799.0992 18.0578a.0824.0824 0 00.0312.0561c2.0528 1.5076 4.0413 2.4228 5.9929 3.0294a.0777.0777 0 00.0842-.0276c.4616-.6304.8731-1.2952 1.226-1.9942a.076.076 0 00-.0416-.1057c-.6528-.2476-1.2743-.5495-1.8722-.8923a.077.077 0 01-.0076-.1277c.1258-.0943.2517-.1923.3718-.2914a.0743.0743 0 01.0776-.0105c3.9278 1.7933 8.18 1.7933 12.0614 0a.0739.0739 0 01.0785.0095c.1202.099.246.1981.3728.2924a.077.077 0 01-.0066.1276 12.2986 12.2986 0 01-1.873.8914.0766.0766 0 00-.0407.1067c.3604.698.7719 1.3628 1.225 1.9932a.076.076 0 00.0842.0286c1.961-.6067 3.9495-1.5219 6.0023-3.0294a.077.077 0 00.0313-.0552c.5004-5.177-.8382-9.6739-3.5485-13.6604a.061.061 0 00-.0312-.0286zM8.02 15.3312c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9555-2.4189 2.157-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419-.0189 1.3332-.9555 2.4189-2.1569 2.4189zm7.9748 0c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9554-2.4189 2.1569-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.9555 2.4189-2.1568 2.4189Z" />
@@ -68,8 +70,8 @@ const Connect: React.FC = () => {
         {
             name: 'Instagram',
             url: SOCIAL_LINKS.instagram,
-            gradientFrom: 'from-pink-600',
-            gradientTo: 'to-purple-700',
+            gradientFrom: 'from-pink-500',
+            gradientTo: 'to-purple-600',
             borderColor: 'border-pink-500/50',
             hoverGlow: 'hover:shadow-pink-500/30',
             icon: (
@@ -106,18 +108,18 @@ const Connect: React.FC = () => {
 
             {/* Hero Section */}
             <section className="pt-40 pb-16 px-4 relative overflow-hidden">
-                <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[1000px] h-[400px] bg-cyan-600/15 rounded-full blur-[120px] -z-10"></div>
+                <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[1000px] h-[400px] bg-purple-600/15 rounded-full blur-[120px] -z-10"></div>
                 <div className={`max-w-4xl mx-auto text-center transition-all duration-1000 ${isVisible ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`}>
-                    <div className="inline-block mb-4 px-4 py-1.5 rounded-full border border-cyan-500/30 bg-cyan-500/10 backdrop-blur-md">
-                        <span className="text-sm font-semibold text-cyan-300 uppercase tracking-widest">Stay Connected</span>
+                    <div className="inline-block mb-4 px-4 py-1.5 rounded-full border border-purple-500/30 bg-purple-500/10 backdrop-blur-md">
+                        <span className="text-sm font-semibold text-purple-500 uppercase tracking-widest">Stay Connected</span>
                     </div>
-                    <h1 className="text-5xl md:text-7xl font-extrabold text-white mb-6 tracking-tight">
+                    <h1 className={`text-5xl md:text-7xl font-extrabold mb-6 tracking-tight ${isDark ? 'text-white' : 'text-slate-900'}`}>
                         Connect{' '}
-                        <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-600">
+                        <span className={`text-transparent bg-clip-text bg-gradient-to-r from-purple-600 via-slate-500 ${isDark ? 'to-white' : 'to-slate-600'}`}>
                             With Us
                         </span>
                     </h1>
-                    <p className="text-xl text-slate-300 max-w-2xl mx-auto leading-relaxed font-light">
+                    <p className={`text-xl max-w-2xl mx-auto leading-relaxed font-light ${isDark ? 'text-slate-300' : 'text-slate-600'}`}>
                         Follow our journey, join the community, and stay updated with the latest from the Data Analytics Club.
                     </p>
                 </div>
@@ -128,11 +130,11 @@ const Connect: React.FC = () => {
                 <div className={`max-w-4xl mx-auto transition-all duration-1000 delay-200 ${isVisible ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`}>
                     {/* Glassmorphism Card Container */}
                     <div className="relative">
-                        <div className="absolute inset-0 bg-black/20 backdrop-blur-xl rounded-3xl border border-white/10 shadow-2xl"></div>
+                        <div className={`absolute inset-0 backdrop-blur-xl rounded-3xl border shadow-2xl ${isDark ? 'bg-black/20 border-white/10' : 'bg-white/80 border-black/10'}`}></div>
 
                         <div className="relative p-8 md:p-12">
-                            <h2 className="text-2xl font-bold text-white mb-2 text-center">Our Platforms</h2>
-                            <p className="text-slate-400 text-center mb-10">Click on any platform to visit us</p>
+                            <h2 className={`text-2xl font-bold mb-2 text-center ${isDark ? 'text-white' : 'text-slate-900'}`}>Our Platforms</h2>
+                            <p className="text-slate-500 text-center mb-10">Click on any platform to visit us</p>
 
                             {/* Social Media Dock */}
                             <div className="flex flex-wrap items-end justify-center gap-4 md:gap-6">
@@ -153,7 +155,7 @@ const Connect: React.FC = () => {
                                                 {platform.icon}
                                             </div>
                                         </div>
-                                        <span className="text-xs md:text-sm text-slate-400 group-hover:text-white transition-colors font-medium">
+                                        <span className={`text-xs md:text-sm font-medium transition-colors ${isDark ? 'text-slate-400 group-hover:text-white' : 'text-slate-500 group-hover:text-slate-900'}`}>
                                             {platform.name}
                                         </span>
                                     </a>
@@ -169,17 +171,17 @@ const Connect: React.FC = () => {
                 <div className={`max-w-6xl mx-auto transition-all duration-1000 delay-400 ${isVisible ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`}>
                     <div className="grid md:grid-cols-3 gap-6">
                         {/* Email Card */}
-                        <div className="group relative bg-[#0A0A0A]/60 backdrop-blur-xl border border-white/5 p-8 rounded-[2rem] overflow-hidden hover:border-cyan-500/30 transition-all duration-500">
-                            <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                        <div className={`group relative backdrop-blur-xl border p-8 rounded-[2rem] overflow-hidden transition-all duration-500 hover:-translate-y-1 hover:shadow-xl ${isDark ? 'bg-[#0A0A0A]/60 border-white/5 hover:border-purple-500/30' : 'bg-white/70 border-black/5 hover:border-purple-500/40 shadow-sm'}`}>
+                            <div className="absolute inset-0 bg-gradient-to-br from-purple-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
                             <div className="relative z-10 flex flex-col items-center text-center">
-                                <div className="w-16 h-16 bg-cyan-500/10 rounded-2xl flex items-center justify-center mb-6 text-cyan-400 group-hover:scale-110 transition-transform duration-300">
+                                <div className="w-16 h-16 bg-purple-500/10 rounded-2xl flex items-center justify-center mb-6 text-purple-500 group-hover:scale-110 transition-transform duration-300">
                                     <Mail className="w-8 h-8" />
                                 </div>
-                                <h3 className="text-xl font-bold text-white mb-2">Email Us</h3>
-                                <p className="text-slate-400 text-sm mb-4">Reach out for collaborations, queries, or feedback.</p>
+                                <h3 className={`text-xl font-bold mb-2 ${isDark ? 'text-white' : 'text-slate-900'}`}>Email Us</h3>
+                                <p className={`text-sm mb-4 ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>Reach out for collaborations, queries, or feedback.</p>
                                 <a
                                     href="mailto:dataanalyticsclub@stjosephs.ac.in"
-                                    className="text-cyan-400 hover:text-cyan-300 transition-colors text-sm font-medium inline-flex items-center gap-1"
+                                    className="text-purple-500 hover:text-purple-400 transition-colors text-sm font-medium inline-flex items-center gap-1"
                                 >
                                     dataanalyticsclub@stjosephs.ac.in
                                     <ExternalLink className="w-3 h-3" />
@@ -188,30 +190,30 @@ const Connect: React.FC = () => {
                         </div>
 
                         {/* Location Card */}
-                        <div className="group relative bg-[#0A0A0A]/60 backdrop-blur-xl border border-white/5 p-8 rounded-[2rem] overflow-hidden hover:border-violet-500/30 transition-all duration-500">
-                            <div className="absolute inset-0 bg-gradient-to-br from-violet-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                        <div className={`group relative backdrop-blur-xl border p-8 rounded-[2rem] overflow-hidden transition-all duration-500 hover:-translate-y-1 hover:shadow-xl ${isDark ? 'bg-[#0A0A0A]/60 border-white/5 hover:border-slate-500/30' : 'bg-white/70 border-black/5 hover:border-slate-500/40 shadow-sm'}`}>
+                            <div className="absolute inset-0 bg-gradient-to-br from-slate-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
                             <div className="relative z-10 flex flex-col items-center text-center">
-                                <div className="w-16 h-16 bg-violet-500/10 rounded-2xl flex items-center justify-center mb-6 text-violet-400 group-hover:scale-110 transition-transform duration-300">
+                                <div className="w-16 h-16 bg-slate-500/10 rounded-2xl flex items-center justify-center mb-6 text-slate-500 group-hover:scale-110 transition-transform duration-300">
                                     <MapPin className="w-8 h-8" />
                                 </div>
-                                <h3 className="text-xl font-bold text-white mb-2">Visit Us</h3>
-                                <p className="text-slate-400 text-sm mb-4">Department of AI & Data Science</p>
-                                <span className="text-violet-400 text-sm font-medium">
+                                <h3 className={`text-xl font-bold mb-2 ${isDark ? 'text-white' : 'text-slate-900'}`}>Visit Us</h3>
+                                <p className={`text-sm mb-4 ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>Department of AI & Data Science</p>
+                                <span className={`text-sm font-medium ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
                                     St. Joseph's College of Engineering, Chennai
                                 </span>
                             </div>
                         </div>
 
                         {/* Phone Card */}
-                        <div className="group relative bg-[#0A0A0A]/60 backdrop-blur-xl border border-white/5 p-8 rounded-[2rem] overflow-hidden hover:border-blue-500/30 transition-all duration-500">
-                            <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                        <div className={`group relative backdrop-blur-xl border p-8 rounded-[2rem] overflow-hidden transition-all duration-500 hover:-translate-y-1 hover:shadow-xl ${isDark ? 'bg-[#0A0A0A]/60 border-white/5 hover:border-purple-500/30' : 'bg-white/70 border-black/5 hover:border-purple-500/40 shadow-sm'}`}>
+                            <div className="absolute inset-0 bg-gradient-to-br from-purple-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
                             <div className="relative z-10 flex flex-col items-center text-center">
-                                <div className="w-16 h-16 bg-blue-500/10 rounded-2xl flex items-center justify-center mb-6 text-blue-400 group-hover:scale-110 transition-transform duration-300">
+                                <div className="w-16 h-16 bg-purple-500/10 rounded-2xl flex items-center justify-center mb-6 text-purple-500 group-hover:scale-110 transition-transform duration-300">
                                     <Phone className="w-8 h-8" />
                                 </div>
-                                <h3 className="text-xl font-bold text-white mb-2">Call Us</h3>
-                                <p className="text-slate-400 text-sm mb-4">Available on weekdays during office hours.</p>
-                                <span className="text-blue-400 text-sm font-medium">
+                                <h3 className={`text-xl font-bold mb-2 ${isDark ? 'text-white' : 'text-slate-900'}`}>Call Us</h3>
+                                <p className={`text-sm mb-4 ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>Available on weekdays during office hours.</p>
+                                <span className="text-purple-500 text-sm font-medium">
                                     +91 99405 19002
                                 </span>
                             </div>

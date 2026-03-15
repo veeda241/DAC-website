@@ -3,12 +3,15 @@ import { FileText, ExternalLink, FileBarChart } from 'lucide-react';
 import { ClubReport } from '../../types';
 import { downloadAsPDF } from '../../utils/pdfGenerator';
 import DownloadButton from '../DownloadButton';
+import { useTheme } from '../../contexts/ThemeContext';
 
 interface ReportsProps {
     reports: ClubReport[];
 }
 
 const Reports: React.FC<ReportsProps> = ({ reports }) => {
+    const { isDark } = useTheme();
+
     const handleDownload = (report: ClubReport) => {
         if (report.fileUrl && report.fileUrl !== '#') {
             if (report.fileUrl.startsWith('data:application/pdf')) {
@@ -89,26 +92,26 @@ const Reports: React.FC<ReportsProps> = ({ reports }) => {
     return (
         <div className="max-w-7xl mx-auto px-4 pt-40 pb-12 animate-fade-in-up">
             <div className="text-center mb-16 relative">
-                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] h-[300px] bg-cyan-600/10 rounded-full blur-[100px] -z-10"></div>
-                <FileBarChart className="w-16 h-16 text-cyan-500 mx-auto mb-6" />
-                <h2 className="text-4xl md:text-5xl font-extrabold text-white mb-6">Activity Reports</h2>
-                <p className="text-xl text-slate-400 max-w-2xl mx-auto">Transparency impacts trust. Access our detailed monthly reports and event summaries.</p>
+                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] h-[300px] bg-purple-600/10 rounded-full blur-[100px] -z-10"></div>
+                <FileBarChart className="w-16 h-16 text-purple-500 mx-auto mb-6" />
+                <h2 className={`text-4xl md:text-5xl font-extrabold mb-6 ${isDark ? 'text-white' : 'text-slate-900'}`}>Activity Reports</h2>
+                <p className={`text-xl max-w-2xl mx-auto ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>Transparency impacts trust. Access our detailed monthly reports and event summaries.</p>
             </div>
 
             {/* --- Downloadable Reports Grid --- */}
             <section className="mb-20">
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                     {reports.length > 0 ? reports.map(report => (
-                        <div key={report.id} className="group bg-[#0A0A0C] border border-white/5 rounded-[1.5rem] overflow-hidden hover:border-cyan-500/30 transition-all hover:-translate-y-2 hover:shadow-2xl hover:shadow-cyan-500/10 flex flex-col relative">
+                        <div key={report.id} className={`group border rounded-[1.5rem] overflow-hidden hover:-translate-y-2 hover:shadow-2xl hover:shadow-purple-500/10 flex flex-col relative transition-all ${isDark ? 'bg-[#0A0A0C] border-white/5 hover:border-purple-500/30' : 'bg-white border-black/10 hover:border-purple-500/40 shadow-lg'}`}>
                             <a
                                 href="#"
                                 className="flex-1 flex flex-col"
                                 onClick={(e) => handlePreview(e, report)}
                             >
-                                <div className="h-48 relative overflow-hidden bg-slate-900 border-b border-white/5">
+                                <div className={`h-48 relative overflow-hidden border-b ${isDark ? 'bg-slate-900 border-white/5' : 'bg-slate-100 border-black/5'}`}>
                                     <img src={report.thumbnailUrl} alt={report.title} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 opacity-80 group-hover:opacity-100" />
-                                    <div className="absolute inset-0 bg-gradient-to-t from-[#0A0A0C] via-transparent to-transparent"></div>
-                                    <div className="absolute inset-0 bg-black/40 backdrop-blur-[2px] opacity-0 group-hover:opacity-100 transition-all duration-300 flex items-center justify-center">
+                                    <div className={`absolute inset-0 bg-gradient-to-t via-transparent to-transparent ${isDark ? 'from-[#0A0A0C]' : 'from-white'}`}></div>
+                                    <div className={`absolute inset-0 backdrop-blur-[2px] opacity-0 group-hover:opacity-100 transition-all duration-300 flex items-center justify-center ${isDark ? 'bg-black/40' : 'bg-white/40'}`}>
                                         <div
                                             className="relative group/btn border-none bg-transparent p-0 outline-none cursor-pointer font-sans font-bold uppercase text-sm"
                                         >
@@ -143,11 +146,11 @@ const Reports: React.FC<ReportsProps> = ({ reports }) => {
 
                                 <div className="p-6 flex-1 flex flex-col">
                                     <div className="mb-4">
-                                        <h4 className="font-bold text-white text-lg mb-2 line-clamp-2 leading-tight group-hover:text-cyan-400 transition-colors">{report.title}</h4>
+                                        <h4 className={`font-bold text-lg mb-2 line-clamp-2 leading-tight group-hover:text-purple-400 transition-colors ${isDark ? 'text-white' : 'text-slate-900'}`}>{report.title}</h4>
                                         <p className="text-sm text-slate-500 line-clamp-3 leading-relaxed">{report.description}</p>
                                     </div>
 
-                                    <div className="mt-auto pt-4 border-t border-white/5 flex justify-between items-center">
+                                    <div className={`mt-auto pt-4 border-t flex justify-between items-center ${isDark ? 'border-white/5' : 'border-black/5'}`}>
                                         <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">{report.date}</span>
                                         <div onClick={(e) => { e.preventDefault(); e.stopPropagation(); }}>
                                             <DownloadButton onDownload={() => handleDownload(report)} />
@@ -157,8 +160,8 @@ const Reports: React.FC<ReportsProps> = ({ reports }) => {
                             </a>
                         </div>
                     )) : (
-                        <div className="col-span-full py-20 text-center text-slate-500 border border-dashed border-white/10 rounded-[2rem] bg-white/5">
-                            <FileText className="w-12 h-12 text-slate-700 mx-auto mb-4" />
+                        <div className={`col-span-full py-20 text-center border border-dashed rounded-[2rem] ${isDark ? 'text-slate-500 border-white/10 bg-white/5' : 'text-slate-600 border-black/10 bg-slate-50'}`}>
+                            <FileText className={`w-12 h-12 mx-auto mb-4 ${isDark ? 'text-slate-700' : 'text-slate-400'}`} />
                             <p>No public reports uploaded yet.</p>
                         </div>
                     )}

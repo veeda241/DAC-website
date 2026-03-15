@@ -37,7 +37,7 @@ const DataSphere: React.FC = () => {
 
             const scale = 130;
             const size = 2 + (i % 3);
-            const colors = ['#818cf8', '#a78bfa', '#c084fc'];
+            const colors = ['#E30613', '#FFCC00', '#FDE047'];
             const color = colors[i % 3];
 
             result.push(
@@ -66,14 +66,14 @@ const DataSphere: React.FC = () => {
         return [0, 60, 120].map((rotation, index) => (
             <div
                 key={index}
-                className="absolute inset-0 rounded-full border border-indigo-500/30"
+                className="absolute inset-0 rounded-full border border-purple-500/30"
                 style={{
                     transform: `rotateX(70deg) rotateY(${rotation}deg)`,
                     animation: `spin ${20 + index * 5}s linear infinite ${index % 2 === 0 ? 'normal' : 'reverse'}`,
                 }}
             >
                 <div
-                    className="absolute w-2.5 h-2.5 bg-cyan-400 rounded-full shadow-lg shadow-cyan-400/60"
+                    className="absolute w-2.5 h-2.5 bg-purple-500 rounded-full shadow-lg shadow-purple-500/60"
                     style={{
                         top: '0%',
                         left: '50%',
@@ -97,7 +97,7 @@ const DataSphere: React.FC = () => {
     return (
         <div className="relative w-[350px] h-[350px] flex items-center justify-center">
             {/* Outer glow */}
-            <div className="absolute inset-[-20px] rounded-full bg-gradient-to-br from-indigo-600/30 via-purple-600/20 to-pink-600/30 blur-3xl animate-pulse" />
+            <div className="absolute inset-[-20px] rounded-full bg-gradient-to-br from-purple-600/30 via-purple-800/20 to-slate-600/30 blur-3xl animate-pulse" />
 
             {/* Main sphere container */}
             <div
@@ -112,11 +112,11 @@ const DataSphere: React.FC = () => {
                 <div
                     className="absolute inset-[70px] rounded-full"
                     style={{
-                        background: 'radial-gradient(circle at 30% 30%, rgba(99, 102, 241, 0.5), rgba(139, 92, 246, 0.3), rgba(0, 0, 0, 0.9))',
-                        boxShadow: 'inset 0 0 80px rgba(99, 102, 241, 0.6), 0 0 60px rgba(99, 102, 241, 0.4), 0 0 100px rgba(139, 92, 246, 0.2)',
+                        background: 'radial-gradient(circle at 30% 30%, rgba(227, 6, 19, 0.5), rgba(0, 26, 48, 0.3), rgba(0, 0, 0, 0.9))',
+                        boxShadow: 'inset 0 0 80px rgba(227, 6, 19, 0.6), 0 0 60px rgba(227, 6, 19, 0.4), 0 0 100px rgba(227, 6, 19, 0.2)',
                     }}
                 >
-                    <div className="absolute inset-3 rounded-full bg-gradient-to-br from-indigo-400/30 via-transparent to-transparent" />
+                    <div className="absolute inset-3 rounded-full bg-gradient-to-br from-purple-400/30 via-transparent to-transparent" />
                     <div className="absolute inset-6 rounded-full bg-gradient-to-tl from-purple-500/20 via-transparent to-transparent" />
                 </div>
 
@@ -140,7 +140,7 @@ const DataSphere: React.FC = () => {
                 {dataNodes.map((node, i) => (
                     <div
                         key={i}
-                        className="absolute flex items-center justify-center w-10 h-10 bg-slate-900/90 backdrop-blur-sm rounded-full border border-indigo-500/50 shadow-lg shadow-indigo-500/30 hover:scale-110 transition-transform cursor-pointer"
+                        className="absolute flex items-center justify-center w-10 h-10 bg-slate-900/90 backdrop-blur-sm rounded-full border border-purple-500/50 shadow-lg shadow-purple-500/30 hover:scale-110 transition-transform cursor-pointer"
                         style={{
                             left: `calc(50% + ${node.x}px)`,
                             top: `calc(50% + ${node.y}px)`,
@@ -158,8 +158,8 @@ const DataSphere: React.FC = () => {
             <svg className="absolute inset-0 w-full h-full pointer-events-none" style={{ zIndex: -1 }}>
                 <defs>
                     <linearGradient id="lineGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                        <stop offset="0%" stopColor="rgba(99, 102, 241, 0.6)" />
-                        <stop offset="100%" stopColor="rgba(139, 92, 246, 0.1)" />
+                        <stop offset="0%" stopColor="rgba(227, 6, 19, 0.6)" />
+                        <stop offset="100%" stopColor="rgba(0, 26, 48, 0.1)" />
                     </linearGradient>
                 </defs>
                 <line x1="75" y1="105" x2="175" y2="175" stroke="url(#lineGrad)" strokeWidth="1" className="animate-pulse" />
@@ -174,7 +174,7 @@ const DataSphere: React.FC = () => {
                 {[...Array(8)].map((_, i) => (
                     <div
                         key={i}
-                        className="absolute w-1 h-1 bg-indigo-400/60 rounded-full animate-float"
+                        className="absolute w-1 h-1 bg-purple-400/60 rounded-full animate-float"
                         style={{
                             left: `${15 + (i * 12)}%`,
                             top: `${10 + ((i * 17) % 80)}%`,

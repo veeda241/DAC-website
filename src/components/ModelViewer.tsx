@@ -131,6 +131,7 @@ const ModelInner: React.FC<ModelInnerProps> = ({
                 o.castShadow = true;
                 o.receiveShadow = true;
                 if (fadeIn) {
+                    o.userData.wasTransparent = o.material.transparent;
                     o.material.transparent = true;
                     o.material.opacity = 0;
                 }
@@ -162,6 +163,12 @@ const ModelInner: React.FC<ModelInnerProps> = ({
                 invalidate();
                 if (v === 1) {
                     clearInterval(id);
+                    g.traverse((o: any) => {
+                        if (o.isMesh && !o.userData.wasTransparent) {
+                            o.material.transparent = false;
+                            o.material.needsUpdate = true;
+                        }
+                    });
                     onLoaded?.();
                 }
             }, 16);
@@ -486,7 +493,7 @@ const ModelViewer: React.FC<ModelViewerProps> = ({
             <Canvas
                 shadows
                 frameloop="demand"
-                gl={{ preserveDrawingBuffer: true }}
+                gl={{ preserveDrawingBuffer: true, alpha: true, antialias: true }}
                 onCreated={({ gl, scene, camera }) => {
                     rendererRef.current = gl;
                     sceneRef.current = scene;

@@ -1,3 +1,25 @@
+/* ===== THEME SYSTEM ===== */
+:root,
+[data-theme="dark"] {
+    --bg-primary: #000000;
+    --bg-secondary: #0A0A0C;
+    --bg-card: rgba(10, 10, 12, 0.9);
+    --bg-glass: rgba(0, 26, 48, 0.6);
+    --bg-glass-hover: rgba(0, 26, 48, 0.8);
+    --text-primary: #ffffff;
+    --text-secondary: #94a3b8;
+    --text-muted: #64748b;
+    --border-color: rgba(255, 255, 255, 0.1);
+    --border-accent: rgba(6, 182, 212, 0.3);
+    --accent-primary: #06b6d4;
+    --accent-gradient: linear-gradient(135deg, #06b6d4, #3b82f6);
+    --shadow-glow: rgba(6, 182, 212, 0.15);
+    --nav-bg: rgba(0, 26, 48, 0.6);
+    --nav-border: rgba(6, 182, 212, 0.15);
+    --footer-bg: rgba(2, 6, 23, 0.95);
+    --input-bg: rgba(0, 0, 0, 0.4);
+}
+
 /* DataSphere Animation Keyframes */
 @keyframes rotateY {
     from {

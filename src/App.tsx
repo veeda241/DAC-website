@@ -7,6 +7,8 @@ import { User, ClubEvent, Task, ActivityLog, Notification, UserRole, ClubReport,
 import { MOCK_USERS, MOCK_REPORTS } from './constants';
 import LoadingScreen from './components/LoadingScreen';
 import Chatbot from './components/Chatbot';
+import Iridescence from './components/Iridescence';
+import { ThemeProvider } from './contexts/ThemeContext';
 
 const App: React.FC = () => {
     // Global State
@@ -362,7 +364,16 @@ const App: React.FC = () => {
     };
 
     return (
+        <ThemeProvider>
         <>
+            <div style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', zIndex: -1, pointerEvents: 'none' }}>
+                <Iridescence
+                  color={[0.05, 0.1, 0.25]}
+                  mouseReact={true}
+                  amplitude={0.1}
+                  speed={1}
+                />
+            </div>
             {/* Main Content Rendered Always (behind loading screen) - Delayed to prevent lag */}
             {isAppReady && (
                 !currentUser ? (
@@ -424,6 +435,7 @@ const App: React.FC = () => {
                 <LoadingScreen onFinished={() => setIsLoading(false)} />
             )}
         </>
+        </ThemeProvider>
     );
 };
 

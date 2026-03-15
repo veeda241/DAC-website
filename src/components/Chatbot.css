@@ -12,10 +12,10 @@
     height: 64px;
     border-radius: 50%;
     cursor: pointer;
-    background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #a78bfa 100%);
+    background: linear-gradient(135deg, #001A30 0%, #9333ea 100%);
     box-shadow:
-        0 4px 24px rgba(99, 102, 241, 0.45),
-        0 0 0 0 rgba(139, 92, 246, 0.4);
+        0 4px 24px rgba(147, 51, 234, 0.45),
+        0 0 0 0 rgba(147, 51, 234, 0.4);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -28,8 +28,8 @@
 .qwalt-bubble:hover {
     transform: scale(1.12);
     box-shadow:
-        0 6px 32px rgba(99, 102, 241, 0.6),
-        0 0 0 8px rgba(139, 92, 246, 0.15);
+        0 6px 32px rgba(147, 51, 234, 0.6),
+        0 0 0 8px rgba(147, 51, 234, 0.15);
 }
 
 .qwalt-bubble img {
@@ -52,14 +52,14 @@
     0%,
     100% {
         box-shadow:
-            0 4px 24px rgba(99, 102, 241, 0.45),
-            0 0 0 0 rgba(139, 92, 246, 0.4);
+            0 4px 24px rgba(147, 51, 234, 0.45),
+            0 0 0 0 rgba(147, 51, 234, 0.4);
     }
 
     50% {
         box-shadow:
-            0 4px 24px rgba(99, 102, 241, 0.45),
-            0 0 0 12px rgba(139, 92, 246, 0);
+            0 4px 24px rgba(147, 51, 234, 0.45),
+            0 0 0 12px rgba(147, 51, 234, 0);
     }
 }
 
@@ -70,7 +70,7 @@
     right: -2px;
     width: 18px;
     height: 18px;
-    background: #ef4444;
+    background: #9333ea;
     border-radius: 50%;
     border: 2px solid #0f172a;
     display: flex;
@@ -111,10 +111,10 @@
     background: rgba(10, 15, 30, 0.88);
     backdrop-filter: blur(24px);
     -webkit-backdrop-filter: blur(24px);
-    border: 1px solid rgba(99, 102, 241, 0.25);
+    border: 1px solid rgba(147, 51, 234, 0.25);
     box-shadow:
         0 24px 80px rgba(0, 0, 0, 0.5),
-        0 0 0 1px rgba(99, 102, 241, 0.1),
+        0 0 0 1px rgba(147, 51, 234, 0.1),
         inset 0 1px 0 rgba(255, 255, 255, 0.05);
 
     /* Animation */
@@ -156,8 +156,8 @@
     align-items: center;
     gap: 12px;
     padding: 16px 18px;
-    background: linear-gradient(135deg, rgba(99, 102, 241, 0.2) 0%, rgba(139, 92, 246, 0.15) 100%);
-    border-bottom: 1px solid rgba(99, 102, 241, 0.15);
+    background: linear-gradient(135deg, rgba(0, 26, 48, 0.8) 0%, rgba(147, 51, 234, 0.15) 100%);
+    border-bottom: 1px solid rgba(147, 51, 234, 0.15);
     flex-shrink: 0;
 }
 
@@ -166,8 +166,8 @@
     height: 40px;
     border-radius: 50%;
     object-fit: cover;
-    border: 2px solid rgba(139, 92, 246, 0.5);
-    box-shadow: 0 0 12px rgba(139, 92, 246, 0.3);
+    border: 2px solid rgba(147, 51, 234, 0.5);
+    box-shadow: 0 0 12px rgba(147, 51, 234, 0.3);
 }
 
 .qwalt-header-info {
@@ -238,7 +238,7 @@
 }
 
 .qwalt-messages::-webkit-scrollbar-thumb {
-    background: rgba(99, 102, 241, 0.3);
+    background: rgba(147, 51, 234, 0.3);
     border-radius: 4px;
 }
 
@@ -267,18 +267,18 @@
 
 .qwalt-msg.bot {
     align-self: flex-start;
-    background: rgba(99, 102, 241, 0.12);
+    background: rgba(147, 51, 234, 0.12);
     color: #cbd5e1;
-    border: 1px solid rgba(99, 102, 241, 0.15);
+    border: 1px solid rgba(147, 51, 234, 0.15);
     border-bottom-left-radius: 4px;
 }
 
 .qwalt-msg.user {
     align-self: flex-end;
-    background: linear-gradient(135deg, #6366f1, #8b5cf6);
+    background: linear-gradient(135deg, #9333ea, #475569);
     color: #fff;
     border-bottom-right-radius: 4px;
-    box-shadow: 0 2px 12px rgba(99, 102, 241, 0.3);
+    box-shadow: 0 2px 12px rgba(147, 51, 234, 0.3);
 }
 
 .qwalt-msg-time {
@@ -299,17 +299,17 @@
     gap: 4px;
     padding: 12px 16px;
     align-self: flex-start;
-    background: rgba(99, 102, 241, 0.08);
+    background: rgba(147, 51, 234, 0.08);
     border-radius: 16px;
     border-bottom-left-radius: 4px;
-    border: 1px solid rgba(99, 102, 241, 0.1);
+    border: 1px solid rgba(147, 51, 234, 0.1);
 }
 
 .qwalt-typing-dot {
     width: 7px;
     height: 7px;
     border-radius: 50%;
-    background: #6366f1;
+    background: #9333ea;
     animation: qwalt-bounce 1.4s ease-in-out infinite;
 }
 
@@ -348,9 +348,9 @@
 .qwalt-quick-btn {
     padding: 6px 12px;
     border-radius: 20px;
-    border: 1px solid rgba(99, 102, 241, 0.25);
-    background: rgba(99, 102, 241, 0.08);
-    color: #a5b4fc;
+    border: 1px solid rgba(147, 51, 234, 0.25);
+    background: rgba(147, 51, 234, 0.08);
+    color: #fecaca;
     font-size: 11.5px;
     cursor: pointer;
     transition: all 0.2s;
@@ -358,9 +358,9 @@
 }
 
 .qwalt-quick-btn:hover {
-    background: rgba(99, 102, 241, 0.2);
-    border-color: rgba(99, 102, 241, 0.5);
-    color: #c7d2fe;
+    background: rgba(147, 51, 234, 0.2);
+    border-color: rgba(147, 51, 234, 0.5);
+    color: #ffcccc;
     transform: translateY(-1px);
 }
 
@@ -370,7 +370,7 @@
     align-items: center;
     gap: 8px;
     padding: 12px 14px;
-    border-top: 1px solid rgba(99, 102, 241, 0.1);
+    border-top: 1px solid rgba(147, 51, 234, 0.1);
     background: rgba(15, 23, 42, 0.5);
     flex-shrink: 0;
 }
@@ -379,7 +379,7 @@
     flex: 1;
     padding: 10px 14px;
     border-radius: 14px;
-    border: 1px solid rgba(99, 102, 241, 0.15);
+    border: 1px solid rgba(147, 51, 234, 0.15);
     background: rgba(30, 41, 59, 0.6);
     color: #e2e8f0;
     font-size: 13.5px;
@@ -393,8 +393,8 @@
 }
 
 .qwalt-input:focus {
-    border-color: rgba(99, 102, 241, 0.5);
-    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+    border-color: rgba(147, 51, 234, 0.5);
+    box-shadow: 0 0 0 3px rgba(147, 51, 234, 0.1);
 }
 
 .qwalt-send-btn {
@@ -402,7 +402,7 @@
     height: 40px;
     border-radius: 12px;
     border: none;
-    background: linear-gradient(135deg, #6366f1, #8b5cf6);
+    background: linear-gradient(135deg, #9333ea, #475569);
     color: white;
     font-size: 16px;
     cursor: pointer;
@@ -415,7 +415,7 @@
 
 .qwalt-send-btn:hover:not(:disabled) {
     transform: scale(1.08);
-    box-shadow: 0 4px 16px rgba(99, 102, 241, 0.4);
+    box-shadow: 0 4px 16px rgba(147, 51, 234, 0.4);
 }
 
 .qwalt-send-btn:disabled {
@@ -453,4 +453,84 @@
         width: 40px;
         height: 40px;
     }
+}
+
+/* ─── Light Mode Overrides ─── */
+[data-theme='light'] .qwalt-window {
+    background: rgba(255, 255, 255, 0.95);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.1), 0 0 0 1px rgba(147, 51, 234, 0.05);
+}
+
+[data-theme='light'] .qwalt-header {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(147, 51, 234, 0.05) 100%);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+[data-theme='light'] .qwalt-header-name {
+    color: #0f172a;
+}
+
+[data-theme='light'] .qwalt-header-status {
+    color: #64748b;
+}
+
+[data-theme='light'] .qwalt-close-btn {
+    background: rgba(0, 0, 0, 0.04);
+    color: #475569;
+}
+
+[data-theme='light'] .qwalt-close-btn:hover {
+    background: rgba(239, 68, 68, 0.15);
+    color: #ef4444;
+}
+
+[data-theme='light'] .qwalt-msg.bot {
+    background: rgba(0, 0, 0, 0.04);
+    color: #334155;
+    border: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+[data-theme='light'] .qwalt-msg.user {
+    color: white; /* same as dark */
+}
+
+[data-theme='light'] .qwalt-msg-time {
+    color: rgba(0, 0, 0, 0.4);
+}
+
+[data-theme='light'] .qwalt-msg.user .qwalt-msg-time {
+    color: rgba(255, 255, 255, 0.6);
+}
+
+[data-theme='light'] .qwalt-typing {
+    background: rgba(0, 0, 0, 0.03);
+    border: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+[data-theme='light'] .qwalt-quick-btn {
+    background: rgba(147, 51, 234, 0.05);
+    border: 1px solid rgba(147, 51, 234, 0.15);
+    color: #9333ea;
+}
+
+[data-theme='light'] .qwalt-quick-btn:hover {
+    background: rgba(147, 51, 234, 0.1);
+    color: #6b21a8;
+}
+
+[data-theme='light'] .qwalt-input-area {
+    background: rgba(255, 255, 255, 0.9);
+    border-top: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+[data-theme='light'] .qwalt-input {
+    background: rgba(0, 0, 0, 0.04);
+    color: #0f172a;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+[data-theme='light'] .qwalt-input:focus {
+    border-color: rgba(147, 51, 234, 0.5);
+    background: white;
 }

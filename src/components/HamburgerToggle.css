@@ -1,0 +1,77 @@
+/* From Uiverse.io by vinodjangid07 - Animated Hamburger Toggle */
+
+.hamburger-checkbox {
+    display: none;
+}
+
+.hamburger-toggle {
+    position: relative;
+    width: 28px;
+    height: 28px;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    transition-duration: 0.5s;
+    padding: 8px;
+    border-radius: 8px;
+}
+
+.hamburger-toggle:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.hamburger-bar {
+    width: 100%;
+    height: 3px;
+    border-radius: 3px;
+    transition: all 0.5s ease;
+}
+
+/* Dark mode bars */
+[data-theme="dark"] .hamburger-bar {
+    background-color: #22d3ee; /* cyan-400 */
+}
+
+/* Light mode bars */
+[data-theme="light"] .hamburger-bar {
+    background-color: #0e7490; /* cyan-700 */
+}
+
+.hamburger-bar-short {
+    width: 70%;
+}
+
+.hamburger-bar-mid {
+    transition-duration: 0.8s;
+}
+
+/* Checked state - X animation */
+.hamburger-checkbox:checked + .hamburger-toggle .hamburger-bar {
+    position: absolute;
+    transition-duration: 0.5s;
+}
+
+.hamburger-checkbox:checked + .hamburger-toggle .hamburger-bar-mid {
+    transform: scaleX(0);
+    transition-duration: 0.5s;
+}
+
+.hamburger-checkbox:checked + .hamburger-toggle .hamburger-bar-top {
+    width: 100%;
+    transform: rotate(45deg);
+    transition-duration: 0.5s;
+}
+
+.hamburger-checkbox:checked + .hamburger-toggle .hamburger-bar-bottom {
+    width: 100%;
+    transform: rotate(-45deg);
+    transition-duration: 0.5s;
+}
+
+.hamburger-checkbox:checked + .hamburger-toggle {
+    transition-duration: 0.5s;
+    transform: rotate(180deg);
+}

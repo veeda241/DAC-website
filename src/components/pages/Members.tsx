@@ -3,9 +3,11 @@ import { GraduationCap, X } from 'lucide-react';
 import { MOCK_MENTORS, MOCK_TEAM } from '../../constants';
 import { TeamMember } from '../../types';
 import ProfileCard from '../ProfileCard';
+import { useTheme } from '../../contexts/ThemeContext';
 
 const Members: React.FC = () => {
     const [selectedMember, setSelectedMember] = useState<TeamMember | null>(null);
+    const { isDark } = useTheme();
 
     const handleImageError = (e: React.SyntheticEvent<HTMLImageElement>) => {
         e.currentTarget.src = 'https://i.pravatar.cc/150?u=default';
@@ -16,9 +18,9 @@ const Members: React.FC = () => {
             {/* Hero Section */}
             <section className="pt-40 pb-16 px-4">
                 <div className="max-w-4xl mx-auto text-center">
-                    <span className="text-cyan-400 font-bold tracking-widest uppercase text-sm mb-4 block">Our Team</span>
-                    <h2 className="text-4xl md:text-6xl font-extrabold text-white mb-6">
-                        Meet the <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500">Visionaries</span>
+                    <span className="text-purple-500 font-bold tracking-widest uppercase text-sm mb-4 block">Our Team</span>
+                    <h2 className={`text-4xl md:text-6xl font-extrabold mb-6 ${isDark ? 'text-white' : 'text-slate-900'}`}>
+                        Meet the <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-purple-800">Visionaries</span>
                     </h2>
                     <p className="text-lg md:text-xl text-slate-400 max-w-2xl mx-auto">
                         The brilliant minds and mentors driving innovation at Data Analytics Club.
@@ -30,8 +32,8 @@ const Members: React.FC = () => {
                 {/* Mentors Section */}
                 <div className="mb-20">
                     <div className="flex items-center gap-3 mb-10">
-                        <div className="w-1 h-10 bg-gradient-to-b from-amber-400 to-orange-500 rounded-full"></div>
-                        <h3 className="text-2xl md:text-3xl font-bold text-white">Mentors & Advisors</h3>
+                        <div className="w-1 h-10 bg-gradient-to-b from-slate-400 to-slate-500 rounded-full"></div>
+                        <h3 className={`text-2xl md:text-3xl font-bold ${isDark ? 'text-white' : 'text-slate-900'}`}>Mentors & Advisors</h3>
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 justify-items-center">
                         {MOCK_MENTORS.map((mentor) => (
@@ -45,8 +47,8 @@ const Members: React.FC = () => {
                                 contactText="View Profile"
                                 showUserInfo={true}
                                 enableTilt={true}
-                                behindGlowColor="rgba(251, 191, 36, 0.4)"
-                                innerGradient="linear-gradient(145deg, rgba(251, 191, 36, 0.15) 0%, rgba(245, 158, 11, 0.1) 100%)"
+                                behindGlowColor="rgba(147, 51, 234, 0.4)"
+                                innerGradient="linear-gradient(145deg, rgba(147, 51, 234, 0.15) 0%, rgba(71, 85, 105, 0.1) 100%)"
                                 onClick={() => setSelectedMember(mentor)}
                             />
                         ))}
@@ -56,8 +58,8 @@ const Members: React.FC = () => {
                 {/* Core Team Section */}
                 <div>
                     <div className="flex items-center gap-3 mb-10">
-                        <div className="w-1 h-10 bg-gradient-to-b from-cyan-400 to-blue-500 rounded-full"></div>
-                        <h3 className="text-2xl md:text-3xl font-bold text-white">Core Team</h3>
+                        <div className="w-1 h-10 bg-gradient-to-b from-purple-600 to-purple-800 rounded-full"></div>
+                        <h3 className={`text-2xl md:text-3xl font-bold ${isDark ? 'text-white' : 'text-slate-900'}`}>Core Team</h3>
                     </div>
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 justify-items-center">
                         {MOCK_TEAM.sort((a, b) => {
@@ -81,8 +83,8 @@ const Members: React.FC = () => {
                                 contactText="View Profile"
                                 showUserInfo={true}
                                 enableTilt={true}
-                                behindGlowColor="rgba(6, 182, 212, 0.4)"
-                                innerGradient="linear-gradient(145deg, rgba(6, 182, 212, 0.15) 0%, rgba(59, 130, 246, 0.1) 100%)"
+                                behindGlowColor="rgba(147, 51, 234, 0.4)"
+                                innerGradient="linear-gradient(145deg, rgba(147, 51, 234, 0.15) 0%, rgba(71, 85, 105, 0.1) 100%)"
                                 onClick={() => setSelectedMember(member)}
                             />
                         ))}
@@ -93,10 +95,10 @@ const Members: React.FC = () => {
             {/* Member Detail Modal */}
             {selectedMember && (
                 <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/80 backdrop-blur-md overflow-y-auto">
-                    <div className="bg-[#0A0A0C] border border-white/10 rounded-[2rem] w-full max-w-2xl overflow-hidden shadow-2xl relative my-auto max-h-[90vh] overflow-y-auto">
+                    <div className={`border rounded-[2rem] w-full max-w-2xl overflow-hidden shadow-2xl relative my-auto max-h-[90vh] overflow-y-auto ${isDark ? 'bg-[#0A0A0C] border-white/10' : 'bg-white border-black/10'}`}>
                         <button
                             onClick={() => setSelectedMember(null)}
-                            className="absolute top-4 right-4 p-2 bg-white/5 hover:bg-white/10 rounded-full text-slate-400 hover:text-white transition-colors z-10"
+                            className={`absolute top-4 right-4 p-2 rounded-full transition-colors z-10 ${isDark ? 'bg-white/5 hover:bg-white/10 text-slate-400 hover:text-white' : 'bg-black/5 hover:bg-black/10 text-slate-500 hover:text-slate-900'}`}
                         >
                             <X className="w-5 h-5" />
                         </button>
@@ -109,13 +111,13 @@ const Members: React.FC = () => {
                                     onError={handleImageError}
                                     className="w-full h-full object-cover"
                                 />
-                                <div className="absolute inset-0 bg-gradient-to-t from-[#0A0A0C] via-transparent to-transparent md:bg-gradient-to-r"></div>
+                                <div className={`absolute inset-0 bg-gradient-to-t via-transparent to-transparent md:bg-gradient-to-r ${isDark ? 'from-[#0A0A0C]' : 'from-white'}`}></div>
                             </div>
 
                             <div className="md:w-3/5 p-8 flex flex-col justify-center">
                                 <div className="mb-6">
-                                    <h2 className="text-3xl font-bold text-white mb-2">{selectedMember.name}</h2>
-                                    <p className="text-cyan-400 text-lg font-bold tracking-wide">{selectedMember.role}</p>
+                                    <h2 className={`text-3xl font-bold mb-2 ${isDark ? 'text-white' : 'text-slate-900'}`}>{selectedMember.name}</h2>
+                                    <p className="text-purple-500 text-lg font-bold tracking-wide">{selectedMember.role}</p>
                                     <div className="flex items-center gap-4 mt-3 text-slate-500 text-sm">
                                         <span className="flex items-center gap-1"><GraduationCap className="w-4 h-4" /> {selectedMember.year}</span>
                                     </div>
@@ -123,14 +125,14 @@ const Members: React.FC = () => {
 
                                 <div className="mb-6">
                                     <h4 className="text-xs font-bold text-slate-500 uppercase tracking-widest mb-3">Biography</h4>
-                                    <p className="text-slate-300 leading-relaxed text-sm">{selectedMember.bio}</p>
+                                    <p className={`leading-relaxed text-sm ${isDark ? 'text-slate-300' : 'text-slate-600'}`}>{selectedMember.bio}</p>
                                 </div>
 
                                 <div>
                                     <h4 className="text-xs font-bold text-slate-500 uppercase tracking-widest mb-3">Expertise</h4>
                                     <div className="flex flex-wrap gap-2">
                                         {selectedMember.skills.map((skill, i) => (
-                                            <span key={i} className="px-3 py-1 bg-cyan-500/10 rounded-lg text-xs text-cyan-300 border border-cyan-500/20">
+                                            <span key={i} className={`px-3 py-1 rounded-lg text-xs border ${isDark ? 'bg-purple-500/10 text-purple-400 border-purple-500/20' : 'bg-purple-50 text-purple-700 border-purple-200'}`}>
                                                 {skill}
                                             </span>
                                         ))}

@@ -90,4 +90,4 @@ export interface ClubReport {
     eventId?: string;
 }
 
-export type PageView = 'home' | 'about' | 'members' | 'events' | 'photos' | 'reports';
+export type PageView = 'home' | 'about' | 'members' | 'events' | 'photos' | 'reports' | 'connect';

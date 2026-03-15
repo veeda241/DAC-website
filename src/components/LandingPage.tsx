@@ -12,6 +12,7 @@ import Members from './pages/Members';
 import Events from './pages/Events';
 import Reports from './pages/Reports';
 import GalleryPage from './pages/GalleryPage';
+import Connect from './pages/Connect';
 
 interface LandingPageProps {
   events: ClubEvent[];
@@ -80,7 +81,8 @@ const LandingPage: React.FC<LandingPageProps> = ({ events, reports, photos, onLo
                   { label: 'Members', href: '#', onClick: () => setCurrentPage('members') },
                   { label: 'Events', href: '#', onClick: () => setCurrentPage('events') },
                   { label: 'Reports', href: '#', onClick: () => setCurrentPage('reports') },
-                  { label: 'Gallery', href: '#', onClick: () => setCurrentPage('photos') }
+                  { label: 'Gallery', href: '#', onClick: () => setCurrentPage('photos') },
+                  { label: 'Connect', href: '#', onClick: () => setCurrentPage('connect') }
                 ]}
                 particleCount={12}
                 particleDistances={[70, 10]}
@@ -91,7 +93,8 @@ const LandingPage: React.FC<LandingPageProps> = ({ events, reports, photos, onLo
                       currentPage === 'members' ? 2 :
                         currentPage === 'events' ? 3 :
                           currentPage === 'reports' ? 4 :
-                            currentPage === 'photos' ? 5 : 0
+                            currentPage === 'photos' ? 5 :
+                              currentPage === 'connect' ? 6 : 0
                 }
                 animationTime={500}
                 timeVariance={250}
@@ -123,7 +126,8 @@ const LandingPage: React.FC<LandingPageProps> = ({ events, reports, photos, onLo
                 { id: 'members', label: 'Members' },
                 { id: 'events', label: 'Events' },
                 { id: 'reports', label: 'Reports' },
-                { id: 'photos', label: 'Gallery' }
+                { id: 'photos', label: 'Gallery' },
+                { id: 'connect', label: 'Connect' }
               ].map((item) => (
                 <button
                   key={item.id}
@@ -168,6 +172,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ events, reports, photos, onLo
             setCurrentPage={setCurrentPage}
           />
         )}
+        {currentPage === 'connect' && <Connect />}
 
         {/* Photo Lightbox */}
         {lightboxPhoto && (
@@ -205,7 +210,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ events, reports, photos, onLo
 
       {/* Footer */}
       {/* Hide footer on full-screen pages like Gallery if preferred, but keeping for others */}
-      {currentPage !== 'photos' && (
+      {currentPage !== 'photos' && currentPage !== 'connect' && (
         <footer className="bg-slate-950 border-t border-slate-900 py-12 mt-20">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row justify-between items-center opacity-60 hover:opacity-100 transition-opacity">
             <div className="mb-4 md:mb-0 flex items-center gap-3">
@@ -218,6 +223,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ events, reports, photos, onLo
               <button onClick={() => setCurrentPage('events')} className="hover:text-indigo-400">Events</button>
               <button onClick={() => setCurrentPage('reports')} className="hover:text-indigo-400">Reports</button>
               <button onClick={() => setCurrentPage('photos')} className="hover:text-indigo-400">Gallery</button>
+              <button onClick={() => setCurrentPage('connect')} className="hover:text-cyan-400">Connect</button>
             </div>
             <div className="text-sm text-slate-500 text-center md:text-right mt-4 md:mt-0">
               <p>&copy; 2025 Data Analytics Club.</p>

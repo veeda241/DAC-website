@@ -72,6 +72,32 @@
     cursor: pointer;
 }
 
+/* Rotating gradient border effect */
+.pc-card::before {
+    content: '';
+    position: absolute;
+    width: 100px;
+    height: 130%;
+    top: -15%;
+    left: 50%;
+    transform-origin: center center;
+    background-image: linear-gradient(180deg, rgb(0, 183, 255), rgb(255, 48, 255));
+    animation: rotBorderGradient 3s linear infinite;
+    transition: all 0.3s linear;
+    z-index: 0;
+    border-radius: 0 !important;
+    pointer-events: none !important;
+    display: block !important;
+    grid-area: auto !important;
+    opacity: 0.6;
+}
+
+.pc-card:hover::before {
+    opacity: 1;
+    width: 120px;
+}
+
+
 .pc-card:hover,
 .pc-card.active {
     transition: none;
@@ -95,11 +121,14 @@
 }
 
 .pc-inside {
-    inset: 0;
+    inset: 3px;
     position: absolute;
     background-image: var(--inner-gradient);
     background-color: rgba(10, 10, 15, 0.95);
     transform: none;
+    z-index: 1;
+    border-radius: calc(var(--card-radius) - 3px);
+    overflow: hidden;
 }
 
 .pc-shine {
@@ -300,6 +329,15 @@
 
     100% {
         --bgrotate: 360deg;
+    }
+}
+
+@keyframes rotBorderGradient {
+    from {
+        transform: translateX(-50%) rotate(0deg);
+    }
+    to {
+        transform: translateX(-50%) rotate(360deg);
     }
 }
 

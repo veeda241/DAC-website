@@ -2,6 +2,7 @@
 import React, { useState } from 'react';
 import { User } from '../types';
 import { LOGO_URL } from '../constants';
+import './Auth.css';
 
 interface AuthProps {
   users: User[];
@@ -85,66 +86,69 @@ const Auth: React.FC<AuthProps> = ({ users, onLogin, onRegister, onCancel, initi
 
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center bg-[#000000]/80 backdrop-blur-md p-4 animate-fade-in-up">
-      <div className="bg-[#0A0A0A]/90 border border-white/10 w-full max-w-md p-8 rounded-2xl shadow-2xl relative backdrop-blur-xl">
-        <button onClick={onCancel} className="absolute top-4 right-4 text-slate-500 hover:text-white transition-colors">✕</button>
+      <div className="auth-form-area">
+        <button onClick={onCancel} className="auth-close-btn">✕</button>
 
-        <div className="text-center mb-8">
-          <img src={LOGO_URL} alt="Logo" className="w-16 h-16 mx-auto mb-4 object-contain" />
-          <h2 className="text-3xl font-bold text-white mb-2">
+        {/* Logo & Title */}
+        <div className="auth-header">
+          <img src={LOGO_URL} alt="Logo" className="auth-logo" />
+          <h2 className="auth-title">
             {isSignUp ? 'Join the Club' : 'Portal Login'}
           </h2>
-          <p className="text-slate-400">
+          <p className="auth-subtitle">
             {isSignUp ? 'Create your Data Analytics Club account.' : 'Access your dashboard.'}
           </p>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-5">
+        <form onSubmit={handleSubmit} className="auth-form">
           {isSignUp && (
-            <div>
-              <label className="block text-sm text-slate-400 mb-2">Full Name</label>
+            <div className="auth-form-group">
+              <label className="auth-label">Full Name</label>
               <input
                 type="text"
                 required={isSignUp}
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                className="w-full bg-black/40 border border-white/10 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-cyan-500/50 focus:shadow-[0_0_15px_rgba(6,182,212,0.15)] transition-all"
+                className="auth-form-style"
                 placeholder="John Doe"
               />
             </div>
           )}
 
-          <div>
-            <label className="block text-sm text-slate-400 mb-2">Email Address</label>
+          <div className="auth-form-group">
+            <label className="auth-label">Email Address</label>
             <input
               type="email"
               required
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="w-full bg-slate-800 border border-slate-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-indigo-500 transition-colors"
+              className="auth-form-style"
               placeholder="you@example.com"
             />
           </div>
 
-          <div>
-            <label className="block text-sm text-slate-400 mb-2">Password</label>
+          <div className="auth-form-group">
+            <label className="auth-label">Password</label>
             <input
               type="password"
               required
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="w-full bg-slate-800 border border-slate-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-indigo-500 transition-colors"
+              className="auth-form-style"
               placeholder="••••••••"
             />
           </div>
 
-          {error && <div className="p-3 bg-red-500/20 border border-red-500/50 rounded-lg text-red-200 text-sm text-center animate-pulse">{error}</div>}
+          {error && (
+            <div className="auth-error">{error}</div>
+          )}
 
-          <button type="submit" className="w-full bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 text-white font-bold py-3 rounded-lg transition-transform hover:scale-[1.02] shadow-lg shadow-cyan-500/20">
+          <button type="submit" className="auth-btn">
             {isSignUp ? 'Create Account' : 'Login'}
           </button>
         </form>
 
-        <div className="mt-6 pt-6 border-t border-slate-800 text-center space-y-4">
+        <div className="auth-footer">
           <button
             type="button"
             onClick={() => {
@@ -154,7 +158,7 @@ const Auth: React.FC<AuthProps> = ({ users, onLogin, onRegister, onCancel, initi
               setPassword('');
               setName('');
             }}
-            className="block w-full text-sm text-cyan-400 hover:text-cyan-300 font-medium transition-colors"
+            className="auth-link"
           >
             {isSignUp ? 'Already have an account? Log in' : "Don't have an account? Sign up"}
           </button>
@@ -163,7 +167,7 @@ const Auth: React.FC<AuthProps> = ({ users, onLogin, onRegister, onCancel, initi
             <button
               type="button"
               onClick={handleDemoAdmin}
-              className="text-xs text-slate-500 hover:text-slate-400 transition-colors"
+              className="auth-demo-btn"
             >
               Use Demo Admin Credentials
             </button>

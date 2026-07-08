@@ -1,25 +1,42 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { X } from 'lucide-react';
+import { ClubEvent } from '../types';
 import { RECRUITMENT_AD_URL, RECRUITMENT_APPLICATION_LINK } from '../constants';
+import { isEventUpcoming } from '../utils/eventDates';
 import './RecruitmentAd.css';
 
 const STORAGE_KEY = 'dac-recruitment-ad-dismissed';
 
 interface RecruitmentAdProps {
   isVisible: boolean;
+  events: ClubEvent[];
 }
 
-const RecruitmentAd: React.FC<RecruitmentAdProps> = ({ isVisible }) => {
+const RecruitmentAd: React.FC<RecruitmentAdProps> = ({ isVisible, events }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [isClosing, setIsClosing] = useState(false);
 
+  const recruitmentEvent = useMemo(
+    () => events.find(
+      (event) =>
+        event.registrationLink?.includes('dac-application') ||
+        event.title.toLowerCase().includes('recruitment')
+    ),
+    [events]
+  );
+
+  const applicationLink = recruitmentEvent?.registrationLink || RECRUITMENT_APPLICATION_LINK;
+  const isRecruitmentActive = recruitmentEvent
+    ? isEventUpcoming(recruitmentEvent.date, recruitmentEvent.endDate)
+    : true;
+
   useEffect(() => {
-    if (!isVisible) return;
+    if (!isVisible || !isRecruitmentActive) return;
     if (sessionStorage.getItem(STORAGE_KEY)) return;
 
     const timer = setTimeout(() => setIsOpen(true), 1200);
     return () => clearTimeout(timer);
-  }, [isVisible]);
+  }, [isVisible, isRecruitmentActive]);
 
   const handleClose = () => {
     setIsClosing(true);
@@ -31,10 +48,10 @@ const RecruitmentAd: React.FC<RecruitmentAdProps> = ({ isVisible }) => {
   };
 
   const handlePosterClick = () => {
-    window.open(RECRUITMENT_APPLICATION_LINK, '_blank', 'noopener,noreferrer');
+    window.open(applicationLink, '_blank', 'noopener,noreferrer');
   };
 
-  if (!isOpen) return null;
+  if (!isRecruitmentActive || !isOpen) return null;
 
   return (
     <div

@@ -2,6 +2,12 @@ import React, { useState } from 'react';
 import { Calendar, MapPin, Clock, CheckCircle, Camera, ArrowRight, X, FileText } from 'lucide-react';
 import { ClubEvent, Photo, PageView } from '../../types';
 import { useTheme } from '../../contexts/ThemeContext';
+import {
+    compareEventDates,
+    formatEventDate,
+    isEventPast,
+    isEventUpcoming,
+} from '../../utils/eventDates';
 
 interface EventsProps {
     events: ClubEvent[];
@@ -16,9 +22,12 @@ const Events: React.FC<EventsProps> = ({ events, photos, onLoginClick, onRegiste
     const [selectedEvent, setSelectedEvent] = useState<ClubEvent | null>(null);
     const { isDark } = useTheme();
 
-    const currentDate = new Date().toISOString().split('T')[0];
-    const upcomingEvents = events.filter(e => e.date >= currentDate).sort((a, b) => a.date.localeCompare(b.date));
-    const pastEvents = events.filter(e => e.date < currentDate).sort((a, b) => b.date.localeCompare(a.date));
+    const upcomingEvents = events
+        .filter(e => isEventUpcoming(e.date, e.endDate))
+        .sort((a, b) => compareEventDates(a.date, b.date));
+    const pastEvents = events
+        .filter(e => isEventPast(e.date, e.endDate))
+        .sort((a, b) => compareEventDates(b.date, a.date));
 
     const getEventPhotos = (eventId: string) => photos.filter(p => p.eventId === eventId);
 
@@ -50,7 +59,7 @@ const Events: React.FC<EventsProps> = ({ events, photos, onLoginClick, onRegiste
                                     <img src={event.imageUrl} alt={event.title} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
                                     <div className={`absolute inset-0 to-transparent opacity-60 md:opacity-0 bg-gradient-to-t md:bg-gradient-to-r ${isDark ? 'from-[#0F0F11]' : 'from-white'}`}></div>
                                     <div className={`absolute top-4 left-4 backdrop-blur-md px-4 py-2 rounded-xl text-sm font-bold border text-purple-500 shadow-lg ${isDark ? 'bg-black/50 border-white/10' : 'bg-white/80 border-purple-500/20'}`}>
-                                        {event.date}
+                                        {formatEventDate(event.date)}
                                     </div>
                                 </div>
                                 <div className="md:w-3/5 p-8 flex flex-col justify-between relative z-10">
@@ -111,7 +120,7 @@ const Events: React.FC<EventsProps> = ({ events, photos, onLoginClick, onRegiste
 
                                 <div className={`absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t to-transparent z-20 ${isDark ? 'from-[#0F0F11]' : 'from-white'}`}>
                                     <span className={`inline-block px-3 py-1 rounded-lg text-xs border ${isDark ? 'bg-purple-500/10 text-purple-400 border-purple-500/20' : 'bg-purple-50 text-purple-700 border-purple-200'}`}>
-                                        {event.date}
+                                        {formatEventDate(event.date)}
                                     </span>
                                 </div>
                             </div>
@@ -170,7 +179,7 @@ const Events: React.FC<EventsProps> = ({ events, photos, onLoginClick, onRegiste
                                 />
                                 <div className={`absolute inset-0 bg-gradient-to-t via-black/50 to-transparent ${isDark ? 'from-[#0F0F11]' : 'from-white'}`}></div>
                                 <div className="absolute bottom-6 left-6 right-6">
-                                    {selectedEvent.date < new Date().toISOString().split('T')[0] ? (
+                                    {isEventPast(selectedEvent.date, selectedEvent.endDate) ? (
                                         <span className="inline-flex items-center gap-1.5 bg-emerald-500/10 backdrop-blur-md text-emerald-400 text-xs font-bold px-3 py-1.5 rounded-full border border-emerald-500/20 mb-3">
                                             <CheckCircle className="w-3 h-3" /> Concluded
                                         </span>
@@ -188,7 +197,7 @@ const Events: React.FC<EventsProps> = ({ events, photos, onLoginClick, onRegiste
                                 {/* Meta Grid */}
                                 <div className={`grid grid-cols-2 md:grid-cols-4 gap-4 mb-8 pb-8 border-b ${isDark ? 'border-white/5' : 'border-black/5'}`}>
                                     {[
-                                        { icon: Calendar, label: 'Date', val: selectedEvent.date, color: 'text-purple-500' },
+                                        { icon: Calendar, label: 'Date', val: formatEventDate(selectedEvent.date), color: 'text-purple-500' },
                                         { icon: Clock, label: 'Time', val: '8:00 PM', color: 'text-slate-500' },
                                         { icon: MapPin, label: 'Location', val: selectedEvent.location, color: 'text-purple-500' },
                                         { icon: Camera, label: 'Photos', val: `${getEventPhotos(selectedEvent.id).length} Shots`, color: 'text-slate-500' }
@@ -250,7 +259,7 @@ const Events: React.FC<EventsProps> = ({ events, photos, onLoginClick, onRegiste
                                         </button>
                                     )}
                                     {/* Show Register button if link exists, regardless of date (or you can keep date check) */}
-                                    {selectedEvent.registrationLink && (
+                                    {selectedEvent.registrationLink && isEventUpcoming(selectedEvent.date, selectedEvent.endDate) && (
                                         <button
                                             onClick={() => {
                                                 window.open(selectedEvent.registrationLink, '_blank');

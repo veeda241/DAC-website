@@ -5,6 +5,7 @@ import { PieChart, Pie, Cell, ResponsiveContainer, Legend, Tooltip } from 'recha
 import { Plus, CheckCircle, Circle, Clock, Loader2, Sparkles, LogOut, Calendar, Layout, Search, BrainCircuit, X, Users, Activity, Filter, Bell, User as UserIcon, Settings, Save, Upload, Shield, Trash2, ChevronDown, FileText, Image as ImageIcon, PieChart as PieChartIcon, Download, Camera, Menu, Link as LinkIcon, Edit } from 'lucide-react';
 import { MASCOT_URL, LOGO_URL } from '../constants';
 import { downloadAsPDF } from '../utils/pdfGenerator';
+import { compareEventDates, formatEventDate, getEventDay, getEventMonthShort, getTodayDateString, isEventUpcoming } from '../utils/eventDates';
 import Beams from './Beams';
 
 interface DashboardProps {
@@ -84,6 +85,7 @@ const Dashboard: React.FC<DashboardProps> = ({
   // New Item States
   const [newEventTitle, setNewEventTitle] = useState('');
   const [newEventDate, setNewEventDate] = useState('');
+  const [newEventEndDate, setNewEventEndDate] = useState('');
   const [newEventDesc, setNewEventDesc] = useState('');
   const [newEventImage, setNewEventImage] = useState('');
   const [newEventLocation, setNewEventLocation] = useState('');
@@ -163,6 +165,7 @@ const Dashboard: React.FC<DashboardProps> = ({
         id: editingEventId,
         title: newEventTitle,
         date: newEventDate,
+        endDate: newEventEndDate || undefined,
         description: newEventDesc,
         location: newEventLocation || 'TBD',
         registrationLink: newEventRegistrationLink,
@@ -173,6 +176,7 @@ const Dashboard: React.FC<DashboardProps> = ({
       const newEvent = {
         title: newEventTitle,
         date: newEventDate,
+        endDate: newEventEndDate || undefined,
         description: newEventDesc,
         location: newEventLocation || 'TBD',
         registrationLink: newEventRegistrationLink,
@@ -198,6 +202,7 @@ const Dashboard: React.FC<DashboardProps> = ({
   const resetEventForm = () => {
     setNewEventTitle('');
     setNewEventDate('');
+    setNewEventEndDate('');
     setNewEventDesc('');
     setNewEventImage('');
     setNewEventLocation('');
@@ -245,7 +250,7 @@ const Dashboard: React.FC<DashboardProps> = ({
 
     const newReport = {
       title: reportTitle,
-      date: new Date().toISOString().split('T')[0], // Auto-set today's date
+      date: getTodayDateString(), // Auto-set today's date
       description: 'PDF Report', // Default description
       thumbnailUrl: 'https://placehold.co/400x300/1e293b/a5b4fc?text=PDF+Report', // Default PDF placeholder
       fileUrl: reportFile || '#'
@@ -541,7 +546,7 @@ const Dashboard: React.FC<DashboardProps> = ({
                   <Calendar className="w-5 h-5 text-purple-500" /> Upcoming Events
                 </h3>
                 <div className="flex-1 overflow-y-auto space-y-3 pr-2">
-                  {events.filter(e => e.date >= new Date().toISOString().split('T')[0]).length === 0 ? (
+                  {events.filter(e => isEventUpcoming(e.date, e.endDate)).length === 0 ? (
                     <div className="flex flex-col items-center justify-center h-full text-center py-12">
                       <Calendar className="w-12 h-12 text-slate-700 mb-4" />
                       <p className="text-slate-500 text-sm">No upcoming events scheduled</p>
@@ -549,15 +554,15 @@ const Dashboard: React.FC<DashboardProps> = ({
                     </div>
                   ) : (
                     events
-                      .filter(e => e.date >= new Date().toISOString().split('T')[0])
-                      .sort((a, b) => a.date.localeCompare(b.date))
+                      .filter(e => isEventUpcoming(e.date, e.endDate))
+                      .sort((a, b) => compareEventDates(a.date, b.date))
                       .slice(0, 5)
                       .map((event, index) => (
                         <div key={event.id} className="flex gap-4 p-4 rounded-xl bg-white/5 border border-white/5 hover:border-purple-500/30 transition-all group">
                           <div className="flex flex-col items-center">
                             <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-purple-500/20 to-slate-500/20 border border-purple-500/30 flex flex-col items-center justify-center">
-                              <span className="text-[10px] text-purple-500 font-bold uppercase">{new Date(event.date).toLocaleDateString('en-US', { month: 'short' })}</span>
-                              <span className="text-lg font-bold text-white leading-none">{new Date(event.date).getDate()}</span>
+                              <span className="text-[10px] text-purple-500 font-bold uppercase">{getEventMonthShort(event.date)}</span>
+                              <span className="text-lg font-bold text-white leading-none">{getEventDay(event.date)}</span>
                             </div>
                             {index < 4 && <div className="w-0.5 h-full bg-gradient-to-b from-purple-500/30 to-transparent mt-2"></div>}
                           </div>
@@ -664,7 +669,7 @@ const Dashboard: React.FC<DashboardProps> = ({
                       <div className="absolute inset-0 bg-gradient-to-t from-slate-900 via-transparent to-transparent"></div>
                       <div className="absolute bottom-4 left-4">
                         <h3 className="text-xl font-bold text-white shadow-sm">{event.title}</h3>
-                        <p className="text-purple-400 text-xs font-semibold flex items-center gap-1"><Calendar className="w-3 h-3" /> {event.date} • {event.location}</p>
+                        <p className="text-purple-400 text-xs font-semibold flex items-center gap-1"><Calendar className="w-3 h-3" /> {formatEventDate(event.date)} • {event.location}</p>
                       </div>
                     </div>
                     <div className="p-5 flex-1 flex flex-col">
@@ -676,6 +681,7 @@ const Dashboard: React.FC<DashboardProps> = ({
                               setEditingEventId(event.id);
                               setNewEventTitle(event.title);
                               setNewEventDate(event.date);
+                              setNewEventEndDate(event.endDate || '');
                               setNewEventDesc(event.description);
                               setNewEventLocation(event.location || '');
                               setNewEventRegistrationLink(event.registrationLink || '');
@@ -1312,14 +1318,14 @@ const Dashboard: React.FC<DashboardProps> = ({
                   />
                 </div>
 
-                {/* Date, Time, Location Grid */}
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                {/* Date, End Date, Time, Location Grid */}
+                <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
                   <div>
                     <label className="flex items-center gap-2 text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">
                       <span className="w-5 h-5 rounded bg-blue-500/10 flex items-center justify-center">
                         <Calendar className="w-3 h-3 text-blue-400" />
                       </span>
-                      Date
+                      Event Date
                     </label>
                     <input
                       required
@@ -1328,6 +1334,22 @@ const Dashboard: React.FC<DashboardProps> = ({
                       onChange={(e) => setNewEventDate(e.target.value)}
                       className="w-full bg-slate-900/50 border border-white/10 rounded-xl p-3 text-white focus:outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 transition-all"
                     />
+                  </div>
+                  <div>
+                    <label className="flex items-center gap-2 text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">
+                      <span className="w-5 h-5 rounded bg-cyan-500/10 flex items-center justify-center">
+                        <Calendar className="w-3 h-3 text-cyan-400" />
+                      </span>
+                      Active Until
+                    </label>
+                    <input
+                      type="date"
+                      value={newEventEndDate}
+                      onChange={(e) => setNewEventEndDate(e.target.value)}
+                      min={newEventDate}
+                      className="w-full bg-slate-900/50 border border-white/10 rounded-xl p-3 text-white focus:outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 transition-all"
+                    />
+                    <p className="text-[11px] text-slate-500 mt-2">Optional. Keeps recruitment/open events in Upcoming until this date.</p>
                   </div>
                   <div>
                     <label className="flex items-center gap-2 text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">

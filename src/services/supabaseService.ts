@@ -1,6 +1,8 @@
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
 import { ClubEvent, Task, ClubReport, Photo } from '../types';
 import { MOCK_EVENTS } from '../constants';
+import { normalizeEventDate } from '../utils/eventDates';
+import { parseEventMetadata, serializeEventDescription } from '../utils/eventMetadata';
 
 // NOTE: You need to create a .env file with these variables
 // VITE_SUPABASE_URL=your_project_url
@@ -18,8 +20,6 @@ if (supabaseUrl && supabaseAnonKey) {
 }
 
 export { supabase };
-
-const REG_LINK_DELIMITER = '\n\n||REGISTER:';
 
 // Events
 export const fetchEvents = async (): Promise<ClubEvent[]> => {
@@ -40,21 +40,18 @@ export const fetchEvents = async (): Promise<ClubEvent[]> => {
   }
 
   return (data || []).map((event: any) => {
-    // Extract registration link from description if present
-    let description = event.description || '';
-    let registrationLink = event.registrationLink || event.registration_link || '';
-
-    if (description.includes(REG_LINK_DELIMITER)) {
-      const parts = description.split(REG_LINK_DELIMITER);
-      description = parts[0];
-      registrationLink = parts[1] || registrationLink;
-    }
+    const metadata = parseEventMetadata(
+      event.description || '',
+      event.registrationLink || event.registration_link || ''
+    );
 
     return {
       ...event,
-      description: description,
+      date: normalizeEventDate(event.date || event.event_date),
+      endDate: metadata.endDate,
+      description: metadata.description,
       imageUrl: event.image_url || event.imageUrl,
-      registrationLink: registrationLink
+      registrationLink: metadata.registrationLink,
     };
   }) as ClubEvent[];
 };
@@ -62,11 +59,11 @@ export const fetchEvents = async (): Promise<ClubEvent[]> => {
 export const createEvent = async (event: Omit<ClubEvent, 'id'>): Promise<ClubEvent | null> => {
   if (!supabase) return null;
 
-  // Append registration link to description
-  let finalDescription = event.description;
-  if (event.registrationLink) {
-    finalDescription += `${REG_LINK_DELIMITER}${event.registrationLink}`;
-  }
+  const finalDescription = serializeEventDescription(
+    event.description,
+    event.endDate,
+    event.registrationLink
+  );
 
   const payload = {
     title: event.title,
@@ -90,6 +87,8 @@ export const createEvent = async (event: Omit<ClubEvent, 'id'>): Promise<ClubEve
   // Return clean object locally
   return {
     ...data,
+    date: normalizeEventDate(data.date),
+    endDate: event.endDate,
     description: event.description,
     registrationLink: event.registrationLink,
     imageUrl: data.imageUrl
@@ -99,17 +98,11 @@ export const createEvent = async (event: Omit<ClubEvent, 'id'>): Promise<ClubEve
 export const updateEvent = async (event: ClubEvent): Promise<ClubEvent | null> => {
   if (!supabase) return null;
 
-  // Clean description of any existing delimiter first to avoid duplication
-  let cleanDescription = event.description || '';
-  if (cleanDescription.includes(REG_LINK_DELIMITER)) {
-    cleanDescription = cleanDescription.split(REG_LINK_DELIMITER)[0];
-  }
-
-  // Append registration link to clean description
-  let finalDescription = cleanDescription;
-  if (event.registrationLink && event.registrationLink.trim() !== '') {
-    finalDescription += `${REG_LINK_DELIMITER}${event.registrationLink.trim()}`;
-  }
+  const finalDescription = serializeEventDescription(
+    event.description || '',
+    event.endDate,
+    event.registrationLink
+  );
 
   const payload = {
     title: event.title,
@@ -135,7 +128,9 @@ export const updateEvent = async (event: ClubEvent): Promise<ClubEvent | null> =
 
   return {
     ...data,
-    description: cleanDescription, // Return the clean description to UI
+    date: normalizeEventDate(data.date),
+    endDate: event.endDate,
+    description: event.description,
     registrationLink: event.registrationLink,
     imageUrl: data.imageUrl
   };

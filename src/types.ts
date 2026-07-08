@@ -42,6 +42,7 @@ export interface ClubEvent {
     id: string;
     title: string;
     date: string;
+    endDate?: string;
     description: string;
     location: string;
     imageUrl?: string;

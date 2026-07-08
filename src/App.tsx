@@ -433,7 +433,7 @@ const App: React.FC = () => {
 
             {/* Recruitment pop-out ad on public landing pages */}
             {isAppReady && !isLoading && !currentUser && (
-                <RecruitmentAd isVisible={true} />
+                <RecruitmentAd isVisible={true} events={events} />
             )}
 
             {/* Loading Screen Overlay */}

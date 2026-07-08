@@ -432,8 +432,8 @@ const App: React.FC = () => {
             {isAppReady && <Chatbot />}
 
             {/* Recruitment pop-out ad on public landing pages */}
-            {isAppReady && !isLoading && !currentUser && (
-                <RecruitmentAd isVisible={true} events={events} />
+            {isAppReady && !currentUser && (
+                <RecruitmentAd isVisible={!isLoading} />
             )}
 
             {/* Loading Screen Overlay */}

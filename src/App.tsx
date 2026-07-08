@@ -7,6 +7,7 @@ import { User, ClubEvent, Task, ActivityLog, Notification, UserRole, ClubReport,
 import { MOCK_USERS, MOCK_REPORTS } from './constants';
 import LoadingScreen from './components/LoadingScreen';
 import Chatbot from './components/Chatbot';
+import RecruitmentAd from './components/RecruitmentAd';
 import Iridescence from './components/Iridescence';
 import { ThemeProvider } from './contexts/ThemeContext';
 
@@ -429,6 +430,11 @@ const App: React.FC = () => {
 
             {/* Qwalt Chatbot - Available on all pages */}
             {isAppReady && <Chatbot />}
+
+            {/* Recruitment pop-out ad on public landing pages */}
+            {isAppReady && !isLoading && !currentUser && (
+                <RecruitmentAd isVisible={true} />
+            )}
 
             {/* Loading Screen Overlay */}
             {isLoading && (

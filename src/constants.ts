@@ -8,6 +8,8 @@ import departmentLogoImg from './assets/images/Data analytics Club.png';
 export const COLLEGE_LOGO_URL = collegeLogoImg;
 export const NEW_MASCOT_URL = 'https://img.freepik.com/premium-photo/3d-cartoon-owl-wearing-glasses-hoodie-white-background_1029473-1960.jpg';
 export const WHATSAPP_GROUP_LINK = 'https://chat.whatsapp.com/I8x1vrpqdnHFfym2ilUMg0';
+export const RECRUITMENT_AD_URL = '/register-now.png';
+export const RECRUITMENT_APPLICATION_LINK = 'https://tinyurl.com/dac-application';
 
 export const SOCIAL_LINKS = {
     github: '',

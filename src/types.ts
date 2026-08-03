@@ -43,6 +43,7 @@ export interface ClubEvent {
     title: string;
     date: string;
     endDate?: string;
+    time?: string;
     description: string;
     location: string;
     imageUrl?: string;
@@ -72,6 +73,8 @@ export interface TeamMember {
     imageUrl: string;
     year: string;
     skills: string[];
+    memberType?: 'mentor' | 'team';
+    displayOrder?: number;
 }
 
 export interface Photo {

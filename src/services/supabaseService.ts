@@ -1,6 +1,6 @@
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
-import { ClubEvent, Task, ClubReport, Photo } from '../types';
-import { MOCK_EVENTS } from '../constants';
+import { ClubEvent, Task, ClubReport, Photo, TeamMember } from '../types';
+import { MOCK_EVENTS, MOCK_TEAM, MOCK_MENTORS } from '../constants';
 import { normalizeEventDate } from '../utils/eventDates';
 import { parseEventMetadata, serializeEventDescription } from '../utils/eventMetadata';
 
@@ -52,6 +52,7 @@ export const fetchEvents = async (): Promise<ClubEvent[]> => {
       description: metadata.description,
       imageUrl: event.image_url || event.imageUrl,
       registrationLink: metadata.registrationLink,
+      time: event.time ?? '',
     };
   }) as ClubEvent[];
 };
@@ -70,7 +71,8 @@ export const createEvent = async (event: Omit<ClubEvent, 'id'>): Promise<ClubEve
     date: event.date,
     description: finalDescription,
     location: event.location,
-    imageUrl: event.imageUrl
+    imageUrl: event.imageUrl,
+    time: event.time ?? ''
   };
 
   const { data, error } = await supabase
@@ -91,7 +93,8 @@ export const createEvent = async (event: Omit<ClubEvent, 'id'>): Promise<ClubEve
     endDate: event.endDate,
     description: event.description,
     registrationLink: event.registrationLink,
-    imageUrl: data.imageUrl
+    imageUrl: data.imageUrl,
+    time: data.time ?? event.time ?? ''
   };
 };
 
@@ -109,7 +112,8 @@ export const updateEvent = async (event: ClubEvent): Promise<ClubEvent | null> =
     date: event.date,
     description: finalDescription,
     location: event.location,
-    imageUrl: event.imageUrl
+    imageUrl: event.imageUrl,
+    time: event.time ?? ''
   };
 
   // console.log('Updating event with payload:', payload);
@@ -132,7 +136,8 @@ export const updateEvent = async (event: ClubEvent): Promise<ClubEvent | null> =
     endDate: event.endDate,
     description: event.description,
     registrationLink: event.registrationLink,
-    imageUrl: data.imageUrl
+    imageUrl: data.imageUrl,
+    time: data.time ?? event.time ?? ''
   };
 };
 
@@ -363,4 +368,152 @@ export const createPhoto = async (photo: Omit<Photo, 'id'>): Promise<Photo | nul
     return null;
   }
   return data;
+};
+
+// Team Members
+const mapTeamMember = (row: any): TeamMember => ({
+  id: row.id,
+  name: row.name,
+  role: row.role,
+  bio: row.bio,
+  imageUrl: row.image_url || row.imageUrl || '',
+  year: row.year,
+  skills: Array.isArray(row.skills) ? row.skills : (row.skills ? String(row.skills).split(',').map((s: string) => s.trim()) : []),
+  memberType: (row.member_type as 'mentor' | 'team') || 'team',
+  displayOrder: row.display_order ?? 0,
+});
+
+export const fetchTeamMembers = async (): Promise<TeamMember[]> => {
+  if (!supabase) {
+    console.log('Supabase not connected. Using MOCK_TEAM/MOCK_MENTORS as fallback.');
+    return [
+      ...MOCK_MENTORS.map((m, i) => ({ ...m, memberType: 'mentor' as const, displayOrder: i })),
+      ...MOCK_TEAM.map((m, i) => ({ ...m, memberType: 'team' as const, displayOrder: i })),
+    ];
+  }
+
+  const { data, error } = await supabase
+    .from('team_members')
+    .select('*')
+    .order('display_order', { ascending: true });
+
+  if (error) {
+    console.error('Error fetching team members:', error);
+    return [
+      ...MOCK_MENTORS.map((m, i) => ({ ...m, memberType: 'mentor' as const, displayOrder: i })),
+      ...MOCK_TEAM.map((m, i) => ({ ...m, memberType: 'team' as const, displayOrder: i })),
+    ];
+  }
+
+  return (data || []).map(mapTeamMember);
+};
+
+export const createTeamMember = async (member: Omit<TeamMember, 'id'>): Promise<TeamMember | null> => {
+  if (!supabase) return null;
+
+  const payload = {
+    name: member.name,
+    role: member.role,
+    bio: member.bio,
+    image_url: member.imageUrl,
+    year: member.year,
+    skills: member.skills,
+    member_type: member.memberType || 'team',
+    display_order: member.displayOrder ?? 0,
+  };
+
+  const { data, error } = await supabase
+    .from('team_members')
+    .insert([payload])
+    .select()
+    .single();
+
+  if (error) {
+    console.error('Error creating team member:', error);
+    return null;
+  }
+
+  return mapTeamMember(data);
+};
+
+export const updateTeamMember = async (member: TeamMember): Promise<TeamMember | null> => {
+  if (!supabase) return null;
+
+  const payload = {
+    name: member.name,
+    role: member.role,
+    bio: member.bio,
+    image_url: member.imageUrl,
+    year: member.year,
+    skills: member.skills,
+    member_type: member.memberType || 'team',
+    display_order: member.displayOrder ?? 0,
+  };
+
+  const { data, error } = await supabase
+    .from('team_members')
+    .update(payload)
+    .eq('id', member.id)
+    .select()
+    .single();
+
+  if (error) {
+    console.error('Error updating team member:', error);
+    return null;
+  }
+
+  return mapTeamMember(data);
+};
+
+export const deleteTeamMember = async (id: string): Promise<boolean> => {
+  if (!supabase) return false;
+
+  const { error } = await supabase
+    .from('team_members')
+    .delete()
+    .eq('id', id);
+
+  if (error) {
+    console.error('Error deleting team member:', error);
+    return false;
+  }
+
+  return true;
+};
+
+export const reorderTeamMembers = async (
+  id: string,
+  direction: 'up' | 'down',
+  siblings: TeamMember[]
+): Promise<boolean> => {
+  if (!supabase) return false;
+
+  const sorted = [...siblings].sort((a, b) => (a.displayOrder ?? 0) - (b.displayOrder ?? 0));
+  const idx = sorted.findIndex(m => m.id === id);
+  if (idx < 0) return false;
+
+  const swapIdx = direction === 'up' ? idx - 1 : idx + 1;
+  if (swapIdx < 0 || swapIdx >= sorted.length) return false;
+
+  const a = sorted[idx];
+  const b = sorted[swapIdx];
+  const aOrder = a.displayOrder ?? idx;
+  const bOrder = b.displayOrder ?? swapIdx;
+
+  const { error: e1 } = await supabase
+    .from('team_members')
+    .update({ display_order: bOrder })
+    .eq('id', a.id);
+
+  const { error: e2 } = await supabase
+    .from('team_members')
+    .update({ display_order: aOrder })
+    .eq('id', b.id);
+
+  if (e1 || e2) {
+    console.error('Error reordering team members:', e1 || e2);
+    return false;
+  }
+
+  return true;
 };

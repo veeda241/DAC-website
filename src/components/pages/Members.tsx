@@ -5,9 +5,41 @@ import { TeamMember } from '../../types';
 import ProfileCard from '../ProfileCard';
 import { useTheme } from '../../contexts/ThemeContext';
 
-const Members: React.FC = () => {
+interface MembersProps {
+    teamMembers?: TeamMember[];
+}
+
+const Members: React.FC<MembersProps> = ({ teamMembers }) => {
     const [selectedMember, setSelectedMember] = useState<TeamMember | null>(null);
     const { isDark } = useTheme();
+
+    // Use live data when provided; fall back to mocks only when not passed (Supabase unreachable)
+    const allMembers = teamMembers ?? [
+        ...MOCK_MENTORS.map((m, i) => ({ ...m, memberType: 'mentor' as const, displayOrder: i })),
+        ...MOCK_TEAM.map((m, i) => ({ ...m, memberType: 'team' as const, displayOrder: i })),
+    ];
+
+    const mentors = allMembers
+        .filter(m => m.memberType === 'mentor')
+        .sort((a, b) => (a.displayOrder ?? 0) - (b.displayOrder ?? 0));
+
+    const coreTeam = allMembers
+        .filter(m => m.memberType !== 'mentor')
+        .sort((a, b) => {
+            // If displayOrder is available (Supabase data), use it directly
+            if (a.displayOrder !== undefined && b.displayOrder !== undefined) {
+                return (a.displayOrder ?? 0) - (b.displayOrder ?? 0);
+            }
+            // Fallback: original year-based sort for mock data
+            const getYearWeight = (yearStr: string) => {
+                const y = yearStr.toLowerCase();
+                if (y.includes('final year') && !y.includes('pre')) return 1;
+                if (y.includes('pre final') || y.includes('pre-final')) return 2;
+                if (y.includes('second year') || y.includes('2nd year')) return 3;
+                return 4;
+            };
+            return getYearWeight(a.year) - getYearWeight(b.year);
+        });
 
     const handleImageError = (e: React.SyntheticEvent<HTMLImageElement>) => {
         e.currentTarget.src = 'https://i.pravatar.cc/150?u=default';
@@ -33,10 +65,10 @@ const Members: React.FC = () => {
                 <div className="mb-20">
                     <div className="flex items-center gap-3 mb-10">
                         <div className="w-1 h-10 bg-gradient-to-b from-slate-400 to-slate-500 rounded-full"></div>
-                        <h3 className={`text-2xl md:text-3xl font-bold ${isDark ? 'text-white' : 'text-slate-900'}`}>Mentors & Advisors</h3>
+                        <h3 className={`text-2xl md:text-3xl font-bold ${isDark ? 'text-white' : 'text-slate-900'}`}>Mentors &amp; Advisors</h3>
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 justify-items-center">
-                        {MOCK_MENTORS.map((mentor) => (
+                        {mentors.map((mentor) => (
                             <ProfileCard
                                 key={mentor.id}
                                 name={mentor.name}
@@ -62,17 +94,7 @@ const Members: React.FC = () => {
                         <h3 className={`text-2xl md:text-3xl font-bold ${isDark ? 'text-white' : 'text-slate-900'}`}>Core Team</h3>
                     </div>
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 justify-items-center">
-                        {MOCK_TEAM.sort((a, b) => {
-                            // Helper to determine year weight
-                            const getYearWeight = (yearStr: string) => {
-                                const y = yearStr.toLowerCase();
-                                if (y.includes('final year') && !y.includes('pre')) return 1;
-                                if (y.includes('pre final') || y.includes('pre-final')) return 2;
-                                if (y.includes('second year') || y.includes('2nd year')) return 3;
-                                return 4; // Others/Unknown
-                            };
-                            return getYearWeight(a.year) - getYearWeight(b.year);
-                        }).map((member) => (
+                        {coreTeam.map((member) => (
                             <ProfileCard
                                 key={member.id}
                                 name={member.name}

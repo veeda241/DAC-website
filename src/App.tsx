@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { supabase, fetchEvents, createEvent, updateEvent, fetchTasks, createTask, fetchReports, createReport, fetchPhotos, createPhoto, updateTaskStatus } from './services/supabaseService';
+import { supabase, fetchEvents, createEvent, updateEvent, fetchTasks, createTask, fetchReports, createReport, fetchPhotos, createPhoto, updateTaskStatus, fetchTeamMembers, createTeamMember, updateTeamMember, deleteTeamMember, reorderTeamMembers } from './services/supabaseService';
 import LandingPage from './components/LandingPage';
 import Dashboard from './components/Dashboard';
 import Auth from './components/Auth';
-import { User, ClubEvent, Task, ActivityLog, Notification, UserRole, ClubReport, Photo, TaskStatus } from './types';
+import { User, ClubEvent, Task, ActivityLog, Notification, UserRole, ClubReport, Photo, TaskStatus, TeamMember } from './types';
 import { MOCK_USERS, MOCK_REPORTS } from './constants';
 import LoadingScreen from './components/LoadingScreen';
 import Chatbot from './components/Chatbot';
@@ -22,6 +22,7 @@ const App: React.FC = () => {
     const [users, setUsers] = useState<User[]>(MOCK_USERS);
     const [reports, setReports] = useState<ClubReport[]>(MOCK_REPORTS);
     const [photos, setPhotos] = useState<Photo[]>([]);
+    const [teamMembers, setTeamMembers] = useState<TeamMember[]>([]);
 
     // Dynamic State
     const [activityLog, setActivityLog] = useState<ActivityLog[]>([]);
@@ -80,6 +81,10 @@ const App: React.FC = () => {
             // Photos
             const photosData = await fetchPhotos();
             setPhotos(photosData);
+
+            // Team Members
+            const teamMembersData = await fetchTeamMembers();
+            setTeamMembers(teamMembersData);
         };
 
         loadData();
@@ -363,6 +368,69 @@ const App: React.FC = () => {
         }
     };
 
+    // Team Member Handlers
+    const handleCreateTeamMember = async (data: Omit<TeamMember, 'id'>) => {
+        const result = await createTeamMember(data);
+        if (result) {
+            setTeamMembers(prev => [...prev, result]);
+            addActivity('Added Team Member', result.name);
+            addNotification(`Added ${result.name} to roster`, 'success');
+        } else {
+            addNotification('Failed to add team member', 'error');
+        }
+    };
+
+    const handleUpdateTeamMember = async (data: TeamMember) => {
+        const result = await updateTeamMember(data);
+        if (result) {
+            setTeamMembers(prev => prev.map(m => m.id === result.id ? result : m));
+            addActivity('Updated Team Member', result.name);
+            addNotification(`Updated ${result.name}`, 'success');
+        } else {
+            addNotification('Failed to update team member', 'error');
+        }
+    };
+
+    const handleDeleteTeamMember = async (id: string) => {
+        const success = await deleteTeamMember(id);
+        if (success) {
+            setTeamMembers(prev => prev.filter(m => m.id !== id));
+            addActivity('Removed Team Member', `ID: ${id}`);
+            addNotification('Team member removed', 'success');
+        } else {
+            addNotification('Failed to remove team member', 'error');
+        }
+    };
+
+    const handleReorderTeamMember = async (id: string, direction: 'up' | 'down', siblings: TeamMember[]) => {
+        const sorted = [...siblings].sort((a, b) => (a.displayOrder ?? 0) - (b.displayOrder ?? 0));
+        const idx = sorted.findIndex(m => m.id === id);
+        const swapIdx = direction === 'up' ? idx - 1 : idx + 1;
+        if (idx < 0 || swapIdx < 0 || swapIdx >= sorted.length) return;
+
+        // Optimistic UI update
+        const a = sorted[idx];
+        const b = sorted[swapIdx];
+        const aOrder = a.displayOrder ?? idx;
+        const bOrder = b.displayOrder ?? swapIdx;
+        setTeamMembers(prev => prev.map(m => {
+            if (m.id === a.id) return { ...m, displayOrder: bOrder };
+            if (m.id === b.id) return { ...m, displayOrder: aOrder };
+            return m;
+        }));
+
+        const success = await reorderTeamMembers(id, direction, siblings);
+        if (!success) {
+            // Revert on failure
+            setTeamMembers(prev => prev.map(m => {
+                if (m.id === a.id) return { ...m, displayOrder: aOrder };
+                if (m.id === b.id) return { ...m, displayOrder: bOrder };
+                return m;
+            }));
+            addNotification('Failed to reorder members', 'error');
+        }
+    };
+
     return (
         <ThemeProvider>
         <>
@@ -382,6 +450,7 @@ const App: React.FC = () => {
                             events={events}
                             reports={reports}
                             photos={photos}
+                            teamMembers={teamMembers}
                             onLoginClick={() => { setAuthMode('login'); setShowAuthModal(true); }}
                             onRegisterClick={() => { setAuthMode('register'); setShowAuthModal(true); }}
                         />
@@ -423,6 +492,12 @@ const App: React.FC = () => {
                         notifications={notifications}
                         removeNotification={removeNotification}
                         onLogout={handleLogout}
+                        teamMembers={teamMembers}
+                        setTeamMembers={setTeamMembers}
+                        onCreateTeamMember={handleCreateTeamMember}
+                        onUpdateTeamMember={handleUpdateTeamMember}
+                        onDeleteTeamMember={handleDeleteTeamMember}
+                        onReorderTeamMember={handleReorderTeamMember}
                     />
                 )
             )}

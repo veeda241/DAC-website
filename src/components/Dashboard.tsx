@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { ClubEvent, Task, TaskStatus, User, UserRole, ActivityLog, Notification, ClubReport, Photo } from '../types';
+import { ClubEvent, Task, TaskStatus, User, UserRole, ActivityLog, Notification, ClubReport, Photo, TeamMember } from '../types';
 import { generateEventDescription, generateTaskAnalysis } from '../services/geminiService';
 import { PieChart, Pie, Cell, ResponsiveContainer, Legend, Tooltip } from 'recharts';
 import { Plus, CheckCircle, Circle, Clock, Loader2, Sparkles, LogOut, Calendar, Layout, Search, BrainCircuit, X, Users, Activity, Filter, Bell, User as UserIcon, Settings, Save, Upload, Shield, Trash2, ChevronDown, FileText, Image as ImageIcon, PieChart as PieChartIcon, Download, Camera, Menu, Link as LinkIcon, Edit } from 'lucide-react';
@@ -35,6 +35,13 @@ interface DashboardProps {
   onDeleteEvent: (eventId: string) => Promise<void>;
   onDeleteTask: (taskId: string) => Promise<void>;
   onDeleteReport?: (reportId: string) => Promise<void>; // Added prop
+  // Team Roster props
+  teamMembers: TeamMember[];
+  setTeamMembers: React.Dispatch<React.SetStateAction<TeamMember[]>>;
+  onCreateTeamMember: (data: Omit<TeamMember, 'id'>) => Promise<void>;
+  onUpdateTeamMember: (data: TeamMember) => Promise<void>;
+  onDeleteTeamMember: (id: string) => Promise<void>;
+  onReorderTeamMember: (id: string, direction: 'up' | 'down', siblings: TeamMember[]) => Promise<void>;
   activityLog: ActivityLog[];
   addActivity: (action: string, details?: string) => void;
   notifications: Notification[];
@@ -65,13 +72,19 @@ const Dashboard: React.FC<DashboardProps> = ({
   setTasks,
   setReports,
   setPhotos,
+  teamMembers,
+  setTeamMembers,
+  onCreateTeamMember,
+  onUpdateTeamMember,
+  onDeleteTeamMember,
+  onReorderTeamMember,
   activityLog,
   addActivity,
   notifications,
   removeNotification,
   onLogout
 }) => {
-  const [activeTab, setActiveTab] = useState<'overview' | 'events' | 'members' | 'settings' | 'reports' | 'gallery'>('overview');
+  const [activeTab, setActiveTab] = useState<'overview' | 'events' | 'members' | 'team_roster' | 'settings' | 'reports' | 'gallery'>('overview');
   const [isSidebarOpen, setSidebarOpen] = useState(false);
 
   // Modal states
@@ -129,6 +142,17 @@ const Dashboard: React.FC<DashboardProps> = ({
   const [editMemberRole, setEditMemberRole] = useState<UserRole>(UserRole.MEMBER);
   const [editMemberAvatar, setEditMemberAvatar] = useState('');
 
+  // Team Roster State
+  const [isTeamMemberModalOpen, setTeamMemberModalOpen] = useState(false);
+  const [editingTeamMemberId, setEditingTeamMemberId] = useState<string | null>(null);
+  const [tmName, setTmName] = useState('');
+  const [tmRole, setTmRole] = useState('');
+  const [tmBio, setTmBio] = useState('');
+  const [tmYear, setTmYear] = useState('');
+  const [tmSkills, setTmSkills] = useState('');
+  const [tmImage, setTmImage] = useState('');
+  const [tmType, setTmType] = useState<'mentor' | 'team'>('team');
+
   // Sync settings state when user prop updates
   useEffect(() => {
     setSettingsName(user.name);
@@ -169,7 +193,8 @@ const Dashboard: React.FC<DashboardProps> = ({
         description: newEventDesc,
         location: newEventLocation || 'TBD',
         registrationLink: newEventRegistrationLink,
-        imageUrl: newEventImage || events.find(e => e.id === editingEventId)?.imageUrl || `https://picsum.photos/800/400?random=${Date.now()}`
+        imageUrl: newEventImage || events.find(e => e.id === editingEventId)?.imageUrl || `https://picsum.photos/800/400?random=${Date.now()}`,
+        time: newEventTime
       };
       onUpdateEvent(updatedEvent);
     } else {
@@ -180,7 +205,8 @@ const Dashboard: React.FC<DashboardProps> = ({
         description: newEventDesc,
         location: newEventLocation || 'TBD',
         registrationLink: newEventRegistrationLink,
-        imageUrl: newEventImage || `https://picsum.photos/800/400?random=${Date.now()}`
+        imageUrl: newEventImage || `https://picsum.photos/800/400?random=${Date.now()}`,
+        time: newEventTime
       };
       onCreateEvent(newEvent);
     }
@@ -207,7 +233,7 @@ const Dashboard: React.FC<DashboardProps> = ({
     setNewEventImage('');
     setNewEventLocation('');
     setNewEventRegistrationLink('');
-    setNewEventTime('6:00 PM');
+    setNewEventTime('');
     setEditingEventId(null);
   };
 
@@ -446,6 +472,7 @@ const Dashboard: React.FC<DashboardProps> = ({
             { id: 'overview', icon: PieChartIcon, label: 'Overview' },
             { id: 'events', icon: Calendar, label: 'Event Manager' },
             { id: 'members', icon: Users, label: 'Member Profiles' },
+            { id: 'team_roster', icon: UserIcon, label: 'Team Roster' },
             { id: 'reports', icon: FileText, label: 'Report Manager' },
             { id: 'gallery', icon: Camera, label: 'Gallery Manager' },
             { id: 'settings', icon: Settings, label: 'Settings' }
@@ -493,20 +520,22 @@ const Dashboard: React.FC<DashboardProps> = ({
                   {activeTab === 'overview' ? `Welcome back, ${user.name.split(' ')[0]}` :
                     activeTab === 'events' ? 'Events' :
                       activeTab === 'members' ? 'Member Profiles' :
-                        activeTab === 'reports' ? 'Report Management' :
-                          activeTab === 'gallery' ? 'Gallery Management' : 'Profile Settings'}
+                        activeTab === 'team_roster' ? 'Team Roster' :
+                          activeTab === 'reports' ? 'Report Management' :
+                            activeTab === 'gallery' ? 'Gallery Management' : 'Profile Settings'}
                 </h1>
                 <p className="text-slate-400 text-xs md:text-sm hidden sm:block">
                   {activeTab === 'overview' ? "Here's your daily briefing." :
                     activeTab === 'events' ? "Manage upcoming club activities." :
                       activeTab === 'members' ? "View club member profiles and information." :
-                        activeTab === 'reports' ? "Upload and manage public reports." :
-                          activeTab === 'gallery' ? "Upload photos from events." : "Update your account information."}
+                        activeTab === 'team_roster' ? "Manage the public-facing team roster." :
+                          activeTab === 'reports' ? "Upload and manage public reports." :
+                            activeTab === 'gallery' ? "Upload photos from events." : "Update your account information."}
                 </p>
               </div>
             </div>
 
-            {activeTab !== 'overview' && activeTab !== 'settings' && activeTab !== 'members' && activeTab !== 'reports' && activeTab !== 'gallery' && (
+            {activeTab !== 'overview' && activeTab !== 'settings' && activeTab !== 'members' && activeTab !== 'team_roster' && activeTab !== 'reports' && activeTab !== 'gallery' && (
               <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
                 <div className="relative flex-1">
                   <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
@@ -571,7 +600,7 @@ const Dashboard: React.FC<DashboardProps> = ({
                             <p className="text-xs text-slate-500 mt-1 line-clamp-2">{event.description}</p>
                             <div className="flex items-center gap-3 mt-2">
                               <span className="text-[10px] text-slate-400 flex items-center gap-1">
-                                <Clock className="w-3 h-3" /> 6:00 PM
+                                <Clock className="w-3 h-3" /> {event.time || 'Time TBA'}
                               </span>
                               <span className="text-[10px] text-slate-400 flex items-center gap-1">
                                 <Layout className="w-3 h-3" /> {event.location || 'TBD'}
@@ -686,6 +715,7 @@ const Dashboard: React.FC<DashboardProps> = ({
                               setNewEventLocation(event.location || '');
                               setNewEventRegistrationLink(event.registrationLink || '');
                               setNewEventImage(event.imageUrl || '');
+                              setNewEventTime(event.time || '');
                               setEventModalOpen(true);
                             }}
                             className="p-2 text-slate-400 hover:text-purple-500 hover:bg-purple-500/10 rounded-lg transition-colors"
@@ -1197,6 +1227,205 @@ const Dashboard: React.FC<DashboardProps> = ({
           )}
 
 
+
+
+          {/* TAB: TEAM ROSTER */}
+          {activeTab === 'team_roster' && (() => {
+            const mentors = teamMembers.filter(m => m.memberType === 'mentor').sort((a, b) => (a.displayOrder ?? 0) - (b.displayOrder ?? 0));
+            const coreTeam = teamMembers.filter(m => m.memberType !== 'mentor').sort((a, b) => (a.displayOrder ?? 0) - (b.displayOrder ?? 0));
+
+            const resetTmForm = () => {
+              setEditingTeamMemberId(null);
+              setTmName(''); setTmRole(''); setTmBio('');
+              setTmYear(''); setTmSkills(''); setTmImage('');
+              setTmType('team');
+            };
+
+            const openEditTm = (m: TeamMember) => {
+              setEditingTeamMemberId(m.id);
+              setTmName(m.name); setTmRole(m.role); setTmBio(m.bio);
+              setTmYear(m.year); setTmSkills(m.skills.join(', '));
+              setTmImage(m.imageUrl); setTmType(m.memberType || 'team');
+              setTeamMemberModalOpen(true);
+            };
+
+            const handleTmSubmit = async (e: React.FormEvent) => {
+              e.preventDefault();
+              if (!tmName.trim()) { alert('Name is required'); return; }
+              const siblings = tmType === 'mentor' ? mentors : coreTeam;
+              const data: Omit<TeamMember, 'id'> = {
+                name: tmName.trim(), role: tmRole.trim(), bio: tmBio.trim(),
+                year: tmYear.trim(), imageUrl: tmImage,
+                skills: tmSkills.split(',').map(s => s.trim()).filter(Boolean),
+                memberType: tmType,
+                displayOrder: editingTeamMemberId
+                  ? (teamMembers.find(m => m.id === editingTeamMemberId)?.displayOrder ?? 0)
+                  : siblings.length,
+              };
+              if (editingTeamMemberId) {
+                await onUpdateTeamMember({ ...data, id: editingTeamMemberId });
+                addActivity('Updated Team Member', tmName);
+              } else {
+                await onCreateTeamMember(data);
+                addActivity('Added Team Member', tmName);
+              }
+              setTeamMemberModalOpen(false);
+              resetTmForm();
+            };
+
+            const handleTmImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+              const file = e.target.files?.[0];
+              if (file) {
+                const reader = new FileReader();
+                reader.onloadend = () => setTmImage(reader.result as string);
+                reader.readAsDataURL(file);
+              }
+            };
+
+            const MemberRow = ({ m, siblings }: { m: TeamMember; siblings: TeamMember[] }) => (
+              <div className="flex items-center gap-3 p-3 bg-white/5 border border-white/5 hover:border-purple-500/30 rounded-xl transition-all group">
+                <img
+                  src={m.imageUrl || 'https://placehold.co/60x60/1e293b/a5b4fc?text=?'}
+                  alt={m.name}
+                  className="w-10 h-10 rounded-full object-cover border border-slate-700 flex-shrink-0"
+                  onError={e => { e.currentTarget.src = 'https://placehold.co/60x60/1e293b/a5b4fc?text=?'; }}
+                />
+                <div className="flex-1 min-w-0">
+                  <p className="font-semibold text-white text-sm truncate">{m.name}</p>
+                  <p className="text-xs text-slate-400 truncate">{m.role} · {m.year}</p>
+                </div>
+                <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                  <button
+                    onClick={() => onReorderTeamMember(m.id, 'up', siblings)}
+                    className="p-1.5 text-slate-400 hover:text-purple-400 hover:bg-purple-500/10 rounded-lg transition-colors"
+                    title="Move up"
+                  >↑</button>
+                  <button
+                    onClick={() => onReorderTeamMember(m.id, 'down', siblings)}
+                    className="p-1.5 text-slate-400 hover:text-purple-400 hover:bg-purple-500/10 rounded-lg transition-colors"
+                    title="Move down"
+                  >↓</button>
+                  <button
+                    onClick={() => openEditTm(m)}
+                    className="p-1.5 text-slate-400 hover:text-purple-400 hover:bg-purple-500/10 rounded-lg transition-colors"
+                    title="Edit"
+                  ><Edit className="w-3.5 h-3.5" /></button>
+                  <button
+                    onClick={() => { if (confirm(`Delete ${m.name}?`)) onDeleteTeamMember(m.id); }}
+                    className="p-1.5 text-slate-400 hover:text-red-400 hover:bg-red-500/10 rounded-lg transition-colors"
+                    title="Delete"
+                  ><Trash2 className="w-3.5 h-3.5" /></button>
+                </div>
+              </div>
+            );
+
+            return (
+              <div className="animate-fade-in-up">
+                <div className="flex justify-end mb-6">
+                  <button
+                    onClick={() => { resetTmForm(); setTeamMemberModalOpen(true); }}
+                    className="bg-purple-600 hover:bg-purple-700 text-white px-5 py-2 rounded-xl flex items-center gap-2 shadow-lg shadow-purple-900/20 transition-all hover:scale-105"
+                  >
+                    <Plus className="w-4 h-4" /> Add Member
+                  </button>
+                </div>
+
+                <div className="grid md:grid-cols-2 gap-8">
+                  {/* Mentors */}
+                  <div className="bg-slate-900/50 border border-slate-800 rounded-2xl p-5">
+                    <h3 className="text-base font-bold text-white mb-4 flex items-center gap-2">
+                      <UserIcon className="w-4 h-4 text-slate-400" /> Mentors & Advisors
+                      <span className="text-xs text-slate-500 font-normal ml-auto">{mentors.length} members</span>
+                    </h3>
+                    <div className="space-y-2">
+                      {mentors.length === 0 && <p className="text-slate-500 text-sm text-center py-6">No mentors yet.</p>}
+                      {mentors.map(m => <MemberRow key={m.id} m={m} siblings={mentors} />)}
+                    </div>
+                  </div>
+
+                  {/* Core Team */}
+                  <div className="bg-slate-900/50 border border-slate-800 rounded-2xl p-5">
+                    <h3 className="text-base font-bold text-white mb-4 flex items-center gap-2">
+                      <Users className="w-4 h-4 text-purple-400" /> Core Team
+                      <span className="text-xs text-slate-500 font-normal ml-auto">{coreTeam.length} members</span>
+                    </h3>
+                    <div className="space-y-2">
+                      {coreTeam.length === 0 && <p className="text-slate-500 text-sm text-center py-6">No team members yet.</p>}
+                      {coreTeam.map(m => <MemberRow key={m.id} m={m} siblings={coreTeam} />)}
+                    </div>
+                  </div>
+                </div>
+
+                {/* Create/Edit Modal */}
+                {isTeamMemberModalOpen && (
+                  <div className="fixed inset-0 bg-black/90 flex items-center justify-center z-50 p-4 backdrop-blur-xl overflow-y-auto" onClick={() => { setTeamMemberModalOpen(false); resetTmForm(); }}>
+                    <div className="bg-[#0A0A0C] rounded-[2rem] w-full max-w-lg border border-white/10 shadow-2xl shadow-purple-500/10 relative my-auto" onClick={e => e.stopPropagation()}>
+                      <div className="relative h-20 bg-gradient-to-r from-purple-600 via-purple-800 to-slate-600 rounded-t-[2rem] overflow-hidden">
+                        <div className="absolute bottom-4 left-6">
+                          <h3 className="text-xl font-bold text-white">{editingTeamMemberId ? 'Edit Member' : 'Add Team Member'}</h3>
+                          <p className="text-white/70 text-xs">Public team roster</p>
+                        </div>
+                        <button onClick={() => { setTeamMemberModalOpen(false); resetTmForm(); }} className="absolute top-3 right-4 p-2 bg-white/10 hover:bg-white/20 rounded-full text-white transition-colors">
+                          <X className="w-4 h-4" />
+                        </button>
+                      </div>
+                      <form onSubmit={handleTmSubmit} className="p-6 space-y-4">
+                        {/* Type selector */}
+                        <div className="flex gap-3">
+                          {(['team', 'mentor'] as const).map(t => (
+                            <button key={t} type="button" onClick={() => setTmType(t)}
+                              className={`flex-1 py-2 rounded-xl text-sm font-semibold transition-all border ${tmType === t ? 'bg-purple-600 border-purple-500 text-white' : 'bg-slate-900/50 border-white/10 text-slate-400 hover:text-white'}`}>
+                              {t === 'team' ? 'Core Team' : 'Mentor / Advisor'}
+                            </button>
+                          ))}
+                        </div>
+                        <div className="grid grid-cols-2 gap-3">
+                          <div>
+                            <label className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1 block">Name *</label>
+                            <input required type="text" value={tmName} onChange={e => setTmName(e.target.value)} className="w-full bg-slate-900/50 border border-white/10 rounded-xl p-3 text-white text-sm focus:outline-none focus:border-purple-500 transition-all" placeholder="Full Name" />
+                          </div>
+                          <div>
+                            <label className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1 block">Role *</label>
+                            <input required type="text" value={tmRole} onChange={e => setTmRole(e.target.value)} className="w-full bg-slate-900/50 border border-white/10 rounded-xl p-3 text-white text-sm focus:outline-none focus:border-purple-500 transition-all" placeholder="e.g. President" />
+                          </div>
+                        </div>
+                        <div>
+                          <label className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1 block">Year / Title</label>
+                          <input type="text" value={tmYear} onChange={e => setTmYear(e.target.value)} className="w-full bg-slate-900/50 border border-white/10 rounded-xl p-3 text-white text-sm focus:outline-none focus:border-purple-500 transition-all" placeholder="e.g. Second Year, ADS" />
+                        </div>
+                        <div>
+                          <label className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1 block">Bio</label>
+                          <textarea value={tmBio} onChange={e => setTmBio(e.target.value)} rows={3} className="w-full bg-slate-900/50 border border-white/10 rounded-xl p-3 text-white text-sm focus:outline-none focus:border-purple-500 resize-none transition-all" placeholder="Short biography..." />
+                        </div>
+                        <div>
+                          <label className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1 block">Skills (comma-separated)</label>
+                          <input type="text" value={tmSkills} onChange={e => setTmSkills(e.target.value)} className="w-full bg-slate-900/50 border border-white/10 rounded-xl p-3 text-white text-sm focus:outline-none focus:border-purple-500 transition-all" placeholder="Python, Machine Learning, SQL" />
+                        </div>
+                        <div>
+                          <label className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1 block">Profile Image</label>
+                          <div className="flex gap-3 items-center">
+                            {tmImage && <img src={tmImage} alt="Preview" className="w-12 h-12 rounded-full object-cover border border-slate-700 flex-shrink-0" onError={e => { e.currentTarget.src = 'https://placehold.co/60x60/1e293b/a5b4fc?text=?'; }} />}
+                            <label className="flex-1 flex items-center justify-center gap-2 p-3 bg-slate-900/50 border-2 border-dashed border-white/10 hover:border-purple-500/50 rounded-xl cursor-pointer transition-all group">
+                              <Upload className="w-4 h-4 text-slate-500 group-hover:text-purple-500 transition-colors" />
+                              <span className="text-sm text-slate-500 group-hover:text-purple-500 transition-colors">{tmImage ? 'Change Image' : 'Upload Image'}</span>
+                              <input type="file" onChange={handleTmImageChange} accept="image/*" className="hidden" />
+                            </label>
+                          </div>
+                        </div>
+                        <div className="flex gap-3 pt-2">
+                          <button type="button" onClick={() => { setTeamMemberModalOpen(false); resetTmForm(); }} className="flex-1 px-4 py-3 bg-slate-800 hover:bg-slate-700 border border-white/5 rounded-xl text-slate-300 font-semibold transition-all text-sm">Cancel</button>
+                          <button type="submit" className="flex-1 px-4 py-3 bg-gradient-to-r from-purple-600 to-purple-800 hover:from-purple-500 hover:to-purple-700 rounded-xl text-white font-bold transition-all text-sm flex items-center justify-center gap-2">
+                            {editingTeamMemberId ? <Save className="w-4 h-4" /> : <Plus className="w-4 h-4" />}
+                            {editingTeamMemberId ? 'Save Changes' : 'Add Member'}
+                          </button>
+                        </div>
+                      </form>
+                    </div>
+                  </div>
+                )}
+              </div>
+            );
+          })()}
 
           {/* TAB: SETTINGS */}
           {activeTab === 'settings' && (

@@ -180,10 +180,10 @@ const Connect: React.FC = () => {
                                 <h3 className={`text-xl font-bold mb-2 ${isDark ? 'text-white' : 'text-slate-900'}`}>Email Us</h3>
                                 <p className={`text-sm mb-4 ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>Reach out for collaborations, queries, or feedback.</p>
                                 <a
-                                    href="mailto:dataanalyticsclub@stjosephs.ac.in"
+                                    href="mailto:dataanalytics@stjosephs.ac.in"
                                     className="text-purple-500 hover:text-purple-400 transition-colors text-sm font-medium inline-flex items-center gap-1"
                                 >
-                                    dataanalyticsclub@stjosephs.ac.in
+                                    dataanalytics@stjosephs.ac.in
                                     <ExternalLink className="w-3 h-3" />
                                 </a>
                             </div>

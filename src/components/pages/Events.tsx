@@ -68,7 +68,7 @@ const Events: React.FC<EventsProps> = ({ events, photos, onLoginClick, onRegiste
                                         <p className={`mb-6 line-clamp-2 leading-relaxed ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>{event.description}</p>
                                         <div className="flex flex-wrap items-center gap-4 text-sm text-slate-500 mb-8">
                                             <span className="flex items-center gap-1.5"><MapPin className="w-4 h-4 text-purple-500" /> {event.location}</span>
-                                            <span className="flex items-center gap-1.5"><Clock className="w-4 h-4 text-slate-500" /> 6:00 PM</span>
+                                            <span className="flex items-center gap-1.5"><Clock className="w-4 h-4 text-slate-500" /> {event.time || 'Time TBA'}</span>
                                         </div>
                                     </div>
                                     {event.registrationLink && (
@@ -198,7 +198,7 @@ const Events: React.FC<EventsProps> = ({ events, photos, onLoginClick, onRegiste
                                 <div className={`grid grid-cols-2 md:grid-cols-4 gap-4 mb-8 pb-8 border-b ${isDark ? 'border-white/5' : 'border-black/5'}`}>
                                     {[
                                         { icon: Calendar, label: 'Date', val: formatEventDate(selectedEvent.date), color: 'text-purple-500' },
-                                        { icon: Clock, label: 'Time', val: '8:00 PM', color: 'text-slate-500' },
+                                        { icon: Clock, label: 'Time', val: selectedEvent.time || 'Time TBA', color: 'text-slate-500' },
                                         { icon: MapPin, label: 'Location', val: selectedEvent.location, color: 'text-purple-500' },
                                         { icon: Camera, label: 'Photos', val: `${getEventPhotos(selectedEvent.id).length} Shots`, color: 'text-slate-500' }
                                     ].map((item, i) => (

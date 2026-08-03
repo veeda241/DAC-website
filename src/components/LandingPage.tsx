@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Calendar } from 'lucide-react';
-import { ClubEvent, ClubReport, Photo, PageView } from '../types';
+import { ClubEvent, ClubReport, Photo, PageView, TeamMember } from '../types';
 import { LOGO_URL } from '../constants';
 import GooeyNav from './GooeyNav';
 import { useTheme } from '../contexts/ThemeContext';
@@ -19,11 +19,12 @@ interface LandingPageProps {
   events: ClubEvent[];
   reports: ClubReport[];
   photos: Photo[];
+  teamMembers: TeamMember[];
   onLoginClick: () => void;
   onRegisterClick: () => void;
 }
 
-const LandingPage: React.FC<LandingPageProps> = ({ events, reports, photos, onLoginClick, onRegisterClick }) => {
+const LandingPage: React.FC<LandingPageProps> = ({ events, reports, photos, teamMembers, onLoginClick, onRegisterClick }) => {
   const [currentPage, setCurrentPage] = useState<PageView>('home');
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [lightboxPhoto, setLightboxPhoto] = useState<Photo | null>(null);
@@ -175,7 +176,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ events, reports, photos, onLo
       <div>
         {currentPage === 'home' && <Home onLoginClick={onLoginClick} setCurrentPage={setCurrentPage} />}
         {currentPage === 'about' && <About />}
-        {currentPage === 'members' && <Members />}
+        {currentPage === 'members' && <Members teamMembers={teamMembers} />}
         {currentPage === 'events' && (
           <Events
             events={events}

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { ClubEvent, Task, TaskStatus, User, UserRole, ActivityLog, Notification, ClubReport, Photo, TeamMember } from '../types';
 import { generateEventDescription, generateTaskAnalysis } from '../services/geminiService';
+import { uploadTeamMemberImage } from '../services/supabaseService';
 import { PieChart, Pie, Cell, ResponsiveContainer, Legend, Tooltip } from 'recharts';
 import { Plus, CheckCircle, Circle, Clock, Loader2, Sparkles, LogOut, Calendar, Layout, Search, BrainCircuit, X, Users, Activity, Filter, Bell, User as UserIcon, Settings, Save, Upload, Shield, Trash2, ChevronDown, FileText, Image as ImageIcon, PieChart as PieChartIcon, Download, Camera, Menu, Link as LinkIcon, Edit } from 'lucide-react';
 import { MASCOT_URL, LOGO_URL } from '../constants';
@@ -152,6 +153,8 @@ const Dashboard: React.FC<DashboardProps> = ({
   const [tmSkills, setTmSkills] = useState('');
   const [tmImage, setTmImage] = useState('');
   const [tmType, setTmType] = useState<'mentor' | 'team'>('team');
+  const [tmImageFile, setTmImageFile] = useState<File | null>(null);
+  const [isUploadingTm, setIsUploadingTm] = useState(false);
 
   // Sync settings state when user prop updates
   useEffect(() => {
@@ -1238,44 +1241,61 @@ const Dashboard: React.FC<DashboardProps> = ({
               setEditingTeamMemberId(null);
               setTmName(''); setTmRole(''); setTmBio('');
               setTmYear(''); setTmSkills(''); setTmImage('');
-              setTmType('team');
+              setTmType('team'); setTmImageFile(null);
             };
 
             const openEditTm = (m: TeamMember) => {
               setEditingTeamMemberId(m.id);
               setTmName(m.name); setTmRole(m.role); setTmBio(m.bio);
               setTmYear(m.year); setTmSkills(m.skills.join(', '));
-              setTmImage(m.imageUrl); setTmType(m.memberType || 'team');
+              setTmImage(m.imageUrl); setTmType(m.memberType || 'team'); setTmImageFile(null);
               setTeamMemberModalOpen(true);
             };
 
             const handleTmSubmit = async (e: React.FormEvent) => {
               e.preventDefault();
               if (!tmName.trim()) { alert('Name is required'); return; }
-              const siblings = tmType === 'mentor' ? mentors : coreTeam;
-              const data: Omit<TeamMember, 'id'> = {
-                name: tmName.trim(), role: tmRole.trim(), bio: tmBio.trim(),
-                year: tmYear.trim(), imageUrl: tmImage,
-                skills: tmSkills.split(',').map(s => s.trim()).filter(Boolean),
-                memberType: tmType,
-                displayOrder: editingTeamMemberId
-                  ? (teamMembers.find(m => m.id === editingTeamMemberId)?.displayOrder ?? 0)
-                  : siblings.length,
-              };
-              if (editingTeamMemberId) {
-                await onUpdateTeamMember({ ...data, id: editingTeamMemberId });
-                addActivity('Updated Team Member', tmName);
-              } else {
-                await onCreateTeamMember(data);
-                addActivity('Added Team Member', tmName);
+              if (!tmRole.trim()) { alert('Role is required'); return; }
+              setIsUploadingTm(true);
+              let finalImageUrl = tmImage;
+              try {
+                if (tmImageFile) {
+                  finalImageUrl = await uploadTeamMemberImage(tmImageFile);
+                }
+                const siblings = tmType === 'mentor' ? mentors : coreTeam;
+                const data: Omit<TeamMember, 'id'> = {
+                  name: tmName.trim(), role: tmRole.trim(), bio: tmBio.trim(),
+                  year: tmYear.trim(), imageUrl: finalImageUrl,
+                  skills: tmSkills.split(',').map(s => s.trim()).filter(Boolean),
+                  memberType: tmType,
+                  displayOrder: editingTeamMemberId
+                    ? (teamMembers.find(m => m.id === editingTeamMemberId)?.displayOrder ?? 0)
+                    : siblings.length,
+                };
+                if (editingTeamMemberId) {
+                  await onUpdateTeamMember({ ...data, id: editingTeamMemberId });
+                  addActivity('Updated Team Member', tmName);
+                } else {
+                  await onCreateTeamMember(data);
+                  addActivity('Added Team Member', tmName);
+                }
+                setTeamMemberModalOpen(false);
+                resetTmForm();
+              } catch (error) {
+                alert('An error occurred during submission. If you uploaded an image, check file permissions.');
+              } finally {
+                setIsUploadingTm(false);
               }
-              setTeamMemberModalOpen(false);
-              resetTmForm();
             };
 
             const handleTmImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
               const file = e.target.files?.[0];
               if (file) {
+                if (file.size > 5 * 1024 * 1024) {
+                  alert('File size exceeds 5MB limit');
+                  return;
+                }
+                setTmImageFile(file);
                 const reader = new FileReader();
                 reader.onloadend = () => setTmImage(reader.result as string);
                 reader.readAsDataURL(file);
@@ -1414,9 +1434,9 @@ const Dashboard: React.FC<DashboardProps> = ({
                         </div>
                         <div className="flex gap-3 pt-2">
                           <button type="button" onClick={() => { setTeamMemberModalOpen(false); resetTmForm(); }} className="flex-1 px-4 py-3 bg-slate-800 hover:bg-slate-700 border border-white/5 rounded-xl text-slate-300 font-semibold transition-all text-sm">Cancel</button>
-                          <button type="submit" className="flex-1 px-4 py-3 bg-gradient-to-r from-purple-600 to-purple-800 hover:from-purple-500 hover:to-purple-700 rounded-xl text-white font-bold transition-all text-sm flex items-center justify-center gap-2">
-                            {editingTeamMemberId ? <Save className="w-4 h-4" /> : <Plus className="w-4 h-4" />}
-                            {editingTeamMemberId ? 'Save Changes' : 'Add Member'}
+                          <button type="submit" disabled={isUploadingTm} className="flex-1 px-4 py-3 bg-gradient-to-r from-purple-600 to-purple-800 hover:from-purple-500 hover:to-purple-700 rounded-xl text-white font-bold transition-all text-sm flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed">
+                            {isUploadingTm ? <Loader2 className="w-4 h-4 animate-spin" /> : editingTeamMemberId ? <Save className="w-4 h-4" /> : <Plus className="w-4 h-4" />}
+                            {isUploadingTm ? 'Uploading...' : editingTeamMemberId ? 'Save Changes' : 'Add Member'}
                           </button>
                         </div>
                       </form>

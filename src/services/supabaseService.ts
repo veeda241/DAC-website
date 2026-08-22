@@ -383,6 +383,29 @@ const mapTeamMember = (row: any): TeamMember => ({
   displayOrder: row.display_order ?? 0,
 });
 
+export const uploadTeamMemberImage = async (file: File): Promise<string> => {
+  if (!supabase) throw new Error('Supabase not connected');
+
+  const fileExt = file.name.split('.').pop();
+  const fileName = `${Date.now()}-${Math.random().toString(36).substring(7)}.${fileExt}`;
+  const filePath = `${fileName}`; // bucket root
+
+  const { data, error } = await supabase.storage
+    .from('team-members')
+    .upload(filePath, file, { upsert: false });
+
+  if (error) {
+    console.error('Error uploading team member image:', error);
+    throw error;
+  }
+
+  const { data: publicUrlData } = supabase.storage
+    .from('team-members')
+    .getPublicUrl(filePath);
+
+  return publicUrlData.publicUrl;
+};
+
 export const fetchTeamMembers = async (): Promise<TeamMember[]> => {
   if (!supabase) {
     console.log('Supabase not connected. Using MOCK_TEAM/MOCK_MENTORS as fallback.');
@@ -405,7 +428,15 @@ export const fetchTeamMembers = async (): Promise<TeamMember[]> => {
     ];
   }
 
-  return (data || []).map(mapTeamMember);
+  const dbMembers = (data || []).map(mapTeamMember);
+
+  // Combine existing mock members with newly added database members
+  const mockMembers = [
+    ...MOCK_MENTORS.map((m, i) => ({ ...m, memberType: 'mentor' as const, displayOrder: i })),
+    ...MOCK_TEAM.map((m, i) => ({ ...m, memberType: 'team' as const, displayOrder: i })),
+  ];
+
+  return [...mockMembers, ...dbMembers];
 };
 
 export const createTeamMember = async (member: Omit<TeamMember, 'id'>): Promise<TeamMember | null> => {
